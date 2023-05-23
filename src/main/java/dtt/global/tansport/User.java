@@ -9,11 +9,11 @@ public class User {
     private String email;
     private int faculityId;
     private AccountState accountState;
-    private Map<Faculity, UserState> userState;
+    private Map<Faculty, UserState> userState;
 
     public User(){}
 
-    public User (String firstName, String lastName, String email, int faculityId, AccountState accountState, Map<Faculity, UserState> userState) {
+    public User (String firstName, String lastName, String email, int faculityId, AccountState accountState, Map<Faculty, UserState> userState) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -46,7 +46,7 @@ public class User {
         this.accountState = accountState;
     }
 
-    public void setUserState (Map<Faculity, UserState> userState) {
+    public void setUserState (Map<Faculty, UserState> userState) {
         this.userState = userState;
     }
 
@@ -74,7 +74,7 @@ public class User {
         return accountState;
     }
 
-    public Map<Faculity, UserState> getUserState () {
+    public Map<Faculty, UserState> getUserState () {
         return userState;
     }
 

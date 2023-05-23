@@ -1,12 +1,12 @@
 package dtt.global.tansport;
 
-public class Faculity {
+public class Faculty {
     private int id ;
     private String name;
 
-    public Faculity(){};
+    public Faculty(){};
 
-    public Faculity (String name) {
+    public Faculty (String name) {
         this.name = name;
     }
 

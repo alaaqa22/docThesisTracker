@@ -1,27 +1,50 @@
 package dtt.global.tansport;
-
+/**
+ * Represents the vote with the selected option for each user.
+ */
 public class Vote {
-    private Options selection;
-    private User user;
+    private Options selection; // The selected option for the vote
+    private User user; // The user who cast the vote
 
-    public Vote (Options selection, User user) {
+    /**
+     * Constructs a Vote object with the specified selection and user.
+     * @param selection The selected option for the vote
+     * @param user The user who cast the vote
+     */
+    public Vote(Options selection, User user) {
         this.selection = selection;
         this.user = user;
     }
 
-    public void setSelection (Options selection) {
+    /**
+     * Sets the selected option for the vote.
+     * @param selection The selected option for the vote
+     */
+    public void setSelection(Options selection) {
         this.selection = selection;
     }
 
-    public void setUser (User user) {
+    /**
+     * Sets the user who cast the vote.
+     * @param user The user who cast the vote
+     */
+    public void setUser(User user) {
         this.user = user;
     }
 
-    public Options getSelection () {
+    /**
+     * Returns the selected option for the vote.
+     * @return The selected option for the vote
+     */
+    public Options getSelection() {
         return selection;
     }
 
-    public User getUser () {
+    /**
+     * Returns the user who cast the vote.
+     * @return The user who cast the vote
+     */
+    public User getUser() {
         return user;
     }
 }

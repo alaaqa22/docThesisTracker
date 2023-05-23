@@ -1,81 +1,151 @@
 package dtt.global.tansport;
 
 import java.util.Map;
-
+/**
+ *  Represents a User in the System.
+ */
 public class User {
-    private int id ;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private int faculityId;
-    private AccountState accountState;
-    private Map<Faculty, UserState> userState;
+    private int id; // The ID of the user
+    private String firstName; // The first name of the user
+    private String lastName; // The last name of the user
+    private String email; // The email of the user
+    private int facultyId; // The faculty ID of the user
+    private AccountState accountState; // The account state of the user
+    private Map<Faculty, UserState> userState; // The user state map
 
-    public User(){}
+    /**
+     * Default constructor for the User class.
+     */
+    public User() {
+    }
 
-    public User (String firstName, String lastName, String email, int faculityId, AccountState accountState, Map<Faculty, UserState> userState) {
+    /**
+     * Constructs a User object with the specified details.
+     * @param firstName The first name of the user
+     * @param lastName The last name of the user
+     * @param email The email of the user
+     * @param facultyId The faculty ID of the user
+     * @param accountState The account state of the user
+     * @param userState The user state map
+     */
+    public User(String firstName, String lastName, String email, int facultyId, AccountState accountState, Map<Faculty, UserState> userState) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.faculityId = faculityId;
+        this.facultyId = facultyId;
         this.accountState = accountState;
         this.userState = userState;
     }
 
-    public void setId (int id) {
+    /**
+     * Sets the ID of the user.
+     * @param id The ID of the user
+     */
+    public void setId(int id) {
         this.id = id;
     }
 
-    public void setFirstName (String firstName) {
+    /**
+     * Sets the first name of the user.
+     * @param firstName The first name of the user
+     */
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    public void setLastName (String lastName) {
+    /**
+     * Sets the last name of the user.
+     * @param lastName The last name of the user
+     */
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    public void setEmail (String email) {
+    /**
+     * Sets the email of the user.
+     * @param email The email of the user
+     */
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public void setFaculityId (int faculityId) {
-        this.faculityId = faculityId;
+    /**
+     * Sets the faculty ID of the user.
+     * @param facultyId The faculty ID of the user
+     */
+    public void setFacultyId(int facultyId) {
+        this.facultyId = facultyId;
     }
 
-    public void setAccountState (AccountState accountState) {
+    /**
+     * Sets the account state of the user.
+     * @param accountState The account state of the user
+     */
+    public void setAccountState(AccountState accountState) {
         this.accountState = accountState;
     }
 
-    public void setUserState (Map<Faculty, UserState> userState) {
+    /**
+     * Sets the user state map.
+     * @param userState The user state map
+     */
+    public void setUserState(Map<Faculty, UserState> userState) {
         this.userState = userState;
     }
 
-    public int getId () {
+    /**
+     * Returns the ID of the user.
+     * @return The ID of the user
+     */
+    public int getId() {
         return id;
     }
 
-    public String getFirstName () {
+    /**
+     * Returns the first name of the user.
+     * @return The first name of the user
+     */
+    public String getFirstName() {
         return firstName;
     }
 
-    public String getLastName () {
+    /**
+     * Returns the last name of the user.
+     * @return The last name of the user
+     */
+    public String getLastName() {
         return lastName;
     }
 
-    public String getEmail () {
+    /**
+     * Returns the email of the user.
+     * @return The email of the user
+     */
+    public String getEmail() {
         return email;
     }
 
-    public int getFaculityId () {
-        return faculityId;
+    /**
+     * Returns the faculty ID of the user.
+     * @return The faculty ID of the user
+     */
+    public int getFacultyId() {
+        return facultyId;
     }
 
-    public AccountState getAccountState () {
+    /**
+     * Returns the account state of the user.
+     * @return The account state of the user
+     */
+    public AccountState getAccountState() {
         return accountState;
     }
 
-    public Map<Faculty, UserState> getUserState () {
+    /**
+     * Returns the user state map.
+     * @return The user state map
+     */
+    public Map<Faculty, UserState> getUserState() {
         return userState;
     }
-
 }

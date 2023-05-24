@@ -1,6 +1,8 @@
 package dtt.dataAccess.exceptions;
 
-
+/**
+ *  Thrown when Data is incomplete or missing, preventing a specific operation from being executed successfully.
+ */
 public class DataNotCompleteException extends Exception {
 
     /**

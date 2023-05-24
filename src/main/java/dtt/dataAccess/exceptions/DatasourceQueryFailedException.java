@@ -1,5 +1,8 @@
 package dtt.dataAccess.exceptions;
 
+/**
+ * Thrown when a query or operation on a data source fails
+ */
 public class DatasourceQueryFailedException extends RuntimeException {
     /**
      * Construct an exception

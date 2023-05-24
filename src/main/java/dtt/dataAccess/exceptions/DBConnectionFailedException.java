@@ -1,5 +1,8 @@
 package dtt.dataAccess.exceptions;
 
+/**
+ * thrown when there is a failure to establish a connection to a database.
+ */
 public class DBConnectionFailedException extends RuntimeException {
 
     /**

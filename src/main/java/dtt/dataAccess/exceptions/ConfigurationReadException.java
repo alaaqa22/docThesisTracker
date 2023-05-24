@@ -1,5 +1,8 @@
 package dtt.dataAccess.exceptions;
 
+/**
+ * Exception is thrown when there is an error or failure in reading a Configuration File.
+ */
 public class ConfigurationReadException extends RuntimeException {
     /**
      * Construct an exception

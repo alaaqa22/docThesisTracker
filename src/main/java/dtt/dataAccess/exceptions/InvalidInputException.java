@@ -1,24 +1,26 @@
 package dtt.dataAccess.exceptions;
 
-public class DBConfigurationException extends RuntimeException{
-
+/**
+ * Thrown when the input data is invalid or faulty, such as incorrect format, invalid values.
+ */
+public class InvalidInputException extends Exception {
     /**
      * Constructs an exception.
      */
-    public DBConfigurationException (){}
+    public InvalidInputException(){}
 
     /**
      * Constructs an exception with a message.
      * @param message - Error massage.
      */
-    public DBConfigurationException (String message){}
+    public InvalidInputException(String message){}
 
     /**
      * Constructs an exception with a message and a cause.
      * @param message - Error massage.
      * @param cause - Cause of the exception.
      */
-    public DBConfigurationException (String message , Throwable cause){}
-
+    public InvalidInputException(String message , Throwable cause){}
 
 }
+

@@ -1,5 +1,8 @@
 package dtt.dataAccess.exceptions;
 
+/**
+ * Thrown when a requested or expected Data element or resource is not found.
+ */
 public class DataNotFoundException extends Exception {
 
     /**

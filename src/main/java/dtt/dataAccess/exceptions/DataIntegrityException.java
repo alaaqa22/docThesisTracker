@@ -1,5 +1,9 @@
 package dtt.dataAccess.exceptions;
 
+/**
+ * thrown when an operation or action violates the data integrity rules defined for a system.
+ * It serves as a way to signal that the integrity of the data has been compromised or that an inconsistency has occurred.
+ */
 public class DataIntegrityException extends RuntimeException {
 
     /**

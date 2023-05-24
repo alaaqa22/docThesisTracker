@@ -1,5 +1,9 @@
 package dtt.dataAccess.exceptions;
 
+/**
+ *  Thrown to indicate that a user or entity does not have the necessary permissions or authorization to perform a certain
+ *  operation or access a specific resource.
+ */
 public class NoPermissionException extends Exception {
 
     /**

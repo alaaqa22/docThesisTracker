@@ -1,26 +1,28 @@
 package dtt.dataAccess.exceptions;
 
 /**
- * Thrown when there is a failure or error in writing or saving data in the database.
+ *  Thrown when the repository tries to save data with a unique value that already exists in the data.
  */
-public class DataNotWrittenException extends Exception {
+public class KeyExistsException  extends Exception{
 
     /**
      * Constructs an exception.
      */
-    public DataNotWrittenException(){}
+    public KeyExistsException(){}
 
     /**
      * Constructs an exception with a message.
      * @param message - Error massage.
      */
-    public DataNotWrittenException(String message){}
+    public KeyExistsException(String message){}
 
     /**
      * Constructs an exception with a message and a cause.
      * @param message - Error massage.
      * @param cause - Cause of the exception.
      */
-    public DataNotWrittenException(String message , Throwable cause){}
+    public KeyExistsException(String message , Throwable cause){}
 
 }
+
+

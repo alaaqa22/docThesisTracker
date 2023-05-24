@@ -1,5 +1,8 @@
 package dtt.dataAccess.exceptions;
 
+/**
+ * thrown when attempting to create or register a user with an email address that already exists in the system.
+ */
 public class EmailAddressExistsException extends Exception {
 
     /**

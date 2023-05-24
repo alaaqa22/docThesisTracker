@@ -1,9 +1,11 @@
 package dtt.dataAccess.exceptions;
 
+import java.io.IOException;
+
 /**
  * Thrown when the input data is invalid or faulty, such as incorrect format, invalid values.
  */
-public class InvalidInputException extends Exception {
+public class InvalidInputException extends IOException {
     /**
      * Constructs an exception.
      */

@@ -8,6 +8,10 @@ import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
 import dtt.global.tansport.Vote;
 
+/**
+ * @author Stefan Witka
+ *
+ */
 public interface VotesDAO {
 	/**
 	 * Add a new vote to the database for a specific circulation.

@@ -8,6 +8,10 @@ import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.User;
 
+/**
+ * @author Stefan Witka
+ *
+ */
 public interface UserDAO {
 	/**
 	 * Insert a new user into the database.

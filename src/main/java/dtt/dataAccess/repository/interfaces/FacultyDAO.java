@@ -7,6 +7,10 @@ import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Faculty;
 
+/**
+ * @author Stefan Witka
+ *
+ */
 public interface FacultyDAO {
 	/**
 	 * Add a new faculty to the database.

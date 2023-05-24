@@ -3,6 +3,10 @@ package dtt.dataAccess.utilities;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * @author Stefan Witka
+ *
+ */
 public class Transaction implements AutoCloseable {
 	private Connection connection;
 	

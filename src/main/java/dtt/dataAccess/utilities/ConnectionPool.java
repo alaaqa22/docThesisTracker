@@ -6,6 +6,10 @@ import java.util.List;
 import java.sql.Connection;
 import java.util.List;
 
+/**
+ * @author Stefan Witka
+ *
+ */
 public class ConnectionPool {
 	private List<Connection> connections;
 	

@@ -7,6 +7,10 @@ import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
 
+/**
+ * @author Stefan Witka
+ *
+ */
 public interface CirculationDAO {
 	/**
 	 * Add a new circulation record to the database.

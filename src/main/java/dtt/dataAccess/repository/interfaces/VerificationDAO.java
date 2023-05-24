@@ -7,6 +7,10 @@ import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Verification;
 
+/**
+ * @author Stefan Witka
+ *
+ */
 public interface VerificationDAO {
 	/**
 	 * Add a new verification record to the database.

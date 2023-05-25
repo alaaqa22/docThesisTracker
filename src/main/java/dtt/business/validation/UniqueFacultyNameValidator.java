@@ -2,14 +2,12 @@ package dtt.business.validation;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
 
-/**
- * A validator that verifies the correctness and validity of a given URL
- */
-public class URLValidator  implements Validator {
-
+@FacesValidator("UniqueFacultyNameValidator")
+public class UniqueFacultyNameValidator implements Validator {
     /**
      *
      * @param context FacesContext for the request we are processing
@@ -20,5 +18,14 @@ public class URLValidator  implements Validator {
     @Override
     public void validate (FacesContext context, UIComponent component, Object value) throws ValidatorException {
 
+    }
+    /**
+     * check if the Faculty name is unique
+     * @param FacultyName : The Name of the Faculty.
+     * @return  {@code true} if the faculty name is unique, {@code false} otherwise.
+     */
+    private boolean isValueUnique(String FacultyName) {
+        // Implement your logic to check if the value is unique (for String values)
+        return true;
     }
 }

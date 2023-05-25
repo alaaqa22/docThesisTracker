@@ -2,6 +2,7 @@ package dtt.business.validation;
 
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
 
@@ -9,7 +10,8 @@ import jakarta.faces.validator.ValidatorException;
  * A validator that verifies the uniqueness of a given value within a specified dataset or context.
  * It checks whether the value is already present or used by another entity, ensuring its uniqueness.
  */
-public class UniqueValidator implements Validator {
+@FacesValidator("UniqueCirculationNameValidator")
+public class UniqueCirculationNameValidator implements Validator {
 
     /**
      *
@@ -22,4 +24,15 @@ public class UniqueValidator implements Validator {
     public void validate (FacesContext context, UIComponent component, Object value) throws ValidatorException {
 
     }
+
+    /**
+     * check if the CirculationName is unique
+     * @param CirculationName : The Name of the Circulation.
+     * @return {@code true} if the Circulation name is unique, {@code false} otherwise.
+     */
+    private boolean isValueUnique(String CirculationName) {
+        // Implement your logic to check if the value is unique (for String values)
+        return true;
+    }
+
 }

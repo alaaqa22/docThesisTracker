@@ -6,8 +6,10 @@ import jakarta.faces.event.PhaseListener;
 
 /**
  * Checks requests on user authentication.
+ * @author Johannes Silvennoinen
  */
 public class TrespassListener implements PhaseListener {
+    private SessionInfo sessionInfo;
     @Override
     public void afterPhase(PhaseEvent phaseEvent) {
 

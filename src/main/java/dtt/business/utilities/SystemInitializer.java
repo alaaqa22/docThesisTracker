@@ -32,7 +32,7 @@ public class SystemInitializer implements ServletContextListener {
      *  - Closes the database connection by calling the closeConnections() method.
      *  - Stops the logger to ensure all pending log entries are written by calling the stopLogger() method.
      *  - Ends the maintenance thread by calling the stopMaintenanceThread() method.
-     * @param arg
+     * @param arg The ServletContextEvent object that contains information about the ServletContext
      */
     @Override
     public void contextDestroyed(ServletContextEvent arg) {

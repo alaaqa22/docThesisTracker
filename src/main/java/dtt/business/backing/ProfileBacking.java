@@ -1,11 +1,23 @@
 package dtt.business.backing;
 
+import dtt.business.utilities.SessionInfo;
+import dtt.dataAccess.repository.Postgres.UserDAO;
+import dtt.global.tansport.User;
 import jakarta.annotation.PostConstruct;
+import jakarta.inject.Inject;
 
 /**
  * Backing bean for the profile page.
+ * @author Alaa Qasem
  */
 public class ProfileBacking {
+    private User user;
+    @Inject
+    private UserDAO userDAO;
+    @Inject
+    private SessionInfo sessionInfo;
+
+
     /**
      * Initializes the dto objects.
      */
@@ -19,5 +31,29 @@ public class ProfileBacking {
      */
     private void save(){
 
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public UserDAO getUserDAO() {
+        return userDAO;
+    }
+
+    public void setUserDAO(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
+
+    public SessionInfo getSessionInfo() {
+        return sessionInfo;
+    }
+
+    public void setSessionInfo(SessionInfo sessionInfo) {
+        this.sessionInfo = sessionInfo;
     }
 }

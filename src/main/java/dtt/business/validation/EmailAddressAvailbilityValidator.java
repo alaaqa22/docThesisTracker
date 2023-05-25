@@ -30,9 +30,6 @@ public class EmailAddressAvailbilityValidator implements Validator {
      * @return Return {@code true} if the email address is available, {@code false} otherwise.
      */
     private boolean isEmailAddressAvailable(String email) {
-        // Logic to check email availability (e.g., querying a database)
-        // Return true if the email is available, false otherwise
-        // Implement your own logic here
         return true;
     }
 }

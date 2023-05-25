@@ -19,23 +19,6 @@ public class User {
     public User() {
     }
 
-    /**
-     * Constructs a User object with the specified details.
-     * @param firstName The first name of the user
-     * @param lastName The last name of the user
-     * @param email The email of the user
-     * @param facultyId The faculty ID of the user
-     * @param accountState The account state of the user
-     * @param userState The user state map
-     */
-    public User(String firstName, String lastName, String email, int facultyId, AccountState accountState, Map<Faculty, UserState> userState) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.facultyId = facultyId;
-        this.accountState = accountState;
-        this.userState = userState;
-    }
 
     /**
      * Sets the ID of the user.

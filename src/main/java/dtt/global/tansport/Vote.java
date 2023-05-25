@@ -7,14 +7,9 @@ public class Vote {
     private User user; // The user who cast the vote
 
     /**
-     * Constructs a Vote object with the specified selection and user.
-     * @param selection The selected option for the vote
-     * @param user The user who cast the vote
+     *  Constructs a Vote object with the specified selection and user.
      */
-    public Vote(Options selection, User user) {
-        this.selection = selection;
-        this.user = user;
-    }
+    public Vote () {}
 
     /**
      * Sets the selected option for the vote.

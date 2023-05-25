@@ -12,11 +12,6 @@ public class Attachments {
 
     public Attachments() {}
 
-    public Attachments(String fileName, String fileType, byte[] fileContent) {
-        this.fileName = fileName;
-        this.fileType = fileType;
-        this.fileContent = fileContent;
-    }
 
     public void setFileName(String fileName) {
         this.fileName = fileName;

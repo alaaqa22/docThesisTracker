@@ -16,17 +16,6 @@ public class Verification {
     public Verification() {
     }
 
-    /**
-     * Constructs a Verification object with the specified user, token, and expiry date.
-     * @param user The user being verified
-     * @param token The verification token
-     * @param expiryDate The expiry date of the verification token
-     */
-    public Verification(User user, String token, LocalDateTime expiryDate) {
-        this.user = user;
-        this.token = token;
-        this.expiryDate = expiryDate;
-    }
 
     /**
      * Sets the user being verified.

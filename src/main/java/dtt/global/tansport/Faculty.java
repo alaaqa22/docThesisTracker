@@ -13,13 +13,6 @@ public class Faculty {
     public Faculty () {
     }
 
-    /**
-     * Constructs a Faculity object with the specified name.
-     * @param name The name of the faculty
-     */
-    public Faculty (String name) {
-        this.name = name;
-    }
 
     /**
      * Sets the ID of the faculty.

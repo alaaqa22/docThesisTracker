@@ -23,22 +23,6 @@ public class Circulation {
 
     public Circulation() {}
 
-    public Circulation(int id, String title, String description, String doctoralCandidateName, String doctoralSupervisor,
-                       boolean isObligatory, int acceptedCount, int rejectedCount,
-                       LocalDateTime startDeedline, LocalDateTime endDeedline, Map<User, Vote> vote, List<Attachments> attachmentslist) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.doctoralCandidateName = doctoralCandidateName;
-        this.doctoralSupervisor = doctoralSupervisor;
-        this.isObligatory = isObligatory;
-        this.acceptedCount = acceptedCount;
-        this.rejectedCount = rejectedCount;
-        this.startDeedline = startDeedline;
-        this.endDeedline = endDeedline;
-        this.vote = vote;
-        this.attachmentslist = attachmentslist;
-    }
 
     public void setId(int id) {
         this.id = id;

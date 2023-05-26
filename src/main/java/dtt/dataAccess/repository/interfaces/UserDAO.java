@@ -123,7 +123,7 @@ public interface UserDAO {
 	 * 
 	 * @param user The user DTO used as a filter.
 	 * @param transaction The transaction associated with this operation.
-	 * @return the total number of Users found matching the filter
+	 * @return the total number of Users found matching the filter.
 	 */
 	public int getTotalUserNumber(User user, Transaction transaction);
 }

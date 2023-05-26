@@ -13,6 +13,8 @@ public class User {
     private AccountState accountState; // The account state of the user
     private Map<Faculty, UserState> userState; // The user state map
 
+    private boolean loggedIn;
+
     /**
      * Default constructor for the User class.
      */
@@ -77,12 +79,22 @@ public class User {
     }
 
     /**
+     * Sets the login status of the user.
+     *
+     * @param loggedIn the login status of the user (true if logged in; false if logged out)
+     */
+    public void setLoggedIn (boolean loggedIn) {
+        this.loggedIn = loggedIn;
+    }
+
+    /**
      * Returns the ID of the user.
      * @return The ID of the user
      */
     public int getId() {
         return id;
     }
+
 
     /**
      * Returns the first name of the user.
@@ -131,4 +143,14 @@ public class User {
     public Map<Faculty, UserState> getUserState() {
         return userState;
     }
+
+    /**
+     * Returns the current login status of the user.
+     *
+     * @return true if the user is logged in, false if the user is logged out
+     */
+    public boolean isLoggedIn () {
+        return loggedIn;
+    }
 }
+

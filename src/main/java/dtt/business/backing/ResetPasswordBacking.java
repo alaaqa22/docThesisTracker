@@ -1,7 +1,6 @@
 package dtt.business.backing;
 
 import dtt.dataAccess.repository.Postgres.UserDAO;
-import dtt.global.tansport.Verification;
 import jakarta.inject.Inject;
 
 /**
@@ -9,12 +8,13 @@ import jakarta.inject.Inject;
  */
 public class ResetPasswordBacking {
     @Inject
-    private Verification verification;
-    @Inject
     private UserDAO userDAO;
     private String email;
 
 
+    /**
+     * Method to send a link to the user´s Email to reset the password.
+     */
 
     public void sendResetPasswordEmail(){
 

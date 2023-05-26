@@ -16,7 +16,7 @@ import java.util.List;
  * @author Alaa Qasem
  */
 public class CirculationListBacking {
-
+    Circulation circulation;
     private Pagination<Circulation> circPagination;
     private List<Circulation> circulations;
     private CirculationDAO circDAO;
@@ -31,7 +31,10 @@ public class CirculationListBacking {
     }
 
     /**
-     * Filter the circulation.
+     * Get the pagination of the circulations.
+     *
+     * @param circulation
+     * @return  The pagination of the circulations.
      */
     public Pagination<Circulation> filterCirculation(Circulation circulation){
 
@@ -70,4 +73,6 @@ public class CirculationListBacking {
     public void setSessionInfo(SessionInfo sessionInfo) {
         this.sessionInfo = sessionInfo;
     }
+
+
 }

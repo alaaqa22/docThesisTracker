@@ -1,11 +1,14 @@
 package dtt.business.backing;
 
 import dtt.business.utilities.SessionInfo;
+import dtt.dataAccess.exceptions.DataIntegrityException;
 import dtt.dataAccess.repository.Postgres.CirculationDAO;
 import dtt.global.tansport.Circulation;
 import dtt.global.tansport.Options;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
+
+import java.io.IOException;
 
 /**
  * Backing bean for the circulation details.
@@ -28,35 +31,45 @@ public class CirculationDetailsBacking {
     }
 
     /**
-     * Load details of a specified circulation.
+     * Get the correct circulation id from the view param (will be called in a view action)
+     * and load all data that should be displayed from the datasource.
+     *
+     * @throws DataIntegrityException If the user has no permission to see the circulation.
      */
     public void loadCirculation(){
     }
 
+
     /**
-     * Download the circulation.
+     * Download the file belonging to a specific circulation.
+     *
+     * @param circulation The circulation to download
+     * @throws IOException If the download fails.
      */
-   public void download(){
+   public void download(Circulation circulation){
 
     }
 
     /**
-     * Remove the circulation.
+     * Delete a circulation.
+     *
+     * @param circulation The Circulation to remove.
      */
-    public void remove(){
-
+    public void remove(Circulation circulation){
 
     }
 
     /**
      * Modify the circulation details.
+     *
+     * @param circulation The Circulation to modify.
      */
-    public void modify(){
+    public void modify(Circulation circulation){
 
     }
 
     /**
-     * Casts a vote for a specific choice.
+     * Casts or change a vote for a specific choice.
      *
      * @param choice The choice to vote for.
      *
@@ -66,14 +79,14 @@ public class CirculationDetailsBacking {
     }
 
     /**
-     * Changes the vote to a new choice.
+     * Load all the votes of a specified circulation.
      *
-     * @param newChoice The new choice to vote for.
+     * @param circulation The circulation that the votes should be loaded from.
      */
-    public void changeVote(Options newChoice){
+    public void loadVotes(Circulation circulation){
+
 
     }
-
 
     public CirculationDAO getCirculationDAO() {
         return circulationDAO;

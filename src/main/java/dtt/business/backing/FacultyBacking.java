@@ -26,12 +26,11 @@ public class FacultyBacking {
 
     }
     /**
-     * Adds a new faculty.
+     * Adds a new Faculty to the system.
      *
-     * @param faculty The faculty object to add.
+     * @param faculty The FacultyDTO object containing the data for creating a new Faculty.
      */
     public void add(Faculty faculty) {
-        // Add the faculty member to the system
     }
 
     /**

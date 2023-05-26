@@ -2,7 +2,6 @@ package dtt.business.backing;
 
 import dtt.dataAccess.repository.Postgres.UserDAO;
 import dtt.global.tansport.User;
-import dtt.global.tansport.Verification;
 import jakarta.annotation.PostConstruct;
 
 /**
@@ -13,11 +12,10 @@ public class RegistrationBacking {
 
     private User regUser;
     private UserDAO userDAO;
-    private Verification verification;
 
 
     /**
-     *  Initializes the data transfer object for the new registered user.
+     * Initializes the data transfer object for the new registered user.
      */
     @PostConstruct
     public void init(){
@@ -52,11 +50,5 @@ public class RegistrationBacking {
         this.userDAO = userDAO;
     }
 
-    public Verification getVerification() {
-        return verification;
-    }
 
-    public void setVerification(Verification verification) {
-        this.verification = verification;
-    }
 }

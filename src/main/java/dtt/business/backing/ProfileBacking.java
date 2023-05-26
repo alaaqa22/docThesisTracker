@@ -37,6 +37,13 @@ public class ProfileBacking {
         return user;
     }
 
+    /**
+     * Method to delete the profile.
+     */
+    public void deleteProfile(){
+
+    }
+
     public void setUser(User user) {
         this.user = user;
     }
@@ -53,7 +60,6 @@ public class ProfileBacking {
         return sessionInfo;
     }
 
-    public void setSessionInfo(SessionInfo sessionInfo) {
-        this.sessionInfo = sessionInfo;
-    }
+
+
 }

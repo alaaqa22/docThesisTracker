@@ -15,11 +15,24 @@ public class UserListBacking {
     private Pagination<User> userPagination;
     private List<User> users;
     /**
-     *
+     *  Initialize the dto object.
      */
     public void init(){
 
+
     }
+
+    /**
+     *
+     * @param user
+     * @return
+     */
+    public Pagination<User> filterUsers(User user){
+
+        return userPagination;
+
+    }
+
 
     /**
      *

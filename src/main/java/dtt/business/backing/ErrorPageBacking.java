@@ -8,6 +8,7 @@ import jakarta.annotation.PostConstruct;
  */
 public class ErrorPageBacking {
     private String errorMessage;
+
     /**
      * Initialize the error message.
      */

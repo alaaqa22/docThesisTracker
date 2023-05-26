@@ -22,9 +22,7 @@ public abstract class Pagination <T>{
     /**
      * Needs to be overwritten to load the correct data items for the page.
      */
-    public void loadData(){
-
-    }
+    public abstract void loadData();
     /**
      * Load data on last page.
      */
@@ -50,7 +48,7 @@ public abstract class Pagination <T>{
      *
      * @return The number of pages.
      */
-    public int calculateNumberOfPages(){
+    public Integer calculateNumberOfPages(){
         return 0;
     }
 }

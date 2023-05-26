@@ -40,6 +40,7 @@ public class Faculty {
 
     /**
      * Returns the name of the faculty.
+     *
      * @return The name of the faculty
      */
     public String getName() {

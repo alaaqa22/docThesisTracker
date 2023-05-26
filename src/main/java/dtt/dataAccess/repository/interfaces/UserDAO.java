@@ -93,16 +93,6 @@ public interface UserDAO {
 	/**
 	 * Retrieve a list of users from the database with pagination support.
 	 * 	 
-	 * <p> Values set
-     * 
-	 * @param user The user DTO used as a filter for retrieving users
-	 * @param transaction The transaction associated with this operation.
-	 * @param offset The starting index of the user records to retrieve
-	 * @param count The maximum number of user records to retrieve
-	 */
-	/**
-	 * Retrieve a list of users from the database with pagination support.
-	 * 	 
 	 * <p> Values set in User, except for {@code user.id} and {@code user.userState} are used to filter results if set.
 	 * {@code user.id} and {@code user.userState} are ignored in the filter object.
 	 * To filter for a specified faculty, {@code faculty.id} needs to be set in the faculty DTO.
@@ -114,7 +104,7 @@ public interface UserDAO {
 	 * @param transaction The transaction associated with this operation.
 	 * @param offset The starting index of the user records to retrieve.
 	 * @param count The maximum number of user records to retrieve.
-	 * @return
+	 * @return A list of Users matching the filter criteria, or an empty list if no matches were found.
 	 */
 	public List<User> getUsers(User user, Faculty faculty, UserState auth, Transaction transaction, int offset, int count);
 	

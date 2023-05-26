@@ -25,7 +25,6 @@ public class UniqueFacultyNameValidator implements Validator {
      * @return  {@code true} if the faculty name is unique, {@code false} otherwise.
      */
     private boolean isValueUnique(String FacultyName) {
-        // Implement your logic to check if the value is unique (for String values)
         return true;
     }
 }

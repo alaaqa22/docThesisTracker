@@ -7,7 +7,9 @@ import dtt.dataAccess.exceptions.DataNotFoundException;
 import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.exceptions.KeyExistsException;
 import dtt.dataAccess.utilities.Transaction;
+import dtt.global.tansport.Faculty;
 import dtt.global.tansport.User;
+import dtt.global.tansport.UserState;
 
 /**
  * 
@@ -56,8 +58,9 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 	}
 
 	@Override
-	public List<User> getUsers(User user, Transaction transaction, int offset, int count) {
-		// TODO Auto-generated method stub
+	public List<User> getUsers(User user, Faculty faculty, UserState auth, Transaction transaction, int offset,
+			int count) {
+		// TODO Auto-generated method stubby
 		return null;
 	}
 
@@ -66,5 +69,6 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
 
 }

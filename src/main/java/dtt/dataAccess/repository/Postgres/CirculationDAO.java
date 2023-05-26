@@ -13,6 +13,13 @@ import dtt.global.tansport.Circulation;
 public class CirculationDAO implements dtt.dataAccess.repository.interfaces.CirculationDAO {
 
 	/**
+	 * COnstructor for CirculationDAO
+	 */
+	public CirculationDAO() {
+		
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override

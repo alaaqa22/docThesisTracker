@@ -10,6 +10,13 @@ import dtt.global.tansport.Verification;
 public class VerificationDAO implements dtt.dataAccess.repository.interfaces.VerificationDAO {
 
 	/**
+	 * Constructor for VerificationDAO
+	 */
+	public VerificationDAO() {
+		
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override

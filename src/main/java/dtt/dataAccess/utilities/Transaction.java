@@ -8,7 +8,16 @@ import java.sql.SQLException;
  *
  */
 public class Transaction implements AutoCloseable {
-	private Connection connection;
+	private Connection connection; // connection on which the Transaction is run
+	private boolean didCommit; // boolean to check if a successful commit took place
+	
+	/**
+	 * Constructor for the transaction
+	 */
+	public Transaction() {
+		didCommit = false;
+		connection = getConnection();
+	}
 	
 	/**
 	 * Aborts the transaction and rolls back any changes made within the transaction.
@@ -39,7 +48,7 @@ public class Transaction implements AutoCloseable {
 	};
 	
 	/**
-	 * Closes the transaction and releases any associated resources.
+	 * {@inheritDoc}
 	 * 
 	 * @throws SQLException if there is an error closing the transaction
 	 */

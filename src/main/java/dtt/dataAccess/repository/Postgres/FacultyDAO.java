@@ -2,6 +2,9 @@ package dtt.dataAccess.repository.Postgres;
 
 import java.util.List;
 
+import dtt.dataAccess.exceptions.DataNotCompleteException;
+import dtt.dataAccess.exceptions.DataNotFoundException;
+import dtt.dataAccess.exceptions.KeyExistsException;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Faculty;
 
@@ -12,41 +15,37 @@ import dtt.global.tansport.Faculty;
 public class FacultyDAO implements dtt.dataAccess.repository.interfaces.FacultyDAO {
 
 	/**
-	 * {@inheritDoc}
+	 * Constructor for FacultyDAO
 	 */
+	public FacultyDAO() {
+		
+	}
+
 	@Override
-	public void add(Faculty faculty, Transaction transaction) {
+	public void add(Faculty faculty, Transaction transaction) throws DataNotCompleteException {
 		// TODO Auto-generated method stub
 		
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public void remove(Faculty faculty, Transaction transaction) {
+	public void remove(Faculty faculty, Transaction transaction)
+			throws DataNotFoundException, DataNotCompleteException {
 		// TODO Auto-generated method stub
 		
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public void update(Faculty faculty, Transaction transaction) {
+	public void update(Faculty faculty, Transaction transaction)
+			throws DataNotFoundException, DataNotCompleteException, KeyExistsException {
 		// TODO Auto-generated method stub
 		
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @return 
-	 */
 	@Override
-	public List<Faculty> getFaculties(Faculty faculty, Transaction transaction, int offset, int count) {
+	public List<Faculty> getFaculties(Transaction transaction) {
+		// TODO Auto-generated method stub
 		return null;
-		// TODO Auto-generated method stub
-		
 	}
+
 
 }

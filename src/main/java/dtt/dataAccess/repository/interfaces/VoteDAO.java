@@ -13,7 +13,7 @@ import dtt.global.tansport.Vote;
  * @author Stefan Witka
  *
  */
-public interface VotesDAO {
+public interface VoteDAO {
 	/**
 	 * Add a new vote to the database for a specific circulation.
 	 * 

@@ -12,7 +12,14 @@ import dtt.global.tansport.Vote;
  * @author Stefan Witka
  *
  */
-public class VotesDAO implements dtt.dataAccess.repository.interfaces.VotesDAO {
+public class VoteDAO implements dtt.dataAccess.repository.interfaces.VoteDAO {
+
+	/**
+	 * Constructor for VotesDAO
+	 */
+	public VoteDAO() {
+		
+	}
 
 	/**
 	 * {@inheritDoc}

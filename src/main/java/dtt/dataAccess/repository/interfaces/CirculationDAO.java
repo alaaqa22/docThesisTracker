@@ -13,6 +13,7 @@ import dtt.global.tansport.Circulation;
  *
  */
 public interface CirculationDAO {
+	
 	/**
 	 * Add a new circulation record to the database.
 	 * 

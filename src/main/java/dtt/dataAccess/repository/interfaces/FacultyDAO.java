@@ -1,8 +1,9 @@
 package dtt.dataAccess.repository.interfaces;
 
+import java.util.List;
+
 import dtt.dataAccess.exceptions.DataNotCompleteException;
 import dtt.dataAccess.exceptions.DataNotFoundException;
-import dtt.dataAccess.exceptions.DataNotWrittenException;
 import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Faculty;
@@ -21,7 +22,7 @@ public interface FacultyDAO {
 	 * @throws InvalidInputException if input data is faulty
 	 * @throws DataNotWrittenException if the faculty object cannot be written to the database
 	 */
-	public void add(Faculty faculty, Transaction transaction) throws DataNotCompleteException, InvalidInputException , DataNotWrittenException;
+	public void add(Faculty faculty, Transaction transaction) throws DataNotCompleteException, InvalidInputException;
 	
 	/**
 	 * Remove a faculty from the database.
@@ -32,7 +33,7 @@ public interface FacultyDAO {
 	 * @throws InvalidInputException if input data is faulty
 	 * @throws DataNotWrittenException if the faculty object cannot be removed from the database
 	 */
-	public void remove(Faculty faculty, Transaction transaction) throws DataNotFoundException, InvalidInputException, DataNotWrittenException;
+	public void remove(Faculty faculty, Transaction transaction) throws DataNotFoundException, InvalidInputException;
 	
 	/**
 	 * Update a faculty in the database.
@@ -43,7 +44,7 @@ public interface FacultyDAO {
 	 * @throws InvalidInputException if input data is faulty
 	 * @throws DataNotWrittenException if the faculty object cannot be updated in the database
 	 */
-	public void update(Faculty faculty, Transaction transaction) throws DataNotFoundException, InvalidInputException, DataNotWrittenException;
+	public void update(Faculty faculty, Transaction transaction) throws DataNotFoundException, InvalidInputException;
 	
 	/**
 	 * Retrieve a list of faculties from the database with pagination support.
@@ -55,6 +56,6 @@ public interface FacultyDAO {
 	 * @throws DataNotFoundException if no faculties matching the criteria are found in the database
 	 * @throws InvalidInputException if input data is faulty
 	 */
-	public void getFaculties(Faculty faculty, Transaction transaction, int offset, int count) throws DataNotFoundException, InvalidInputException;
+	public List<Faculty> getFaculties(Faculty faculty, Transaction transaction, int offset, int count) throws DataNotFoundException, InvalidInputException;
 }
 

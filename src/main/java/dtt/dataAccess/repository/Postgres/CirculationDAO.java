@@ -1,5 +1,8 @@
 package dtt.dataAccess.repository.Postgres;
 
+import java.util.List;
+
+import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
 
@@ -49,9 +52,17 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void getCirculations(Circulation circulation, Transaction transaction, int offset, int count) {
+	public List<Circulation> getCirculations(Circulation circulation, Transaction transaction, int offset, int count) {
+		return null;
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public int getTotalCirculationNumber(Circulation circulation, Transaction transaction)
+			throws InvalidInputException {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

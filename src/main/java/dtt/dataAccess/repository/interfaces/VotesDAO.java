@@ -1,8 +1,9 @@
 package dtt.dataAccess.repository.interfaces;
 
+import java.util.List;
+
 import dtt.dataAccess.exceptions.DataNotCompleteException;
 import dtt.dataAccess.exceptions.DataNotFoundException;
-import dtt.dataAccess.exceptions.DataNotWrittenException;
 import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
@@ -23,7 +24,7 @@ public interface VotesDAO {
 	 * @throws InvalidInputException if input data is faulty
 	 * @throws DataNotWrittenException if the vote cannot be written to the database
 	 */
-	public void add(Vote vote, Circulation circulation, Transaction transaction) throws DataNotCompleteException, InvalidInputException, DataNotWrittenException;
+	public void add(Vote vote, Circulation circulation, Transaction transaction) throws DataNotCompleteException, InvalidInputException;
 	
 	/**
 	 * Remove a vote from the database for a specific circulation.
@@ -35,7 +36,7 @@ public interface VotesDAO {
 	 * @throws InvalidInputException if input data is faulty
 	 * @throws DataNotWrittenException if the vote cannot be removed from the database
 	 */
-	public void remove(Vote vote, Circulation circulation, Transaction transaction) throws DataNotFoundException, InvalidInputException, DataNotWrittenException;
+	public void remove(Vote vote, Circulation circulation, Transaction transaction) throws DataNotFoundException, InvalidInputException;
 	
 	/**
 	 * Update a vote in the database for a specific circulation.
@@ -47,7 +48,7 @@ public interface VotesDAO {
 	 * @throws InvalidInputException if input data is faulty
 	 * @throws DataNotWrittenException if the vote cannot be updated in the database
 	 */
-	public void update(Vote vote, Circulation circulation, Transaction transaction) throws DataNotFoundException, InvalidInputException, DataNotWrittenException;
+	public void update(Vote vote, Circulation circulation, Transaction transaction) throws DataNotFoundException, InvalidInputException;
 	
 	/**
 	 * Retrieve votes for a specific circulation from the database.
@@ -58,5 +59,18 @@ public interface VotesDAO {
 	 * @throws DataNotFoundException if no votes matching the criteria are found in the database
 	 * @throws InvalidInputException if input data is faulty
 	 */
-	public void getVotes(Vote vote, Circulation circulation, Transaction transaction) throws DataNotFoundException, InvalidInputException;
+	public List<Vote> getVotes(Vote vote, Circulation circulation, Transaction transaction) throws DataNotFoundException, InvalidInputException;
+	
+	/**
+	 * Retrieve a specific Vote for a specific user circulation pair.
+	 * 
+	 * <p>
+	 * 
+	 * @param vote
+	 * @param circulation
+	 * @param transaction
+	 * @throws DataNotFoundException
+	 * @throws InvalidInputException
+	 */
+	public boolean findVote(Vote vote, Circulation circulation, Transaction transaction) throws DataNotFoundException, InvalidInputException;
 }

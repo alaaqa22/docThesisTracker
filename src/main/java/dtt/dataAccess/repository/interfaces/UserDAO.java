@@ -1,9 +1,9 @@
 package dtt.dataAccess.repository.interfaces;
 
+import java.util.List;
+
 import dtt.dataAccess.exceptions.DataNotCompleteException;
 import dtt.dataAccess.exceptions.DataNotFoundException;
-import dtt.dataAccess.exceptions.DataNotWrittenException;
-import dtt.dataAccess.exceptions.EmailAddressExistsException;
 import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.User;
@@ -30,7 +30,7 @@ public interface UserDAO {
 	 * @throws InvalidInputException if input data is faulty
 	 * @throws DataNotWrittenException if the user record cannot be written to the database
 	 */
-	public void add(User user, Transaction transaction) throws DataNotCompleteException, EmailAddressExistsException, InvalidInputException, DataNotWrittenException;
+	public void add(User user, Transaction transaction) throws DataNotCompleteException, InvalidInputException;
 	
 	/**
 	 * Remove a user from the database.
@@ -41,7 +41,7 @@ public interface UserDAO {
 	 * @throws InvalidInputException if input data is faulty
 	 * @throws DataNotWrittenException if the user record cannot be removed from the database
 	 */
-	public void remove(User user, Transaction transaction) throws DataNotFoundException, InvalidInputException, DataNotWrittenException;
+	public void remove(User user, Transaction transaction) throws DataNotFoundException, InvalidInputException;
 	
 	/**
 	 * Update a user in the database.
@@ -52,7 +52,7 @@ public interface UserDAO {
 	 * @throws InvalidInputException if input data is faulty
 	 * @throws DataNotWrittenException if the user record cannot be updated in the database
 	 */
-	public void update(User user, Transaction transaction) throws DataNotFoundException, InvalidInputException, DataNotWrittenException;
+	public void update(User user, Transaction transaction) throws DataNotFoundException, InvalidInputException;
 	
 	/**
 	 * Retrieve a user from the database.
@@ -62,7 +62,17 @@ public interface UserDAO {
 	 * @throws DataNotFoundException if the {@code user} is not found in the Database
 	 * @throws InvalidInputException if input data is faulty
 	 */
-	public void getUser(User user, Transaction transaction) throws DataNotFoundException, InvalidInputException;
+	public void getUserById(User user, Transaction transaction) throws DataNotFoundException, InvalidInputException;
+	
+	/**
+	 * Retrieve a user from the database.
+	 * 
+	 * @param user The user DTO to be retrieved from the Database
+	 * @param transaction The transaction associated with this operation.
+	 * @throws DataNotFoundException if the {@code user} is not found in the Database
+	 * @throws InvalidInputException if input data is faulty
+	 */
+	public void getUserByEmail(User user, Transaction transaction) throws DataNotFoundException, InvalidInputException;
 	
 	/**
 	 * Retrieve a list of users from the database with pagination support.
@@ -74,5 +84,15 @@ public interface UserDAO {
 	 * @throws DataNotFoundException if no users matching the criteria are found in the Database
 	 * @throws InvalidInputException if input data is faulty
 	 */
-	public void getUsers(User user, Transaction transaction, int offset, int count) throws DataNotFoundException, InvalidInputException;
+	public List<User> getUsers(User user, Transaction transaction, int offset, int count) throws DataNotFoundException, InvalidInputException;
+	
+	/**
+	 * Get the Total Number of Users matching a given filter.
+	 * 
+	 * @param circulation
+	 * @param transaction
+	 * @return
+	 * @throws InvalidInputException
+	 */
+	public int getTotalUserNumber(User user, Transaction transaction) throws InvalidInputException;
 }

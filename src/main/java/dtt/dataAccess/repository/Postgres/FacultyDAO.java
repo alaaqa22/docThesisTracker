@@ -1,5 +1,7 @@
 package dtt.dataAccess.repository.Postgres;
 
+import java.util.List;
+
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Faculty;
 
@@ -38,9 +40,11 @@ public class FacultyDAO implements dtt.dataAccess.repository.interfaces.FacultyD
 
 	/**
 	 * {@inheritDoc}
+	 * @return 
 	 */
 	@Override
-	public void getFaculties(Faculty faculty, Transaction transaction, int offset, int count) {
+	public List<Faculty> getFaculties(Faculty faculty, Transaction transaction, int offset, int count) {
+		return null;
 		// TODO Auto-generated method stub
 		
 	}

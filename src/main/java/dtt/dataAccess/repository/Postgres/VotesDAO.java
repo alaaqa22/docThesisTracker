@@ -1,5 +1,9 @@
 package dtt.dataAccess.repository.Postgres;
 
+import java.util.List;
+
+import dtt.dataAccess.exceptions.DataNotFoundException;
+import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
 import dtt.global.tansport.Vote;
@@ -39,11 +43,20 @@ public class VotesDAO implements dtt.dataAccess.repository.interfaces.VotesDAO {
 
 	/**
 	 * {@inheritDoc}
+	 * @return 
 	 */
 	@Override
-	public void getVotes(Vote vote, Circulation circulation, Transaction transaction) {
+	public List<Vote> getVotes(Vote vote, Circulation circulation, Transaction transaction) {
+		return null;
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean findVote(Vote vote, Circulation circulation, Transaction transaction)
+			throws DataNotFoundException, InvalidInputException {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

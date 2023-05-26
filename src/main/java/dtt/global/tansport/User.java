@@ -9,7 +9,6 @@ public class User {
     private String firstName; // The first name of the user
     private String lastName; // The last name of the user
     private String email; // The email of the user
-    private int facultyId; // The faculty ID of the user
     private AccountState accountState; // The account state of the user
     private Map<Faculty, UserState> userState; // The user state map
 
@@ -64,13 +63,6 @@ public class User {
         this.email = email;
     }
 
-    /**
-     * Sets the faculty ID of the user.
-     * @param facultyId The faculty ID of the user
-     */
-    public void setFacultyId(int facultyId) {
-        this.facultyId = facultyId;
-    }
 
     /**
      * Sets the account state of the user.
@@ -141,9 +133,6 @@ public class User {
      * Returns the faculty ID of the user.
      * @return The faculty ID of the user
      */
-    public int getFacultyId() {
-        return facultyId;
-    }
 
     /**
      * Returns the account state of the user.

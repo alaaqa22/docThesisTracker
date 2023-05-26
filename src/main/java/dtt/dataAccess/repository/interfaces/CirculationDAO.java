@@ -10,6 +10,8 @@ import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
 
 /**
+ * This interface describes methods to handle database access related to circulations.
+ * 
  * @author Stefan Witka
  *
  */

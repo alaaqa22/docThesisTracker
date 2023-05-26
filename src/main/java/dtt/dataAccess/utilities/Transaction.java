@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
+ * Class handling transactions on a Postgres Database.
+ * 
  * @author Stefan Witka
  *
  */

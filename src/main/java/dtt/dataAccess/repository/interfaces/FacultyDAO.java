@@ -10,6 +10,8 @@ import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Faculty;
 
 /**
+ * This interface describes methods to handle database access related to faculties.
+ * 
  * @author Stefan Witka
  *
  */

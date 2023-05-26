@@ -8,11 +8,17 @@ import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.exceptions.KeyExistsException;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
 
 /**
+ * A Postgres implementation for a class handling database access related to Circulations.
+ * 
  * @author Stefan Witka
  *
  */
+@Named
+@ApplicationScoped
 public class CirculationDAO implements dtt.dataAccess.repository.interfaces.CirculationDAO {
 
 	/**

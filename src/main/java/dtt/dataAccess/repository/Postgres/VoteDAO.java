@@ -7,11 +7,17 @@ import dtt.dataAccess.exceptions.DataNotFoundException;
 import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Vote;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
 
 /**
+ * A Postgres implementation for a class handling database access related to votes.
+ * 
  * @author Stefan Witka
  *
  */
+@Named
+@ApplicationScoped
 public class VoteDAO implements dtt.dataAccess.repository.interfaces.VoteDAO {
 
 	/**

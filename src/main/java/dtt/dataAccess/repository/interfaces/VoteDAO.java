@@ -9,6 +9,8 @@ import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Vote;
 
 /**
+ * This interface describes methods to handle database access related to votes.
+ * 
  * @author Stefan Witka
  *
  */

@@ -12,6 +12,8 @@ import dtt.global.tansport.User;
 import dtt.global.tansport.UserState;
 
 /**
+ * This interface describes methods to handle database access related to users and user authorization.
+ * 
  * @author Stefan Witka
  *
  */
@@ -107,6 +109,14 @@ public interface UserDAO {
 	 * @return A list of Users matching the filter criteria, or an empty list if no matches were found.
 	 */
 	public List<User> getUsers(User user, Faculty faculty, UserState auth, Transaction transaction, int offset, int count);
+	
+	/**
+	 * Retrieves a list of administrators
+	 * 
+	 * @param transaction The transaction associated with this operation.
+	 * @return A list of administrators.
+	 */
+	public List<User> getAdmins(Transaction transaction);
 	
 	/**
 	 * Get the Total Number of Users matching a given filter.

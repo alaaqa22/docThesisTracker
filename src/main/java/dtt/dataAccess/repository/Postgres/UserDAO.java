@@ -12,6 +12,7 @@ import dtt.global.tansport.User;
 import dtt.global.tansport.UserState;
 
 /**
+ * A Postgres implementation for a class handling database access related to users and user authorization.
  * 
  * @author Stefan Witka
  *
@@ -68,6 +69,12 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 	public int getTotalUserNumber(User user, Transaction transaction) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public List<User> getAdmins(Transaction transaction) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

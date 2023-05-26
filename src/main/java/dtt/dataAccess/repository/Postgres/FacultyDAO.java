@@ -7,11 +7,17 @@ import dtt.dataAccess.exceptions.DataNotFoundException;
 import dtt.dataAccess.exceptions.KeyExistsException;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Faculty;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
 
 /**
+ * A Postgres implementation for a class handling database access related to faculties.
+ * 
  * @author Stefan Witka
  *
  */
+@Named
+@ApplicationScoped
 public class FacultyDAO implements dtt.dataAccess.repository.interfaces.FacultyDAO {
 
 	/**

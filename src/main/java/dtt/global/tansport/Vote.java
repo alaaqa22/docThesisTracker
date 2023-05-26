@@ -6,9 +6,10 @@ public class Vote {
     private Options selection; // The selected option for the vote
     private User user; // The user who cast the vote
 
-    /**
-     *  Constructs a Vote object with the specified selection and user.
-     */
+
+    private Circulation circulation; // The circulation associated with the vote
+
+
     public Vote () {}
 
     /**
@@ -27,6 +28,10 @@ public class Vote {
         this.user = user;
     }
 
+    public void setCirculation (Circulation circulation) {
+        this.circulation = circulation;
+    }
+
     /**
      * Returns the selected option for the vote.
      * @return The selected option for the vote
@@ -41,5 +46,9 @@ public class Vote {
      */
     public User getUser() {
         return user;
+    }
+
+    public Circulation getCirculation () {
+        return circulation;
     }
 }

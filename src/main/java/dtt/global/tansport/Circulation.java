@@ -18,7 +18,6 @@ public class Circulation {
     private int rejectedCount; // The count of rejected votes
     LocalDateTime startDeedline; // The start deadline of the circulation
     LocalDateTime endDeedline; // The end deadline of the circulation
-    private Map<User,Vote> vote; // The map of users and their votes
     private List<Attachments> attachmentslist; // The list of attachments
 
     public Circulation() {}
@@ -64,9 +63,6 @@ public class Circulation {
         this.endDeedline = endDeedline;
     }
 
-    public void setVote(Map<User, Vote> vote) {
-        this.vote = vote;
-    }
 
     public void setAttachmentslist(List<Attachments> attachmentslist) {
         this.attachmentslist = attachmentslist;
@@ -110,10 +106,6 @@ public class Circulation {
 
     public LocalDateTime getEndDeedline() {
         return endDeedline;
-    }
-
-    public Map<User, Vote> getVote() {
-        return vote;
     }
 
     public List<Attachments> getAttachmentslist() {

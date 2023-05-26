@@ -2,7 +2,10 @@ package dtt.dataAccess.repository.Postgres;
 
 import java.util.List;
 
+import dtt.dataAccess.exceptions.DataNotCompleteException;
+import dtt.dataAccess.exceptions.DataNotFoundException;
 import dtt.dataAccess.exceptions.InvalidInputException;
+import dtt.dataAccess.exceptions.KeyExistsException;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
 
@@ -18,58 +21,42 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 	public CirculationDAO() {
 		
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
+
 	@Override
-	public void add(Circulation circulation, Transaction transaction) {
+	public void add(Circulation circulation, Transaction transaction)
+			throws DataNotCompleteException, InvalidInputException, KeyExistsException {
 		// TODO Auto-generated method stub
 		
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public void remove(Circulation circulation, Transaction transaction) {
+	public void remove(Circulation circulation, Transaction transaction) throws DataNotFoundException {
 		// TODO Auto-generated method stub
 		
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public void update(Circulation circulation, Transaction transaction) {
+	public void update(Circulation circulation, Transaction transaction)
+			throws DataNotFoundException, InvalidInputException, KeyExistsException {
 		// TODO Auto-generated method stub
 		
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public void getCirculation(Circulation circulation, Transaction transaction) {
+	public void getCirculationById(Circulation circulation, Transaction transaction) throws DataNotFoundException {
 		// TODO Auto-generated method stub
 		
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public List<Circulation> getCirculations(Circulation circulation, Transaction transaction, int offset, int count) {
-		return null;
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
-	public int getTotalCirculationNumber(Circulation circulation, Transaction transaction)
-			throws InvalidInputException {
+	public int getTotalCirculationNumber(Circulation circulation, Transaction transaction) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
 }

@@ -7,7 +7,9 @@ import dtt.dataAccess.exceptions.DataNotFoundException;
 import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.exceptions.KeyExistsException;
 import dtt.dataAccess.utilities.Transaction;
+import dtt.global.tansport.Faculty;
 import dtt.global.tansport.User;
+import dtt.global.tansport.UserState;
 
 /**
  * @author Stefan Witka
@@ -91,14 +93,30 @@ public interface UserDAO {
 	/**
 	 * Retrieve a list of users from the database with pagination support.
 	 * 	 
-	 * <p> TODO
+	 * <p> Values set
      * 
 	 * @param user The user DTO used as a filter for retrieving users
 	 * @param transaction The transaction associated with this operation.
 	 * @param offset The starting index of the user records to retrieve
 	 * @param count The maximum number of user records to retrieve
 	 */
-	public List<User> getUsers(User user, Transaction transaction, int offset, int count);
+	/**
+	 * Retrieve a list of users from the database with pagination support.
+	 * 	 
+	 * <p> Values set in User, except for {@code user.id} and {@code user.userState} are used to filter results if set.
+	 * {@code user.id} and {@code user.userState} are ignored in the filter object.
+	 * To filter for a specified faculty, {@code faculty.id} needs to be set in the faculty DTO.
+	 * 
+     * 
+	 * @param user The user DTO used as a filter for retrieving users.
+	 * @param faculty can be {@code null}. Filter used for the Faculty. If {@code null}, no filter.
+	 * @param auth can be {@code null}. Filter used for authorization level. If {@code null}, not filtered.
+	 * @param transaction The transaction associated with this operation.
+	 * @param offset The starting index of the user records to retrieve.
+	 * @param count The maximum number of user records to retrieve.
+	 * @return
+	 */
+	public List<User> getUsers(User user, Faculty faculty, UserState auth, Transaction transaction, int offset, int count);
 	
 	/**
 	 * Get the Total Number of Users matching a given filter.

@@ -13,7 +13,9 @@ public class User {
     private AccountState accountState; // The account state of the user
     private Map<Faculty, UserState> userState; // The user state map
 
-    private boolean loggedIn;
+    private boolean loggedIn; // Indicates whether the user is currently logged in.
+
+    private int roleId; // The role ID of the user
 
     /**
      * Default constructor for the User class.
@@ -44,6 +46,14 @@ public class User {
      */
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    /**
+     * Sets the role ID of the user.
+     * @param roleId The role ID of the user
+     */
+    public void setRoleId (int roleId) {
+        this.roleId = roleId;
     }
 
     /**
@@ -95,6 +105,13 @@ public class User {
         return id;
     }
 
+    /**
+     * Returns the role ID of the user.
+     * @return The role ID of the user
+     */
+    public int getRoleId () {
+        return roleId;
+    }
 
     /**
      * Returns the first name of the user.

@@ -6,6 +6,7 @@ import dtt.dataAccess.exceptions.DataNotCompleteException;
 import dtt.dataAccess.exceptions.DataNotFoundException;
 import dtt.dataAccess.exceptions.KeyExistsException;
 import dtt.dataAccess.utilities.Transaction;
+import dtt.global.tansport.Circulation;
 import dtt.global.tansport.Faculty;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
@@ -51,6 +52,12 @@ public class FacultyDAO implements dtt.dataAccess.repository.interfaces.FacultyD
 	public List<Faculty> getFaculties(Transaction transaction) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean findFacultyByName(Circulation circulation, Transaction transaction) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 

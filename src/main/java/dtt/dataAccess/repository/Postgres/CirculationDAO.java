@@ -65,4 +65,10 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public boolean findCirculationByTitle(Circulation circulation, Transaction transaction) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

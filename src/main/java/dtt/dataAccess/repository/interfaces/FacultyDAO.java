@@ -7,6 +7,7 @@ import dtt.dataAccess.exceptions.DataNotFoundException;
 import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.exceptions.KeyExistsException;
 import dtt.dataAccess.utilities.Transaction;
+import dtt.global.tansport.Circulation;
 import dtt.global.tansport.Faculty;
 
 /**
@@ -57,6 +58,20 @@ public interface FacultyDAO {
 	 */
 	public void update(Faculty faculty, Transaction transaction) throws DataNotFoundException, DataNotCompleteException, KeyExistsException;
 	
+	/**
+	 * Check if a faculty with a given name exists and retrieve it from the Database.
+	 * 
+	 * <p> Only the {@code faculty.name} property of {@code faculty} needs to be set, 
+	 * all other values will be overwritten when retrieving the faculty from the Database.
+	 * If the unique name was not found in the Database, {@code false} is returned. 
+	 * 
+	 * @param faculty The faculty DTO with set name value to be retrieved from the Database
+	 * @param transaction The transaction associated with this operation.
+	 * @return {@code true} if faculty with that same name was found in the Database; {@code false} if no faculty with that name was found 
+	 */
+	public boolean findFacultyByName(Circulation circulation, Transaction transaction);
+
+
 	/**
 	 * Retrieve a full list of faculties from the database
 	 * 

@@ -8,6 +8,7 @@ import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.exceptions.KeyExistsException;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
+import dtt.global.tansport.User;
 
 /**
  * This interface describes methods to handle database access related to circulations.
@@ -76,6 +77,19 @@ public interface CirculationDAO {
 	 */
 	public void getCirculationById(Circulation circulation, Transaction transaction) throws DataNotFoundException;
 	
+	/**
+	 * Check if a circulation with a given title exists and retrieve it from the Database.
+	 * 
+	 * <p> Only the {@code circulation.title} property of {@code circulation} needs to be set, 
+	 * all other values will be overwritten when retrieving the circulation from the Database.
+	 * If the unique title was not found in the Database, {@code false} is returned. 
+	 * 
+	 * @param circulation The circulation DTO with set title value to be retrieved from the Database
+	 * @param transaction The transaction associated with this operation.
+	 * @return {@code true} if circulation with that same title was found in the Database; {@code false} if no circulation with that title was found 
+	 */
+	public boolean findCirculationByTitle(Circulation circulation, Transaction transaction);
+
 	/**
 	 * Retrieve a list of circulation records from the database with pagination support.
 	 * 

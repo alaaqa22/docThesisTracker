@@ -1,10 +1,13 @@
 package dtt.business.validation;
 
+import dtt.business.utilities.ConfigReader;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
+
+import java.util.regex.Pattern;
 
 /**
 * A JSF validator for password strength.
@@ -12,7 +15,7 @@ import jakarta.faces.validator.ValidatorException;
 @FacesValidator("PasswordValidator")
 public class PasswordValidator implements Validator {
 
-    private final String PASSWORD_PATTERN = "^.*(?=.{8,})(?=..*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$";
+    private static Pattern pattern;
 
     /**
      *
@@ -34,8 +37,12 @@ public class PasswordValidator implements Validator {
      */
     private boolean isValidPassword(String password) {
 
-        return password.matches(PASSWORD_PATTERN);
+        return pattern.matcher(password).matches();
     }
 
+    static {
+        String passwordPattern = ConfigReader.getProperty("PASSWORD_PATTERN");
+        pattern = Pattern.compile(passwordPattern);
+    }
 
 }

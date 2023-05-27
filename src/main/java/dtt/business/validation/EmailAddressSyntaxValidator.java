@@ -1,5 +1,6 @@
 package dtt.business.validation;
 
+import dtt.business.utilities.ConfigReader;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.FacesValidator;
@@ -39,5 +40,10 @@ public class EmailAddressSyntaxValidator implements Validator {
      */
     private boolean isValidEmailAddress(String email) {
         return pattern.matcher(email).matches();
+    }
+
+    static {
+        String emailPattern = ConfigReader.getProperty("EMAIL_PATTERN");
+        pattern = Pattern.compile(emailPattern);
     }
 }

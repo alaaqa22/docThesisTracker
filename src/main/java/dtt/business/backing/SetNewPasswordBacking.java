@@ -37,4 +37,8 @@ public class SetNewPasswordBacking {
     public void setSessionInfo(SessionInfo sessionInfo) {
         this.sessionInfo = sessionInfo;
     }
+
+    public String getPassword() {
+        return password;
+    }
 }

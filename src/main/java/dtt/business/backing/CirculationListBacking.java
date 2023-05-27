@@ -6,7 +6,9 @@ import dtt.business.utilities.SessionInfo;
 import dtt.dataAccess.repository.Postgres.CirculationDAO;
 import dtt.global.tansport.Circulation;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import java.util.List;
 
@@ -15,6 +17,8 @@ import java.util.List;
  *
  * @author Alaa Qasem
  */
+@ViewScoped
+@Named
 public class CirculationListBacking {
     Circulation circulation;
     private Pagination<Circulation> circPagination;
@@ -22,6 +26,8 @@ public class CirculationListBacking {
     private CirculationDAO circDAO;
     @Inject
     private SessionInfo sessionInfo;
+    private String search;
+
     /**
      * Initialize dto object.
      */
@@ -29,18 +35,6 @@ public class CirculationListBacking {
     public void init(){
 
     }
-
-    /**
-     * Get the pagination of the circulations.
-     *
-     * @param circulation
-     * @return  The pagination of the circulations.
-     */
-    public Pagination<Circulation> filterCirculation(Circulation circulation){
-
-        return circPagination;
-
-     }
 
     public Pagination<Circulation> getCircPagination() {
         return circPagination;
@@ -58,14 +52,6 @@ public class CirculationListBacking {
         this.circulations = circulations;
     }
 
-    public CirculationDAO getCircDAO() {
-        return circDAO;
-    }
-
-    public void setCircDAO(CirculationDAO circDAO) {
-        this.circDAO = circDAO;
-    }
-
     public SessionInfo getSessionInfo() {
         return sessionInfo;
     }
@@ -74,5 +60,12 @@ public class CirculationListBacking {
         this.sessionInfo = sessionInfo;
     }
 
-
+    /**
+     * Return user's search.
+     *
+     * @return User's search
+     */
+    public String getSearch() {
+        return search;
+    }
 }

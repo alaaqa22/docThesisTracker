@@ -2,6 +2,9 @@ package dtt.business.backing;
 
 import dtt.business.utilities.Pagination;
 import dtt.global.tansport.User;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Named;
 
 import java.util.List;
 
@@ -10,10 +13,13 @@ import java.util.List;
  *
  * @author Alaa Aasem
  */
+@ViewScoped
+@Named
 public class UserListBacking {
 
     private Pagination<User> userPagination;
     private List<User> users;
+    private String search;
     /**
      *  Initialize the dto object.
      */
@@ -22,48 +28,15 @@ public class UserListBacking {
 
     }
 
-    /**
-     *
-     * @param user
-     * @return
-     */
-    public Pagination<User> filterUsers(User user){
-
-        return userPagination;
-
-    }
-
-
-    /**
-     *
-     * @return
-     */
 
     public Pagination<User> getUserPagination() {
         return userPagination;
     }
 
-    /**
-     *
-     * @param userPagination
-     */
+
     public void setUserPagination(Pagination<User> userPagination) {
         this.userPagination = userPagination;
     }
 
-    /**
-     *
-     * @return
-     */
-    public List<User> getUsers() {
-        return users;
-    }
 
-    /**
-     *
-     * @param users
-     */
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
 }

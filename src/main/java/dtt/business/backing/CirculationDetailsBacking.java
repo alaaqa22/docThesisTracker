@@ -6,7 +6,9 @@ import dtt.dataAccess.repository.Postgres.CirculationDAO;
 import dtt.global.tansport.Circulation;
 import dtt.global.tansport.Options;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import java.io.IOException;
 
@@ -15,6 +17,8 @@ import java.io.IOException;
  *
  * @author Alaa Qasem
  */
+@ViewScoped
+@Named
 public class CirculationDetailsBacking {
     @Inject
     private CirculationDAO circulationDAO;
@@ -23,7 +27,7 @@ public class CirculationDetailsBacking {
     private Circulation circulation;
 
     /**
-     * Initialized dto object.
+     * Initialized circulation dto object.
      */
     @PostConstruct
     public void init(){
@@ -31,19 +35,20 @@ public class CirculationDetailsBacking {
     }
 
     /**
-     * Get the correct circulation id from the view param (will be called in a view action)
-     * and load all data that should be displayed from the datasource.
+     * Get the correct circulation id from the view param (will be called in a view action) and check if the
+     * user allowed to view the circulation, then load all data that should be displayed from the datasource.
      *
      * @throws DataIntegrityException If the user has no permission to see the circulation.
      */
+
     public void loadCirculation(){
     }
 
 
     /**
-     * Download the file belonging to a specific circulation.
+     * Download the pdf belonging to a specific circulation.
      *
-     * @param circulation The circulation to download
+     * @param circulation The circulation to download.
      * @throws IOException If the download fails.
      */
    public void download(Circulation circulation){

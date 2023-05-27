@@ -27,26 +27,11 @@ public class CirculationCreatingBacking {
 
 
     /**
-     * Method to create a new Circulation.
+     * Creates a new circulation
      *
-     * @param id ID of circulation.
-     * @param title title of circulation
-     * @param description Description of circulation
-     * @param doctoralCandidateName of circulation
-     * @param doctoralSupervisor of circulation
-     * @param startDeadline  of circulation
-     * @param endDeadline of circulation
-     *
-     * @return New circulation with the given parameters.
+     * @param circ The circulation to create.
      */
-    public Circulation create(int id,String title,String description,String doctoralCandidateName,String doctoralSupervisor,
-                       LocalDateTime startDeadline,LocalDateTime endDeadline){
-        /*
-                circulation.setId(id);
-
-         */
-        return circulation;
-
+    public void create(Circulation circ){
 
     }
 

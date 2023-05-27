@@ -6,6 +6,8 @@ package dtt.business.utilities;
  * @author Alaa Aasem
  */
 public abstract class Pagination <T>{
+
+    protected int maxItems = Integer.parseInt(ConfigReader.getProperty("PAGINATION_MAX_ITEMS"));
     /**
      *  Load data of next page, unless you are already on the last page.
      */

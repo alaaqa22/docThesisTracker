@@ -30,6 +30,7 @@ public class SystemInitializer implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent arg) {
         logger.info("Logger initialized.");
+        ConfigReader.loadProperties();
         maintenanceThread.startMaintenance();
     }
 

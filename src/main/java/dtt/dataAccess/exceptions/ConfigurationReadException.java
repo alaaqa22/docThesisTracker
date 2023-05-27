@@ -2,6 +2,7 @@ package dtt.dataAccess.exceptions;
 
 /**
  * Thrown when there is an error or failure in reading a Configuration File.
+ * @author Hadi Abou Hassoun
  */
 public class ConfigurationReadException extends RuntimeException {
     /**
@@ -22,10 +23,5 @@ public class ConfigurationReadException extends RuntimeException {
      * @param cause - Cause of the exception.
      */
     public ConfigurationReadException (String message , Throwable cause){}
-
-
-
-
-
 
 }

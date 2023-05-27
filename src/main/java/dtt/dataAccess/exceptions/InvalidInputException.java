@@ -4,6 +4,7 @@ import java.io.IOException;
 
 /**
  * Thrown when the input data is invalid or faulty, such as incorrect format, invalid values.
+ * @author Hadi Abou Hassoun
  */
 public class InvalidInputException extends IOException {
     /**

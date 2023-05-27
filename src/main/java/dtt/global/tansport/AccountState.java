@@ -2,6 +2,7 @@ package dtt.global.tansport;
 
 /**
  * Represents the different states that a User Account
+ * @author Hadi Abou Hassoun
  */
 public enum AccountState {
 

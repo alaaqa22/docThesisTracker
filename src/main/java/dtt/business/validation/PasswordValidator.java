@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 /**
 * A JSF validator for password strength.
+ * @author Hadi Abou Hassoun
  */
 @FacesValidator("PasswordValidator")
 public class PasswordValidator implements Validator {

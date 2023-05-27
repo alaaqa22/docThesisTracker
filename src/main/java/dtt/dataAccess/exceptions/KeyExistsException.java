@@ -2,6 +2,7 @@ package dtt.dataAccess.exceptions;
 
 /**
  *  Thrown when the repository tries to save data with a unique value that already exists in the data.
+ *  @author Hadi Abou Hassoun
  */
 public class KeyExistsException  extends Exception{
 

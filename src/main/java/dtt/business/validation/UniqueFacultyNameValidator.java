@@ -1,13 +1,24 @@
 package dtt.business.validation;
 
+import dtt.dataAccess.repository.interfaces.CirculationDAO;
+import dtt.dataAccess.repository.interfaces.FacultyDAO;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
+import jakarta.inject.Inject;
 
+/**
+ *  @author Hadi Abou Hassoun
+ */
 @FacesValidator("UniqueFacultyNameValidator")
 public class UniqueFacultyNameValidator implements Validator {
+
+    @Inject
+    private FacultyDAO facultyDAO; // facultyDAO object for database access.
+
+
     /**
      *
      * @param context FacesContext for the request we are processing
@@ -24,7 +35,7 @@ public class UniqueFacultyNameValidator implements Validator {
      * @param FacultyName : The Name of the Faculty.
      * @return  {@code true} if the faculty name is unique, {@code false} otherwise.
      */
-    private boolean isValueUnique(String FacultyName) {
+    private boolean isValueUnique (String FacultyName) {
         return true;
     }
 }

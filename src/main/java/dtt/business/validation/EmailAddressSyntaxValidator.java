@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
  *
  * A robust email address validator that verifies whether the given
  * email is a valid email address and adheres to the standards for correct email addresses.
+ *  @author Hadi Abou Hassoun
  */
 @FacesValidator("EmailAddressSyntaxValidator")
 public class EmailAddressSyntaxValidator implements Validator {

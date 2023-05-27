@@ -2,6 +2,7 @@ package dtt.global.tansport;
 
 /**
  * Represents the state of a user in the system.
+ *  @author Hadi Abou Hassoun
  */
 public enum UserState {
     ADMIN,  // Represents an administrator user

@@ -2,13 +2,14 @@ package dtt.global.tansport;
 
 /**
  *  Represents a Faculty in the System.
+ *  @author Hadi Abou Hassoun
  */
 public class Faculty {
     private int id; // The ID of the faculty
     private String name; // The name of the faculty
 
     /**
-     * Default constructor for the Faculity class.
+     * Default constructor for the Faculty class.
      */
     public Faculty () {
     }

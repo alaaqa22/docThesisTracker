@@ -6,6 +6,7 @@ import java.util.Map;
 
 /**
  *  Represents a circulation in the System.
+ * @author Hadi Abou Hassoun
  */
 public class Circulation {
     private int id; // The ID of the circulation
@@ -14,11 +15,12 @@ public class Circulation {
     private String doctoralCandidateName; // The name of the doctoral candidate
     private String doctoralSupervisor; // The name of the doctoral supervisor
     private boolean isObligatory; // Indicates if the circulation is obligatory
-    private int acceptedCount; // The count of accepted votes
-    private int rejectedCount; // The count of rejected votes
     LocalDateTime startDeedline; // The start deadline of the circulation
     LocalDateTime endDeedline; // The end deadline of the circulation
-    private List<Attachments> attachmentslist; // The list of attachments
+
+
+    private Faculty faculty;
+
 
     public Circulation() {}
 
@@ -47,13 +49,6 @@ public class Circulation {
         isObligatory = obligatory;
     }
 
-    public void setAcceptedCount(int acceptedCount) {
-        this.acceptedCount = acceptedCount;
-    }
-
-    public void setRejectedCount(int rejectedCount) {
-        this.rejectedCount = rejectedCount;
-    }
 
     public void setStartDeedline(LocalDateTime startDeedline) {
         this.startDeedline = startDeedline;
@@ -64,8 +59,13 @@ public class Circulation {
     }
 
 
-    public void setAttachmentslist(List<Attachments> attachmentslist) {
-        this.attachmentslist = attachmentslist;
+
+    public void setFaculty (Faculty faculty) {
+        this.faculty = faculty;
+    }
+
+    public Faculty getFaculty () {
+        return faculty;
     }
 
     public int getId() {
@@ -92,13 +92,6 @@ public class Circulation {
         return isObligatory;
     }
 
-    public int getAcceptedCount() {
-        return acceptedCount;
-    }
-
-    public int getRejectedCount() {
-        return rejectedCount;
-    }
 
     public LocalDateTime getStartDeedline() {
         return startDeedline;
@@ -108,7 +101,4 @@ public class Circulation {
         return endDeedline;
     }
 
-    public List<Attachments> getAttachmentslist() {
-        return attachmentslist;
-    }
 }

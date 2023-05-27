@@ -2,6 +2,7 @@ package dtt.global.tansport;
 
 /**
  * Represents the available options for a vote or choice in a circulation.
+ *  @author Hadi Abou Hassoun
  */
 public enum Options {
     STIMME_ZU,  // Represents the option to vote in favor

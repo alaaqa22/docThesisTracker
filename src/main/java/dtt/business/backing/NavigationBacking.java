@@ -5,7 +5,7 @@ import jakarta.inject.Inject;
 
 /**
  * backing bean for navigation.
- *
+ * @author Hadi Abou Hassoun
  */
 public class NavigationBacking {
 

@@ -3,6 +3,7 @@ package dtt.global.tansport;
 import java.util.Map;
 /**
  *  Represents a User in the System.
+ *   @author Hadi Abou Hassoun
  */
 public class User {
     private int id; // The ID of the user

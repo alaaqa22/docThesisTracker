@@ -5,8 +5,10 @@ import dtt.dataAccess.repository.interfaces.UserDAO;
 import dtt.global.tansport.User;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
-import jakarta.*;
 
+/**
+ * @author Hadi Abou Hassoun
+ */
 public class UserControllerBacking {
     private User user;
     @Inject

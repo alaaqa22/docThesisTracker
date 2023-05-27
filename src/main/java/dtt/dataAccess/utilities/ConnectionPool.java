@@ -2,7 +2,9 @@ package dtt.dataAccess.utilities;
 
 import java.sql.Connection;
 import java.util.List;
+import java.util.regex.Pattern;
 
+import dtt.business.utilities.ConfigReader;
 import dtt.dataAccess.exceptions.DBConnectionFailedException;
 
 import java.sql.Connection;
@@ -19,11 +21,20 @@ public class ConnectionPool {
 	private List<Connection> available; //List of available connections
 	private List<Connection> busy; //List of in use connections
 	
+    private static final String DB_DRIVER = "org.postgresql.Driver";
+    private static String DB_HOST;
+    private static String DB_NAME;
+    private static String DB_USER;
+    private static String DB_PASSWORD;
+
 	/**
-	 * Private Constructor per singleton pattern
+	 * Private Constructor for singleton pattern
 	 */
 	private ConnectionPool() {
-		
+		DB_HOST = ConfigReader.getProperty("DATABASE_URL");
+		DB_NAME = ConfigReader.getProperty("DATABASE_USER");
+		DB_USER = ConfigReader.getProperty("DATABASE_USER");
+		DB_PASSWORD = ConfigReader.getProperty("DATABASE_PASSWORD");
 	}
 	
 	/**
@@ -68,4 +79,5 @@ public class ConnectionPool {
 	public static ConnectionPool getInstance() {
 		return connectionPool;	
 	}
+	
 }

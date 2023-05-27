@@ -56,7 +56,7 @@ public interface UserDAO {
 	 * All other User Properties will be overwritten unless set to {@code null}.
 	 * The email address must be unique (i.e., not present in the database already).
 	 * TODO All entries in {@code user.userState} will update or create the table entries with the key specified by the faculty field of the userState map and the ID of the user.
-	 * TODO Delete userState entry
+	 * TODO how to Delete userState entry
 	 * 
 	 * 
 	 * @param user The user DTO to be updated in the Database

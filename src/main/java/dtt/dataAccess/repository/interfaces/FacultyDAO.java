@@ -7,7 +7,6 @@ import dtt.dataAccess.exceptions.DataNotFoundException;
 import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.exceptions.KeyExistsException;
 import dtt.dataAccess.utilities.Transaction;
-import dtt.global.tansport.Circulation;
 import dtt.global.tansport.Faculty;
 
 /**
@@ -69,7 +68,7 @@ public interface FacultyDAO {
 	 * @param transaction The transaction associated with this operation.
 	 * @return {@code true} if faculty with that same name was found in the Database; {@code false} if no faculty with that name was found 
 	 */
-	public boolean findFacultyByName(Circulation circulation, Transaction transaction);
+	public boolean findFacultyByName(Faculty faculty, Transaction transaction);
 
 
 	/**

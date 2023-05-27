@@ -8,7 +8,6 @@ import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.exceptions.KeyExistsException;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
-import dtt.global.tansport.User;
 
 /**
  * This interface describes methods to handle database access related to circulations.

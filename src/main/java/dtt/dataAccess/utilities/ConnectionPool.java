@@ -2,7 +2,6 @@ package dtt.dataAccess.utilities;
 
 import java.sql.Connection;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import dtt.business.utilities.ConfigReader;
 import dtt.dataAccess.exceptions.DBConnectionFailedException;

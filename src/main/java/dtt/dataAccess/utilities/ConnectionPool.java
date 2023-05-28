@@ -2,13 +2,9 @@ package dtt.dataAccess.utilities;
 
 import java.sql.Connection;
 import java.util.List;
-import java.util.regex.Pattern;
 
-import dtt.business.utilities.ConfigReader;
+import dtt.global.utilities.ConfigReader;
 import dtt.dataAccess.exceptions.DBConnectionFailedException;
-
-import java.sql.Connection;
-import java.util.List;
 
 /**
  * Postgres Connection pool implementation as Singleton

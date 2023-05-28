@@ -1,4 +1,4 @@
-package dtt.business.utilities;
+package dtt.global.utilities;
 
 import java.io.FileInputStream;
 import java.io.IOException;

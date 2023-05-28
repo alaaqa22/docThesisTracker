@@ -1,6 +1,6 @@
 package dtt.business.validation;
 
-import dtt.business.utilities.ConfigReader;
+import dtt.global.utilities.ConfigReader;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.FacesValidator;

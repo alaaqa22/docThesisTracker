@@ -1,5 +1,6 @@
 package dtt.business.utilities;
 
+import dtt.global.utilities.ConfigReader;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
@@ -23,7 +24,7 @@ public class SystemInitializer implements ServletContextListener {
      * This class is called during startup and performs the followings task:
      *  - Initializes the logger to ensure proper logging functionality.
      *  - Reads the configuration file to retrieve system settings and parameters.
-     *  - Establishes a connection to the database using the Connection Pool.
+     *  - Establishes a connection the database connection pool.
      *  - Starts a maintenance thread for system maintenance and monitoring.
      * @param arg The ServletContextEvent object that contains information about the ServletContext
      */
@@ -31,6 +32,7 @@ public class SystemInitializer implements ServletContextListener {
     public void contextInitialized(ServletContextEvent arg) {
         logger.info("Logger initialized.");
         ConfigReader.loadProperties();
+        //Connection Pool
         maintenanceThread.startMaintenance();
     }
 
@@ -43,6 +45,7 @@ public class SystemInitializer implements ServletContextListener {
      */
     @Override
     public void contextDestroyed(ServletContextEvent arg) {
+        //Connection Pool
         LogManager.shutdown();
         maintenanceThread.stopMaintenance();
     }

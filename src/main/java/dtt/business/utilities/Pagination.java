@@ -1,5 +1,7 @@
 package dtt.business.utilities;
 
+import dtt.global.utilities.ConfigReader;
+
 /**
  * Abstract class which implements a list pagination.
  *

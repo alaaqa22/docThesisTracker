@@ -18,7 +18,7 @@ public interface VoteDAO {
 	/**
 	 * Add a new vote to the database for a specific circulation.
 	 * 
-	 * <p> {@code vote.user.id} and {@code vote.circulation.id} need to be set, as well as the {@code vote.selection} and optionally the TODO reason.
+	 * <p> {@code vote.user.id} and {@code vote.circulation.id} need to be set, as well as the {@code vote.selection} and optionally the {@code vote.description}.
 	 * 
 	 * @param vote The vote to be added to the database.
 	 * @param transaction The transaction associated with this operation.
@@ -43,7 +43,7 @@ public interface VoteDAO {
 	 * Update a vote in the database for a specific circulation.
 	 * 
 	 * <p> {@code vote.user.id} and {@code vote.circulation.id} need to be set and existing in the database.
-	 * The {@code vote.selection} and the TODO reason need to be set. If the reason is set to null, the value for the reason will be set empty.
+	 * The {@code vote.selection} and the {@code vote.description} need to be set. If the {@code vote.description} is set to null, the value for the description will be set empty.
 	 * 
 	 * @param vote The vote to be updated in the database.
 	 * @param transaction The transaction associated with this operation.

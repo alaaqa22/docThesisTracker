@@ -61,7 +61,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 	@Override
 	public List<User> getUsers(User user, Faculty faculty, UserState auth, Transaction transaction, int offset,
 			int count) {
-		// TODO Auto-generated method stubby
+		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -72,10 +72,34 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 	}
 
 	@Override
+	public void UpdateOrAddAuth(User User, Transaction transaction)
+			throws DataNotCompleteException, InvalidInputException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeAuth(User User, Transaction transaction) throws DataNotFoundException, InvalidInputException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addAdmin(User User, Transaction transaction) throws KeyExistsException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeAdmin(User User, Transaction transaction) throws DataNotFoundException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
 	public List<User> getAdmins(Transaction transaction) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 }

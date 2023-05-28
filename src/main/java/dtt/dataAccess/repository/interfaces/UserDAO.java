@@ -56,7 +56,6 @@ public interface UserDAO {
 	 * All other User Properties will be overwritten unless set to {@code null}.
 	 * The email address must be unique (i.e., not present in the database already).
 	 * TODO All entries in {@code user.userState} will update or create the table entries with the key specified by the faculty field of the userState map and the ID of the user.
-	 * TODO how to Delete userState entry
 	 * 
 	 * 
 	 * @param user The user DTO to be updated in the Database
@@ -112,14 +111,6 @@ public interface UserDAO {
 	public List<User> getUsers(User user, Faculty faculty, UserState auth, Transaction transaction, int offset, int count);
 	
 	/**
-	 * Retrieves a list of administrators
-	 * 
-	 * @param transaction The transaction associated with this operation.
-	 * @return A list of administrators.
-	 */
-	public List<User> getAdmins(Transaction transaction);
-	
-	/**
 	 * Get the Total Number of Users matching a given filter.
 	 * 
 	 * @param user The user DTO used as a filter.
@@ -127,4 +118,65 @@ public interface UserDAO {
 	 * @return the total number of Users found matching the filter.
 	 */
 	public int getTotalUserNumber(User user, Transaction transaction);
+	
+	// TODO Move to separate DAO?
+	
+	/**
+	 * Adds entries in the authorization table or updates entries if already there.
+	 * 
+	 * <p> The {@code user.id} needs to exist and be set correctly, as well as the faculty ID in {@code user.userState}.
+	 * All entries from the {@code user.userState} along with the {@code user.id} will be added to the database, or updated if existing.
+	 * 
+	 * @param User The user DTO containing the user ID and map of faculties with authorization levels.
+	 * @param transaction The transaction associated with this operation.
+	 * @throws DataNotCompleteException if necessary values of the {@code user} are not set
+	 * @throws InvalidInputException if input data is faulty
+	 */
+	public void UpdateOrAddAuth(User User, Transaction transaction) throws DataNotCompleteException, InvalidInputException;
+
+	/**
+	 * Removes entries in the authorization table.
+	 * 
+	 * <p> The {@code user.id} needs to exist and be set correctly, as well as the faculty IDs in {@code user.userState}.
+	 * All user ID and faculty ID pairs need to exist in the authorization database.
+	 * All entries from the {@code user.userState} along with the {@code user.id} will be removed from the database.
+	 * TODO rmAuth consider changing input parameters to more usable ones.
+	 * 
+	 * @param User The user DTO containing the user ID and map of faculties with authorization levels.
+	 * @param transaction The transaction associated with this operation.
+	 * @throws DataNotFoundException if not all given user ID and faculty ID pairs exist in the database
+	 * @throws InvalidInputException if input data is faulty
+	 */
+	public void removeAuth(User User, Transaction transaction) throws DataNotFoundException, InvalidInputException;
+	
+	/**
+	 * Add user to admin table.
+	 * 
+	 * <p> The {@code user.id} needs to exist in the user table and be set correctly and not yet in the admin database, all other fields will be ignored.
+	 * 
+	 * @param User The user DTO containing the ID to be added to the admin table
+	 * @param transaction The transaction associated with this operation.
+	 * @throws KeyExistsException if user is already in the table
+	 */
+	public void addAdmin(User User, Transaction transaction) throws KeyExistsException;
+	
+	/**
+	 * Remove a User from the admin Table.
+	 * 
+	 * <p> The {@code user.id} needs to exist in the user table and  in the admin database.
+	 * 
+	 * @param User The user DTO containing the ID to be removed from the admin table
+	 * @param transaction The transaction associated with this operation.
+	 * @throws DataNotFoundException if the user doesn't exist in the database
+	 */
+	public void removeAdmin(User User, Transaction transaction) throws DataNotFoundException;
+
+	/**
+	 * Retrieves a list of administrators
+	 * 
+	 * @param transaction The transaction associated with this operation.
+	 * @return A list of administrators.
+	 */
+	public List<User> getAdmins(Transaction transaction);
+	
 }

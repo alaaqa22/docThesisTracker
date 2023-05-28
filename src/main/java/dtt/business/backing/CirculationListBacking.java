@@ -26,7 +26,10 @@ public class CirculationListBacking {
     private CirculationDAO circDAO;
     @Inject
     private SessionInfo sessionInfo;
-    private String search;
+    private String searchField;
+
+    private String filterItem;
+    private String searchItem;
 
     /**
      * Initialize dto object.
@@ -65,7 +68,23 @@ public class CirculationListBacking {
      *
      * @return User's search
      */
-    public String getSearch() {
-        return search;
+    public String getSearchField () {
+        return searchField;
+    }
+
+    public void setFilter (String filter) {
+        this.filterItem = filter;
+    }
+
+    public String getFilter () {
+        return filterItem;
+    }
+
+    public String getSearchItem () {
+        return searchItem;
+    }
+
+    public void setSearchItem (String searchItem) {
+        this.searchItem = searchItem;
     }
 }

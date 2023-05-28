@@ -9,7 +9,7 @@ import jakarta.faces.validator.ValidatorException;
 import java.time.LocalDateTime;
 
 /**
- * A validator that checks whether a given date and time value falls in the future, ensuring that
+ * A validator that checks whether a given date value falls in the future, ensuring that
  * It is a valid future date and time.
  *  @author Hadi Abou Hassoun
  */

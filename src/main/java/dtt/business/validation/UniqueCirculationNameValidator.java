@@ -10,8 +10,8 @@ import jakarta.faces.validator.ValidatorException;
 import jakarta.inject.Inject;
 
 /**
- * A validator that verifies the uniqueness of a given value within a specified dataset or context.
- * It checks whether the value is already present or used by another entity, ensuring its uniqueness.
+ * A validator that verifies the uniqueness of a given Circulation Name.
+ * It checks whether the name is already present or used by another entity, ensuring its uniqueness.
  *  @author Hadi Abou Hassoun
  */
 @FacesValidator("UniqueCirculationNameValidator")

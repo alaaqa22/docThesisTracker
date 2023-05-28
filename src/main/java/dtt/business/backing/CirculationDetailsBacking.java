@@ -5,6 +5,7 @@ import dtt.dataAccess.exceptions.DataIntegrityException;
 import dtt.dataAccess.repository.Postgres.CirculationDAO;
 import dtt.global.tansport.Circulation;
 import dtt.global.tansport.Options;
+import dtt.global.tansport.Vote;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
@@ -26,8 +27,12 @@ public class CirculationDetailsBacking {
     private SessionInfo sessionInfo;
     private Circulation circulation;
 
+    private Vote vote;
+
     /**
-     * Initialized circulation dto object.
+     * Initialized circulation und Vote dto object.
+     *
+     *
      */
     @PostConstruct
     public void init(){

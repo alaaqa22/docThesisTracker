@@ -3,7 +3,9 @@ package dtt.business.backing;
 import dtt.dataAccess.repository.Postgres.CirculationDAO;
 import dtt.global.tansport.Circulation;
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +13,8 @@ import java.time.LocalDateTime;
  * Backing bean for new circulation page.
  * @author Alaa Qasem
  */
+@RequestScoped
+@Named
 public class CirculationCreatingBacking {
     @Inject
     private CirculationDAO circulationDAO;

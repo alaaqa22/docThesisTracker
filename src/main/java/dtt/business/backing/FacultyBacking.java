@@ -4,13 +4,17 @@ import dtt.business.utilities.SessionInfo;
 import dtt.dataAccess.repository.Postgres.FacultyDAO;
 import dtt.global.tansport.Faculty;
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 /**
  * Backing bean for the faculty management page.
  *
  * @author Alaa Qasem
  */
+@RequestScoped
+@Named
 public class FacultyBacking {
     @Inject
     private SessionInfo sessionInfo;

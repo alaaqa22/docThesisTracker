@@ -1,11 +1,16 @@
 package dtt.business.backing;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
 
 /**
  * Backing bean for the error page.
  * @author Alaa Qasem
  */
+
+@RequestScoped
+@Named
 public class ErrorPageBacking {
     private String errorMessage;
 

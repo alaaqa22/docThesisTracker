@@ -4,13 +4,17 @@ import dtt.business.utilities.SessionInfo;
 import dtt.dataAccess.repository.Postgres.UserDAO;
 import dtt.global.tansport.User;
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 /**
  * Backing bean for the login page.
  *
  * @author Alaa Aasem
  */
+@RequestScoped
+@Named
 public class LoginBacking {
     @Inject
     private SessionInfo sessionInfo;

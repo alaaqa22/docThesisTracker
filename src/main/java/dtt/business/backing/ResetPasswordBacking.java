@@ -1,11 +1,15 @@
 package dtt.business.backing;
 
 import dtt.dataAccess.repository.Postgres.UserDAO;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 /**
- * Backing bean for reset Password.
+ * Backing bean for reset-password page.
  */
+@RequestScoped
+@Named
 public class ResetPasswordBacking {
     @Inject
     private UserDAO userDAO;

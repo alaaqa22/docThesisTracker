@@ -4,12 +4,17 @@ import dtt.business.utilities.SessionInfo;
 import dtt.dataAccess.repository.Postgres.UserDAO;
 import dtt.global.tansport.User;
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 /**
  * Backing bean for the profile page.
  * @author Alaa Qasem
  */
+@ViewScoped
+@Named
 public class ProfileBacking {
     private User user;
     @Inject

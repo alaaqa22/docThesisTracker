@@ -30,9 +30,7 @@ public class CirculationDetailsBacking {
     private Vote vote;
 
     /**
-     * Initialized circulation und Vote dto object.
-     *
-     *
+     * Initialized circulation und vote dto objects.
      */
     @PostConstruct
     public void init(){

@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class CirculationCreatingBacking {
     @Inject
     private CirculationDAO circulationDAO;
-    @Inject
+
     private Circulation circulation;
 
     /**

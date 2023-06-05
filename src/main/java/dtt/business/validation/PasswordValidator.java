@@ -42,7 +42,7 @@ public class PasswordValidator implements Validator {
     }
 
     static {
-        String passwordPattern = ConfigReader.getProperty("PASSWORD_PATTERN");
+        String passwordPattern = ConfigReader.getProperty(ConfigReader.PASSWORD_PATTERN);
         pattern = Pattern.compile(passwordPattern);
     }
 

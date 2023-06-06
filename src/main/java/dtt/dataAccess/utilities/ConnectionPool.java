@@ -27,10 +27,10 @@ public class ConnectionPool {
 	 * Private Constructor for singleton pattern
 	 */
 	private ConnectionPool() {
-		DB_HOST = ConfigReader.getProperty("DATABASE_URL");
-		DB_NAME = ConfigReader.getProperty("DATABASE_USER");
-		DB_USER = ConfigReader.getProperty("DATABASE_USER");
-		DB_PASSWORD = ConfigReader.getProperty("DATABASE_PASSWORD");
+		DB_HOST = ConfigReader.getProperty(ConfigReader.DATABASE_URL);
+		DB_NAME = ConfigReader.getProperty(ConfigReader.DATABASE_USER);
+		DB_USER = ConfigReader.getProperty(ConfigReader.DATABASE_USER);
+		DB_PASSWORD = ConfigReader.getProperty(ConfigReader.DATABASE_PASSWORD);
 	}
 	
 	/**

@@ -10,20 +10,26 @@ public class InvalidInputException extends IOException {
     /**
      * Constructs an exception.
      */
-    public InvalidInputException(){}
+    public InvalidInputException(){
+        super();
+    }
 
     /**
      * Constructs an exception with a message.
      * @param message - Error massage.
      */
-    public InvalidInputException(String message){}
+    public InvalidInputException(String message){
+        super(message);
+    }
 
     /**
      * Constructs an exception with a message and a cause.
      * @param message - Error massage.
      * @param cause - Cause of the exception.
      */
-    public InvalidInputException(String message , Throwable cause){}
+    public InvalidInputException(String message , Throwable cause){
+        super(message, cause);
+    }
 
 }
 

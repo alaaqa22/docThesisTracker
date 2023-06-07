@@ -10,7 +10,9 @@ public class DataNotFoundException extends Exception {
     /**
      * Constructs an exception.
      */
-   public DataNotFoundException(){}
+   public DataNotFoundException(){
+       super();
+   }
 
     /**
      * Constructs an exception with a message.
@@ -23,6 +25,9 @@ public class DataNotFoundException extends Exception {
      * @param message - Error massage.
      * @param cause - Cause of the exception.
      */
-    public DataNotFoundException(String message , Throwable cause){}
+    public DataNotFoundException(String message , Throwable cause){
+        super(message,cause);
+
+    }
 
 }

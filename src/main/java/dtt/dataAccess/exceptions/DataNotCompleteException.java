@@ -10,19 +10,25 @@ public class DataNotCompleteException extends Exception {
      * Construct an exception
      *
      */
-    public DataNotCompleteException(){}
+    public DataNotCompleteException(){
+        super();
+    }
 
     /**
      * Constructs an exception with a message.
      * @param message - Error massage.
      */
-    public DataNotCompleteException(String message){}
+    public DataNotCompleteException(String message){
+        super(message);
+    }
 
     /**
      * Constructs an exception with a message and a cause.
      * @param message - Error massage.
      * @param cause - Cause of the exception.
      */
-    public DataNotCompleteException(String message , Throwable cause){}
+    public DataNotCompleteException(String message , Throwable cause){
+        super(message, cause);
+    }
 
 }

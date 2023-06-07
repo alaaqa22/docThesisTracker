@@ -11,20 +11,26 @@ public class DataIntegrityException extends Exception  {
      * Construct an exception
      *
      */
-    public DataIntegrityException(){}
+    public DataIntegrityException(){
+        super();
+    }
 
     /**
      * Construct an exception with a message
      * @param message - Error massage.
      */
-    public DataIntegrityException(String message){}
+    public DataIntegrityException(String message){
+        super(message);
+    }
 
     /**
      * Constructs an exception with a message and a cause.
      * @param message - Error massage.
      * @param cause - Cause of the exception.
      */
-    public DataIntegrityException(String message , Throwable cause){}
+    public DataIntegrityException(String message , Throwable cause){
+        super(message, cause);
+    }
 
 
 }

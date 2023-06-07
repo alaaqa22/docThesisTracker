@@ -26,4 +26,21 @@ public class SessionInfo implements Serializable {
 
     private static final long serialVersionUID = 10;
     private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    /**
+     * Checks if the user is an Admin.
+     * @return true if the user is an Admin.
+     */
+    public boolean isAdmin() {
+        //Assuming we're still using magic numbers.
+        return user.getRoleId() == 5;
+    }
 }

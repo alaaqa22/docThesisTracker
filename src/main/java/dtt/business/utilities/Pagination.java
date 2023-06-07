@@ -9,7 +9,7 @@ import dtt.global.utilities.ConfigReader;
  */
 public abstract class Pagination <T>{
 
-    protected int maxItems = Integer.parseInt(ConfigReader.getProperty("PAGINATION_MAX_ITEMS"));
+    protected int maxItems = Integer.parseInt(ConfigReader.getProperty(ConfigReader.PAGINATION_MAX_ITEMS));
     /**
      *  Load data of next page, unless you are already on the last page.
      */

@@ -1,6 +1,7 @@
 package dtt.business.validation;
 
 import dtt.global.utilities.ConfigReader;
+import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.FacesValidator;
@@ -27,6 +28,10 @@ public class PasswordValidator implements Validator {
      */
     @Override
     public void validate (FacesContext context, UIComponent component, Object value) throws ValidatorException {
+        String password = (String) value;
+        if(!isValidPassword (password)){
+            throw new ValidatorException(new FacesMessage("Invalid password. Please enter a password that meets the required criteria"));
+        }
 
     }
 

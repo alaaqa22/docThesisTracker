@@ -17,9 +17,15 @@ public class User {
 
     private int roleId; // The role ID of the user
 
+   private String passwordHashed;
+    private String passwordSalt;
+
+
     /**
      * Default constructor for the User class.
      */
+
+
     public User() {
     }
 
@@ -159,5 +165,22 @@ public class User {
     public boolean isLoggedIn () {
         return loggedIn;
     }
+
+    public String getPasswordHashed () {
+        return passwordHashed;
+    }
+
+    public String getPasswordSalt () {
+        return passwordSalt;
+    }
+
+    public void setPasswordHashed (String passwordHashed) {
+        this.passwordHashed = passwordHashed;
+    }
+
+    public void setPasswordSalt (String passwordSalt) {
+        this.passwordSalt = passwordSalt;
+    }
 }
+
 

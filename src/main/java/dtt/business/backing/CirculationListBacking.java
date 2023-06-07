@@ -63,28 +63,5 @@ public class CirculationListBacking {
         this.sessionInfo = sessionInfo;
     }
 
-    /**
-     * Return user's search.
-     *
-     * @return User's search
-     */
-    public String getSearchField () {
-        return searchField;
-    }
 
-    public void setFilter (String filter) {
-        this.filterItem = filter;
-    }
-
-    public String getFilter () {
-        return filterItem;
-    }
-
-    public String getSearchItem () {
-        return searchItem;
-    }
-
-    public void setSearchItem (String searchItem) {
-        this.searchItem = searchItem;
-    }
 }

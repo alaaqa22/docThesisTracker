@@ -44,7 +44,11 @@ public class EmailAddressSyntaxValidator implements Validator {
     }
 
     static {
+
+        emailPattern = ConfigReader.getProperty("EMAIL_PATTERN");
+
         String emailPattern = ConfigReader.getProperty(ConfigReader.EMAIL_PATTERN);
+
         pattern = Pattern.compile(emailPattern);
     }
 }

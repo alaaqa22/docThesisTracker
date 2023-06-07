@@ -4,6 +4,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Base64;
@@ -29,13 +30,15 @@ public class Hashing {
      * @throws InvalidKeySpecException  if the provided key specification is invalid
      */
     public static String hashPassword(String password, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        /*
-        KeySpec spec = new PBEKeySpec(password.toCharArray(), salt.getBytes(), ITERATIONS, KEY_LENGTH);
-        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-        byte[] hashedBytes = factory.generateSecret(spec).getEncoded();
-        return Base64.getEncoder().encodeToString(hashedBytes);
-        */
-        return null;
+
+        try {
+            KeySpec spec = new PBEKeySpec(password.toCharArray(), salt.getBytes(), ITERATIONS, KEY_LENGTH);
+            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+            byte[] hashedBytes = factory.generateSecret(spec).getEncoded();
+            return Base64.getEncoder().encodeToString(hashedBytes);
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw e;
+        }
     }
     /**
      * Verifies if the provided password matches the hashed password.
@@ -48,8 +51,23 @@ public class Hashing {
      * @throws InvalidKeySpecException  if the provided key specification is invalid
      */
     public static boolean verifyPassword(String password, String salt, String hashedPassword) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        //String computedHash = hashPassword(password, salt)
-        //return hashedPassword.equals(computedHash);
-        return true;
+        try {
+            String computedHash = hashPassword(password, salt);
+            return hashedPassword.equals(computedHash);
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw e;
+        }
+    }
+
+    /**
+     * Generates a random salt.
+     *
+     * @return the generated salt as a Base64-encoded string
+     */
+    private static String generateSalt() {
+        SecureRandom random = new SecureRandom();
+        byte[] saltBytes = new byte[16];
+        random.nextBytes(saltBytes);
+        return Base64.getEncoder().encodeToString(saltBytes);
     }
 }

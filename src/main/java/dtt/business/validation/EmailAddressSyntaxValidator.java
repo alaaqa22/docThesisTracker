@@ -1,6 +1,7 @@
 package dtt.business.validation;
 
 import dtt.global.utilities.ConfigReader;
+import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.FacesValidator;
@@ -30,7 +31,19 @@ public class EmailAddressSyntaxValidator implements Validator {
      */
     @Override
     public void validate (FacesContext context, UIComponent component, Object value) throws ValidatorException {
+        String email = (String) value;
 
+        if(!isValidEmailAddress (email)){
+            throw new ValidatorException (new FacesMessage ("Invalid email address. Please enter a valid email address."));
+        }
+
+    }
+
+
+    static {
+
+        emailPattern = ConfigReader.getProperty("EMAIL_PATTERN");
+        pattern = Pattern.compile(emailPattern);
     }
 
     /**
@@ -43,12 +56,5 @@ public class EmailAddressSyntaxValidator implements Validator {
         return pattern.matcher(email).matches();
     }
 
-    static {
 
-        emailPattern = ConfigReader.getProperty("EMAIL_PATTERN");
-
-        String emailPattern = ConfigReader.getProperty(ConfigReader.EMAIL_PATTERN);
-
-        pattern = Pattern.compile(emailPattern);
-    }
 }

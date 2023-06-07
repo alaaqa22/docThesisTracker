@@ -1,5 +1,6 @@
 package dtt.business.validation;
 
+import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.FacesValidator;
@@ -25,7 +26,15 @@ public class FutureDateTimeValidator implements Validator {
     @Override
     public void validate (FacesContext context, UIComponent component, Object value) throws ValidatorException {
 
-    }
+        LocalDateTime input = convertToDateTime (value);
+        LocalDateTime current = LocalDateTime.now ();
+
+        if(input.isBefore (current)){
+            throw new ValidatorException(
+                    new FacesMessage("Invalid date and time. Please enter a future date and time."));
+        }
+        }
+
     /**
      * Converts the provided value to a LocalDateTime object.
      *
@@ -34,6 +43,11 @@ public class FutureDateTimeValidator implements Validator {
      * @throws IllegalArgumentException if the value type is unsupported
      */
     private LocalDateTime convertToDateTime(Object value) {
-        return null;
+        if(value instanceof LocalDateTime){
+            return (LocalDateTime) value;
+        }
+        else{
+            throw new IllegalArgumentException ("Unsupported value type for conversion to LocalDateTime");
+        }
     }
 }

@@ -4,6 +4,7 @@ package dtt.business.backing;
 import dtt.business.utilities.Pagination;
 import dtt.business.utilities.SessionInfo;
 import dtt.dataAccess.repository.Postgres.CirculationDAO;
+import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
@@ -23,21 +24,34 @@ public class CirculationListBacking {
     Circulation circulation;
     private Pagination<Circulation> circPagination;
     private List<Circulation> circulations;
+    @Inject
     private CirculationDAO circDAO;
     @Inject
     private SessionInfo sessionInfo;
-    private String searchField;
 
-    private String filterItem;
-    private String searchItem;
+
+ public CirculationListBacking(){
+     circPagination = new Pagination<Circulation> () {
+         @Override
+         public void loadData () {
+            int  offset = ((circPagination.getCurrentPage() - 1) * circPagination.getMaxItems())+1;
+            int count = circPagination.getMaxPerPage ();
+             Transaction transaction = new Transaction ();
+             circDAO.getCirculations (circulation,transaction,offset,count);
+
+         }
+     };
+
+ }
 
     /**
      * Initialize dto object.
      */
     @PostConstruct
     public void init(){
-
+        circulation = new Circulation ();
     }
+
 
 
     public Pagination<Circulation> getCircPagination() {

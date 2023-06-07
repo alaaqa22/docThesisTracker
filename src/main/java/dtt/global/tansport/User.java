@@ -7,6 +7,9 @@ import java.util.Map;
  */
 public class User {
     private int id; // The ID of the user
+    private String password;
+    private String passwordSalt;
+    private String passwordHashed;
     private String firstName; // The first name of the user
     private String lastName; // The last name of the user
     private String email; // The email of the user
@@ -17,8 +20,7 @@ public class User {
 
     private int roleId; // The role ID of the user
 
-   private String passwordHashed;
-    private String passwordSalt;
+
 
 
     /**
@@ -181,6 +183,12 @@ public class User {
     public void setPasswordSalt (String passwordSalt) {
         this.passwordSalt = passwordSalt;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+
 }
 
 

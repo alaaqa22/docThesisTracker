@@ -23,6 +23,8 @@ public class UserListBacking {
 
     private String searchItem;
     private String filterItem;
+
+
     /**
      *  Initialize the dto object.
      */

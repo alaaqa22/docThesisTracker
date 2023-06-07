@@ -51,6 +51,7 @@
             <artifactId>weld-servlet-shaded</artifactId>
             <version>5.1.0.Final</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>

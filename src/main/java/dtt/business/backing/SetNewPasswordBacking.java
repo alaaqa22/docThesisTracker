@@ -26,22 +26,6 @@ public class SetNewPasswordBacking {
 
     }
 
-    public UserDAO getUserDAO() {
-        return userDAO;
-    }
-
-    public void setUserDAO(UserDAO userDAO) {
-        this.userDAO = userDAO;
-    }
-
-    public SessionInfo getSessionInfo() {
-        return sessionInfo;
-    }
-
-    public void setSessionInfo(SessionInfo sessionInfo) {
-        this.sessionInfo = sessionInfo;
-    }
-
     public String getPassword() {
         return password;
     }

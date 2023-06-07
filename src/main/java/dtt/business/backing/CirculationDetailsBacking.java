@@ -96,21 +96,6 @@ public class CirculationDetailsBacking {
 
     }
 
-    public CirculationDAO getCirculationDAO() {
-        return circulationDAO;
-    }
-
-    public void setCirculationDAO(CirculationDAO circulationDAO) {
-        this.circulationDAO = circulationDAO;
-    }
-
-    public SessionInfo getSessionInfo() {
-        return sessionInfo;
-    }
-
-    public void setSessionInfo(SessionInfo sessionInfo) {
-        this.sessionInfo = sessionInfo;
-    }
 
     public Circulation getCirculation() {
         return circulation;

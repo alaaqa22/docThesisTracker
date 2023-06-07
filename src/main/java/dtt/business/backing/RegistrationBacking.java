@@ -46,13 +46,7 @@ public class RegistrationBacking {
         this.regUser = regUser;
     }
 
-    public UserDAO getUserDAO() {
-        return userDAO;
-    }
 
-    public void setUserDAO(UserDAO userDAO) {
-        this.userDAO = userDAO;
-    }
 
 
 }

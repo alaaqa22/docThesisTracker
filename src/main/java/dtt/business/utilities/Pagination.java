@@ -1,5 +1,6 @@
 package dtt.business.utilities;
 
+import dtt.business.backing.UserListBacking;
 import dtt.global.utilities.ConfigReader;
 
 /**
@@ -14,6 +15,7 @@ public abstract class Pagination <T>{
      *  Load data of next page, unless you are already on the last page.
      */
     public void nextPage(){
+
     }
 
     /**

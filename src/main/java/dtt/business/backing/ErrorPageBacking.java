@@ -14,13 +14,6 @@ import jakarta.inject.Named;
 public class ErrorPageBacking {
     private String errorMessage;
 
-    /**
-     * Initialize the error message.
-     */
-    @PostConstruct
-    public void init() {
-
-    }
 
     /**
      * Return the error message.

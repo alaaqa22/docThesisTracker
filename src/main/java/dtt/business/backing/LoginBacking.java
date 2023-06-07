@@ -1,17 +1,26 @@
 package dtt.business.backing;
 
+import dtt.business.utilities.Hashing;
 import dtt.business.utilities.SessionInfo;
+import dtt.business.utilities.SystemInitializer;
+import dtt.dataAccess.exceptions.DataNotFoundException;
 import dtt.dataAccess.repository.Postgres.UserDAO;
+import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.User;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 /**
  * Backing bean for the login page.
  *
- * @author Alaa Aasem
+ * @author Alaa Qasem
  */
 @RequestScoped
 @Named
@@ -19,9 +28,8 @@ public class LoginBacking {
     @Inject
     private SessionInfo sessionInfo;
     private UserDAO userDAO;
-    private  User user;
-    private String email;
-    private String password;
+    private User user;
+
 
 
     /**
@@ -29,6 +37,8 @@ public class LoginBacking {
      */
     @PostConstruct
     public void init(){
+        user = new User();
+        userDAO = new UserDAO(); // Instantiate UserDAO
 
     }
 
@@ -36,21 +46,62 @@ public class LoginBacking {
      * Check the entered email and password and either show an error message or go
      * to circulationList page.
      *
-     * @return Go to circulation-Details page on success or stay
+     * @return Go to circulation-list page on success or stay
      * in the same page on failure.
      */
-    private String login(){
+    public String login() {
+        Transaction transaction = new Transaction();
 
-        return null;
+        try {
+            // Retrieve user from the database using user id
+            User userDB = new User();
+            userDB.setId(user.getId()); // Set the user id for retrieval
+            //the user to retrieve by id, here userDB will be fulled
+            userDAO.getUserById(userDB, transaction);
+
+            boolean verified = false;
+            try {
+                verified = Hashing.verifyPassword(user.getPassword(),userDB.getPasswordSalt(),userDB.getPasswordHashed());
+            } catch (NoSuchAlgorithmException e) {
+                throw new RuntimeException(e);
+            } catch (InvalidKeySpecException e) {
+                throw new RuntimeException(e);
+            }
+
+
+            if (verified) {
+                sessionInfo.setUser(userDB);
+
+                // Password matches, login successful
+                return "/view/authenticated/circulationsList?faces-redirect=true";
+            } else {
+                // Password does not match, show error message
+                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid credentials", null);
+                FacesContext.getCurrentInstance().addMessage(null, message);
+                return null;
+            }
+        } catch (DataNotFoundException e) {
+            // User not found in the database, show error message
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "User not found", null);
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            return null;
+        } finally {
+          //  transaction.commit();
+        }
     }
+
+
+
+
 
     /**
      * Go to register-page.
      *
      * @return Go to register-page.
      */
-    private String register(){
-        return "/view/register.xhtml";
+    public String register(){
+        //return "/view/authenticated/circulationsList?faces-redirect=true";
+        return null;
     }
 
     /**
@@ -58,8 +109,9 @@ public class LoginBacking {
      *
      * @return Go to forget-password page.
      */
-    private String forgetPass(){
-        return "/view/forgetPass.xhtml";
+    public String forgetPass(){
+        return null;
+        //return "/view/authenticated/forgetPass?faces-redirect=true";
     }
 
 
@@ -68,19 +120,6 @@ public class LoginBacking {
     }
 
 
-    public String getEmail() {
-        return email;
-    }
 
-    public String getPassword() {
-        return password;
-    }
 
-    public SessionInfo getSessionInfo() {
-        return sessionInfo;
-    }
-
-    public UserDAO getUserDAO() {
-        return userDAO;
-    }
 }

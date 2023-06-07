@@ -32,17 +32,19 @@ public class FacultyBacking {
     /**
      * Adds a new Faculty to the system.
      *
-     * @param faculty The FacultyDTO object containing the data for creating a new Faculty.
+     * @param newFaculty The FacultyDTO object containing the data for creating a new Faculty.
      */
-    public void add(Faculty faculty) {
+    public void add(Faculty newFaculty) {
+
     }
 
+
     /**
-     * Remove the faculty from the system based on the provided ID.
+     * Remove the faculty from the system.
      *
-     * @param facultyId The ID of the faculty to remove.
+     * @param faculty The faculty to remove.
      */
-    public void remove(Integer facultyId) {
+    public void remove(Faculty faculty) {
 
     }
 
@@ -59,15 +61,5 @@ public class FacultyBacking {
         return faculty;
     }
 
-    public void setFaculty(Faculty faculty) {
-        this.faculty = faculty;
-    }
 
-    public FacultyDAO getFacultyDAO() {
-        return facultyDAO;
-    }
-
-    public void setFacultyDAO(FacultyDAO facultyDAO) {
-        this.facultyDAO = facultyDAO;
-    }
 }

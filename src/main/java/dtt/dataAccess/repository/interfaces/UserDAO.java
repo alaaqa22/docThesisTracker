@@ -113,11 +113,13 @@ public interface UserDAO {
 	/**
 	 * Get the Total Number of Users matching a given filter.
 	 * 
-	 * @param user The user DTO used as a filter.
+	 * @param user The user DTO used as a filter for retrieving users.
+	 * @param faculty can be {@code null}. Filter used for the Faculty. If {@code null}, no filter.
+	 * @param auth can be {@code null}. Filter used for authorization level. If {@code null}, not filtered.
 	 * @param transaction The transaction associated with this operation.
 	 * @return the total number of Users found matching the filter.
 	 */
-	public int getTotalUserNumber(User user, Transaction transaction);
+	public int getTotalUserNumber(User user, Faculty faculty, UserState auth, Transaction transaction);
 	
 	// TODO Move to separate DAO?
 	

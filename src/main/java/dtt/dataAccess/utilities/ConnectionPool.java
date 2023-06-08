@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 
 import dtt.global.utilities.ConfigReader;
 import dtt.dataAccess.exceptions.ConfigurationReadException;
@@ -124,11 +125,19 @@ public class ConnectionPool {
 	 * @throws DBConnectionFailedException if there is an error while creating a connection
 	 */
 	private Connection createConnection() throws DBConnectionFailedException {
-		//TODO Improve ant test create conn
+		//TODO Improve and test create conn
+		 Properties props = new Properties();
+	        props.setProperty("user", DB_USER);
+	        props.setProperty("password", DB_PASSWORD);
+	        props.setProperty("ssl", "true");
+	        props.setProperty("sslfactory",
+	            "org.postgresql.ssl.DefaultJavaSSLFactory");
 		try {
 			Class.forName(DB_DRIVER);
-			String url = DB_HOST + "/" + DB_NAME;
-			return DriverManager.getConnection(url, DB_USER, DB_PASSWORD);
+			String url = "jdbc:postgresql://" + DB_HOST + "/" + DB_NAME;
+			 Connection conn = DriverManager.getConnection(url, props);
+			 conn.setAutoCommit(false);
+			 return conn;
 		} catch (ClassNotFoundException | SQLException e) {
 			throw new DBConnectionFailedException("Failed to create a new database connection.", e);
 		}

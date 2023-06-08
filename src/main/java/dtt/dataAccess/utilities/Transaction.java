@@ -18,7 +18,7 @@ public class Transaction implements AutoCloseable {
 	 */
 	public Transaction() {
 		didCommit = false;
-		connection = getConnection();
+		connection = ConnectionPool.getInstance().getConnection();
 	}
 	
 	/**
@@ -27,7 +27,10 @@ public class Transaction implements AutoCloseable {
 	 * @throws SQLException if there is an error aborting the transaction
 	 */
 	public void abort() throws SQLException {
-		// TODO: Implement abort logic
+		if (!didCommit) {
+			connection.rollback();
+			didCommit = true;
+		}
 	};
 	
 	/**
@@ -36,7 +39,10 @@ public class Transaction implements AutoCloseable {
 	 * @throws SQLException if there is an error committing the transaction
 	 */
 	public void commit() throws SQLException {
-		// TODO: Implement commit logic
+		if (!didCommit) {
+			connection.commit();
+			didCommit = true;
+		}
 	};
 	
 	/**
@@ -45,8 +51,7 @@ public class Transaction implements AutoCloseable {
 	 * @return The connection associated with the transaction.
 	 */
 	public Connection getConnection() {
-		// TODO: Implement getConnection logic
-		return null;
+		return connection;
 	};
 	
 	/**
@@ -56,6 +61,10 @@ public class Transaction implements AutoCloseable {
 	 */
 	@Override
 	public void close() throws SQLException {
-		// TODO: Implement close logic
+		if (!didCommit) {
+			connection.rollback();
+			didCommit = true;
+		}
+		connection.close();
 	}
 }

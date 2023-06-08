@@ -1,9 +1,14 @@
 package dtt.dataAccess.utilities;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import dtt.global.utilities.ConfigReader;
+import dtt.dataAccess.exceptions.ConfigurationReadException;
 import dtt.dataAccess.exceptions.DBConnectionFailedException;
 
 /**
@@ -17,20 +22,50 @@ public class ConnectionPool {
 	private List<Connection> available; //List of available connections
 	private List<Connection> busy; //List of in use connections
 	
-    private static final String DB_DRIVER = "org.postgresql.Driver";
+    private static String DB_DRIVER;
     private static String DB_HOST;
     private static String DB_NAME;
     private static String DB_USER;
     private static String DB_PASSWORD;
+	private static int DATABASE_SIZE;
 
 	/**
 	 * Private Constructor for singleton pattern
 	 */
 	private ConnectionPool() {
+		DB_DRIVER = ConfigReader.getProperty(ConfigReader.DATABASE_DRIVER);
 		DB_HOST = ConfigReader.getProperty(ConfigReader.DATABASE_URL);
 		DB_NAME = ConfigReader.getProperty(ConfigReader.DATABASE_USER);
 		DB_USER = ConfigReader.getProperty(ConfigReader.DATABASE_USER);
 		DB_PASSWORD = ConfigReader.getProperty(ConfigReader.DATABASE_PASSWORD);
+		
+		try {
+			DATABASE_SIZE = Integer.parseInt(ConfigReader.getProperty(ConfigReader.DATABASE_SIZE));
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			throw new ConfigurationReadException("DATABASE_SIZE not a readable integer", e);
+		}
+		
+		available = Collections.synchronizedList(new ArrayList<>());
+		busy = Collections.synchronizedList(new ArrayList<>());
+	}
+
+	/**
+	 * Initialize the connection pool with a given number of connections.
+	 * 
+	 * @param initialConnections The initial number of connections to create
+	 * @throws DBConnectionFailedException if there is an error while creating the initial connections
+	 */
+	public void initialize(int initialConnections) throws DBConnectionFailedException {
+		try {
+			Class.forName(DB_DRIVER);
+			for (int i = 0; i < initialConnections; i++) {
+				Connection connection = createConnection();
+				available.add(connection);
+			}
+		} catch (ClassNotFoundException e) {
+			throw new DBConnectionFailedException("Failed to initialize connection pool", e);
+		}
 	}
 	
 	/**
@@ -43,7 +78,25 @@ public class ConnectionPool {
 	 * @throws DBConnectionFailedException if there is an error while getting a connection from the pool
 	 */
 	public synchronized Connection getConnection() throws DBConnectionFailedException {
-		return null;
+		if (available.isEmpty()) {
+			if (available.size() + busy.size() < DATABASE_SIZE) {
+				try {
+					Connection connection = createConnection();
+					busy.add(connection);
+					return connection;
+				} catch (DBConnectionFailedException e) {
+					System.err.println("Failed to create a new connection for the connection pool.");
+					e.printStackTrace();
+					throw e;
+				}
+			} else {
+				throw new DBConnectionFailedException("Connection pool has reached its maximum capacity.");
+			}
+		} else {
+			Connection connection = available.remove(0);
+			busy.add(connection);
+			return connection;
+		}
 	}
 
 	/**
@@ -54,16 +107,31 @@ public class ConnectionPool {
 	 * @param connection The connection to be released
 	 * @throws DBConnectionFailedException if there is an error while releasing the connection
 	 */
-	public void releaseConnection(Connection connection) throws DBConnectionFailedException {
-		
+	public synchronized void releaseConnection(Connection connection) throws DBConnectionFailedException {
+		//TODO release temporary connections
+		if (busy.remove(connection)) {
+			available.add(connection);
+		} else {
+			throw new DBConnectionFailedException("Failed to release the connection back to the connection pool.");
+		}		
 	}
 
 	/**
 	 * Create a new connection and add it to the connection pool.
 	 * 
+	 * @return the created connection
+	 * 
 	 * @throws DBConnectionFailedException if there is an error while creating a connection
 	 */
-	public void createConnection() throws DBConnectionFailedException {
+	private Connection createConnection() throws DBConnectionFailedException {
+		//TODO Improve ant test create conn
+		try {
+			Class.forName(DB_DRIVER);
+			String url = DB_HOST + "/" + DB_NAME;
+			return DriverManager.getConnection(url, DB_USER, DB_PASSWORD);
+		} catch (ClassNotFoundException | SQLException e) {
+			throw new DBConnectionFailedException("Failed to create a new database connection.", e);
+		}
 		
 	}
 
@@ -76,4 +144,23 @@ public class ConnectionPool {
 		return connectionPool;	
 	}
 	
+	public void shutdown() throws DBConnectionFailedException {
+		for (Connection connection : available) {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				throw new DBConnectionFailedException("Failed to close connection", e);
+			}
+		}
+		available.clear();
+		for (Connection connection : busy) {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				throw new DBConnectionFailedException("Failed to close connection", e);
+			}
+		}
+		busy.clear();
+	}
+
 }

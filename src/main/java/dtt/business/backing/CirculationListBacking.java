@@ -34,11 +34,11 @@ public class CirculationListBacking {
      circPagination = new Pagination<Circulation> () {
          @Override
          public void loadData () {
-            int  offset = ((circPagination.getCurrentPage() - 1) * circPagination.getMaxItems())+1;
+            int  offset = ((circPagination.getCurrentPage() - 1) * circPagination.getMaxItems());
             int count = circPagination.getMaxPerPage ();
              Transaction transaction = new Transaction ();
-             circDAO.getCirculations (circulation,transaction,offset,count);
-
+             List<Circulation> cir = circDAO.getCirculations (circulation,transaction,offset,count);
+             setEntries (cir);
          }
      };
 

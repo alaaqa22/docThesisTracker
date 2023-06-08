@@ -5,13 +5,88 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core">
 
 <h:head>
     <title>circList</title>
 </h:head>
 
 <h:body>
+
+    <!---  dataTable for a Circulaiton List -->
+    <h:dataTable value="#{circulationListBacking.circPagination.entries}" var="circulation">
+        <h:column rendered="#{circulationListBacking.sessionInfo.isAdmin()}">
+
+            <!---  Fakultät -->
+            <f:facet name="header">
+                <h:outputText value="Fakultät" />
+            </f:facet>
+            <h:outputText value= "#{circulation.faculty"/>
+            <h:inputText value="#{circulationListBacking.filter.faculty}">
+                <f:ajax event="keyup" listener="#{circulationListBacking.filterCirculations}" render="dataTable" />
+            </h:inputText>
+        </h:column>
+
+        <!---  Titel -->
+        <h:column>
+            <f:facet name="header">
+                <h:outputText value="Titel" />
+            </f:facet>
+            <h:outputLink value="circulationdetails.xhtml?id=#{circulation.id}">
+                <h:outputText value="#{circulation.title}" />
+            </h:outputLink>
+        </h:column>
+
+        <!---  Name des Doktoranden -->
+        <h:column>
+            <f:facet name="header">
+                <h:outputText value="Name des Doktoranden" />
+            </f:facet>
+            <h:outputText value= "#{circulation.doctoralCandidateName"/>
+            <h:inputText value="#{circulationListBacking.filter.doctoralCandidate}">
+                <f:ajax event="keyup" listener="#{circulationListBacking.filterCirculations}" render="dataTable" />
+            </h:inputText>
+        </h:column>
+
+        <!---  Doktorvater -->
+        <h:column>
+            <f:facet name="header">
+                <h:outputText value="Doktorvater" />
+            </f:facet>
+            <h:outputText value= "#{circulation.doctoralSupervisor"/>
+            <h:inputText value="#{circulationListBacking.filter.doctoralSupervisor}">
+                <f:ajax event="keyup" listener="#{circulationListBacking.filterCirculations}" render="dataTable" />
+            </h:inputText>
+        </h:column>
+
+        <!---  Startzeit -->
+        <h:column>
+            <f:facet name="header">
+                <h:outputText value="Startzeit" />
+            </f:facet>
+            <h:outputText value="#{circulation.startTime}" />
+        </h:column>
+
+        <!---  Endzeit -->
+        <h:column>
+            <f:facet name="header">
+                <h:outputText value="Endzeit" />
+            </f:facet>
+            <h:outputText value="#{circulation.endTime}" />
+        </h:column>
+    </h:dataTable>
+
+    <!-- Pagination Controls -->
+    <h:panelGroup rendered="#{circulationListBacking.circPagination.pageCount > 1}">
+        <h:commandLink value="First" action="#{circulationListBacking.circPagination.firstPage}" />
+        <h:commandLink value="Previous" action="#{circulationListBacking.circPagination.previousPage}" />
+        Page #{circulationListBacking.circPagination.currentPage} von #{circulationListBacking.circPagination.pageCount}
+        <h:commandLink value="Next" action="#{circulationListBacking.circPagination.nextPage}" />
+        <h:commandLink value="Last" action="#{circulationListBacking.circPagination.lastPage}" />
+    </h:panelGroup>
+
+
+
 
 </h:body>
 

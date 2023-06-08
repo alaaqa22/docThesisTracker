@@ -3,6 +3,8 @@ package dtt.dataAccess.utilities;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import dtt.dataAccess.exceptions.DBConnectionFailedException;
+
 /**
  * Class handling transactions on a Postgres Database.
  * 
@@ -19,6 +21,11 @@ public class Transaction implements AutoCloseable {
 	public Transaction() {
 		didCommit = false;
 		connection = ConnectionPool.getInstance().getConnection();
+		try {
+			connection.setAutoCommit(false);
+		} catch (SQLException e) {
+			throw new DBConnectionFailedException("Error disabling AutoCommit", e);
+		}
 	}
 	
 	/**
@@ -65,6 +72,6 @@ public class Transaction implements AutoCloseable {
 			connection.rollback();
 			didCommit = true;
 		}
-		connection.close();
+		ConnectionPool.getInstance().releaseConnection(connection);
 	}
 }

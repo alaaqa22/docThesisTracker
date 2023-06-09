@@ -81,7 +81,6 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 					}
 				}
 			}
-			transaction.commit();
 
 		} catch (SQLException e) {
 			// Handle specific exceptions like duplicate key, invalid input, etc.
@@ -114,7 +113,6 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 			if (affectedRows == 0) {
 				throw new DataNotFoundException("User not found in the database.");
 			}
-			transaction.commit();
 		} catch (SQLException e) {
 			// Handle specific exceptions and throw appropriate custom exceptions.
 			throw new DataNotFoundException("User not found in the database.", e);
@@ -188,7 +186,6 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 					}
 				}
 			}
-			transaction.commit();
 		} catch (SQLException e) {
 			// Handle specific exceptions like duplicate key, invalid input, etc.
 			// and throw appropriate custom exceptions.
@@ -235,7 +232,6 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 					stateMap.put(f, UserState.valueOf(resultSet2.getString("user_level")));
 				}
 				user.setUserState(stateMap);
-				transaction.commit();
 			}
 		} catch (SQLException e) {
 			throw new DataNotFoundException("Failed to retrieve user data.", e);
@@ -274,10 +270,8 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 						user.setUserState(stateMap);
 					}
 
-					transaction.commit();
 					return true; // User with the specified email found in the database
 				}
-				transaction.commit();
 			}
 		} catch (SQLException e) {
 			// Handle any specific exceptions or logging as needed
@@ -353,7 +347,6 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 					userList.add(fetchedUser);
 				}
 			}
-			transaction.commit();
 		} catch (SQLException e) {
 			// Handle any specific exceptions or logging as needed
 			throw new DBConnectionFailedException("Failed to retrieve users.", e);
@@ -414,7 +407,6 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 					return resultSet.getInt(1);
 				}
 			}
-			transaction.commit();
 		} catch (SQLException e) {
 			// Handle any specific exceptions or logging as needed
 			throw new DBConnectionFailedException("Failed to retrieve users.", e);
@@ -433,7 +425,6 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 					statement.setInt(2, entry.getKey().getId());
 					statement.setString(3, entry.getValue().name());
 					statement.executeUpdate();
-					transaction.commit();
 				}
 			} catch (SQLException e) {
 				switch (e.getSQLState()) {
@@ -462,7 +453,6 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 					if (rowsAffected == 0) {
 						throw new DataNotFoundException("Admin with user ID " + user.getId() + " not found.");
 					}
-					transaction.commit();
 				}
 			} catch (SQLException e) {
 				throw new DBConnectionFailedException("Failed to remove authentications", e);
@@ -480,7 +470,6 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 			statement.setInt(1, user.getId());
 
 			statement.executeUpdate();
-			transaction.commit();
 		} catch (SQLException e) {
 			switch (e.getSQLState()) {
 			case "23503":
@@ -506,7 +495,6 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 			if (rowsAffected == 0) {
 				throw new DataNotFoundException("Admin with user ID " + user.getId() + " not found.");
 			}
-			transaction.commit();
 		} catch (SQLException e) {
 			throw new DBConnectionFailedException("Failed to remove admin.", e);
 		}
@@ -531,7 +519,6 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 //	            admin.setBirthDate(resultSet.getDate("birthdate"));
 
 				adminList.add(admin);
-				transaction.commit();
 			}
 		} catch (SQLException e) {
 			throw new DBConnectionFailedException("Failed to retrieve admins.", e);

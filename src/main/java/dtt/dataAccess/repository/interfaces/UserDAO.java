@@ -136,6 +136,27 @@ public interface UserDAO {
 			int count);
 
 	/**
+	 * Retrieve a list of users from the database with pagination support.
+	 * 
+	 * <p>
+	 * Values set in User, except for {@code user.id} and {@code user.userState} are
+	 * used to filter results if set. {@code user.userState} needs to contain
+	 * exactly one element to filter for faculty and userState, with null values if
+	 * one of them is not filtered for. {@code user.id} is ignored in the filter
+	 * object.
+	 * 
+	 * @param user        The user DTO used as a filter for retrieving users.
+	 * @param transaction The transaction associated with this operation.
+	 * @param offset      The starting index of the user records to retrieve.
+	 * @param count       The maximum number of user records to retrieve.
+	 * @return A list of Users matching the filter criteria, or an empty list if no
+	 *         matches were found.
+	 * @throws InvalidInputException if {@code user.userState} contains more than
+	 *                               one element
+	 */
+	public List<User> getUsers(User user, Transaction transaction, int offset, int count) throws InvalidInputException;
+
+	/**
 	 * Get the Total Number of Users matching a given filter.
 	 * 
 	 * @param user        The user DTO used as a filter for retrieving users.

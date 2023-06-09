@@ -1,12 +1,16 @@
 package dtt.business.backing;
 
 import dtt.business.utilities.SessionInfo;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 /**
  * backing bean for navigation.
  * @author Hadi Abou Hassoun
  */
+@RequestScoped
+@Named
 public class NavigationBacking {
 
     @Inject

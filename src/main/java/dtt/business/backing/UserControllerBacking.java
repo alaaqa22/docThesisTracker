@@ -4,11 +4,15 @@ import dtt.business.utilities.SessionInfo;
 import dtt.dataAccess.repository.interfaces.UserDAO;
 import dtt.global.tansport.User;
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 /**
  * @author Hadi Abou Hassoun
  */
+@RequestScoped
+@Named
 public class UserControllerBacking {
     private User user;
     @Inject
@@ -26,7 +30,6 @@ public class UserControllerBacking {
     /**
       * Loads the user data
      */
-    @ViewAction
     public void loadUser(){}
 
     /**

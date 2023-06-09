@@ -1,11 +1,20 @@
 package dtt.business.backing;
 
 import dtt.business.utilities.Pagination;
+import dtt.business.utilities.SessionInfo;
+import dtt.dataAccess.repository.Postgres.UserDAO;
+import dtt.dataAccess.utilities.Transaction;
+import dtt.global.tansport.Circulation;
 import dtt.global.tansport.User;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import org.jboss.logging.annotations.Pos;
 
+import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -15,22 +24,36 @@ import java.util.List;
  */
 @ViewScoped
 @Named
-public class UserListBacking {
+public class UserListBacking implements Serializable {
 
     private Pagination<User> userPagination;
     private List<User> users;
-    private String searchField;
 
-    private String searchItem;
-    private String filterItem;
+    @Inject
+    private SessionInfo sessionInfo;
 
+    @Inject
+    UserDAO userDAO;
+
+    User filter;
+
+    public UserListBacking(){
+        userPagination = new Pagination<User>() {
+            @Override
+            public void loadData() {
+
+        }
+
+
+    };
+    }
 
     /**
      *  Initialize the dto object.
      */
+    @PostConstruct
     public void init(){
-
-
+        filter = new User ();
     }
 
 
@@ -43,27 +66,6 @@ public class UserListBacking {
         this.userPagination = userPagination;
     }
 
-    public void setSearchField (String searchField) {
-        this.searchField = searchField;
-    }
 
-    public void setSearchItem (String searchItem) {
-        this.searchItem = searchItem;
-    }
-
-    public void setFilterItem (String filterItem) {
-        this.filterItem = filterItem;
-    }
-
-    public String getSearchField () {
-        return searchField;
-    }
-
-    public String getSearchItem () {
-        return searchItem;
-    }
-
-    public String getFilterItem () {
-        return filterItem;
-    }
 }
+

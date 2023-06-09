@@ -11,6 +11,8 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -20,8 +22,8 @@ import java.util.List;
  */
 @ViewScoped
 @Named
-public class CirculationListBacking {
-    Circulation circulation;
+public class CirculationListBacking implements Serializable {
+    Circulation filter;
     private Pagination<Circulation> circPagination;
     private List<Circulation> circulations;
     @Inject
@@ -30,26 +32,51 @@ public class CirculationListBacking {
     private SessionInfo sessionInfo;
 
 
- public CirculationListBacking(){
-     circPagination = new Pagination<Circulation> () {
-         @Override
-         public void loadData () {
-            int  offset = ((circPagination.getCurrentPage() - 1) * circPagination.getMaxItems());
-            int count = circPagination.getMaxPerPage ();
-             Transaction transaction = new Transaction ();
-             List<Circulation> cir = circDAO.getCirculations (circulation,transaction,offset,count);
-             setEntries (cir);
-         }
-     };
+    /**
+     * Constructor for the CirculationListBacking class.
+     * Initializes the circPagination object with a custom implementation of the Pagination interface.
+     * The loadData() method is overridden to load the circulations data using a transaction and commit the transaction.
+     * Any SQLException that occurs during the transaction commit is caught and an error message is printed.
+     */
+    public CirculationListBacking() {
+        circPagination = new Pagination<Circulation>() {
+            @Override
+            public void loadData() {
+                // Load circulations data using a transaction
+                try (Transaction transaction = new Transaction()) {
+                    int offset = (getCurrentPage() - 1) * getMaxPerPage();
+                    int count = getMaxPerPage();
+                    List<Circulation> cir = circDAO.getCirculations(filter, transaction, offset, count);
+                    setEntries(cir);
 
- }
+                    // Commit the transaction
+                    transaction.commit();
+                } catch (SQLException e) {
+                    System.err.println("Error committing the transaction: " + e.getMessage());
+                }
+            }
+        };
+    }
+
 
     /**
      * Initialize dto object.
      */
     @PostConstruct
     public void init(){
-        circulation = new Circulation ();
+        filter = new Circulation ();
+    }
+
+
+    /**
+     * Loads the circulations data and updates the circulations list.
+     */
+    public void loadCirculations() {
+        // Load data using the pagination object
+        circPagination.loadData();
+
+        // Update the circulations list with the loaded entries
+        circulations = circPagination.getEntries();
     }
 
 

@@ -19,7 +19,7 @@ import dtt.dataAccess.exceptions.DBConnectionFailedException;
  *
  */
 public class ConnectionPool {
-	private static final ConnectionPool connectionPool = new ConnectionPool();
+	private static ConnectionPool connectionPool;
 	private List<Connection> available; // List of available connections
 	private List<Connection> busy; // List of in use connections
 
@@ -157,6 +157,9 @@ public class ConnectionPool {
 	 * @return The connection pool instance
 	 */
 	public static ConnectionPool getInstance() {
+		if(connectionPool == null) {
+			connectionPool = new ConnectionPool();
+		}
 		return connectionPool;
 	}
 

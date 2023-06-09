@@ -357,23 +357,23 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 	}
 
 	@Override
-	public List<User> getUsers(User user, Transaction transaction, int offset,
-			int count) throws InvalidInputException {
+	public List<User> getUsers(User user, Transaction transaction, int offset, int count) throws InvalidInputException {
 		Faculty faculty = null;
-		UserState auth = null; 
+		UserState auth = null;
 		List<User> userList = new ArrayList<>();
 		String query = "SELECT \"user\".user_id, \"user\".email_address, \"user\".first_name, \"user\".last_name, \"user\".birth_date, faculty.faculty_name, authentication.user_Level FROM \"user\" INNER JOIN authentication ON \"user\".user_id=authentication.user_id INNER JOIN faculty ON authentication.faculty_id=faculty.faculty_id WHERE ";
 		List<String> conditions = new ArrayList<>();
 		List<Object> parameters = new ArrayList<>();
-		
+
 		if (user.getUserState() != null) {
-			if(user.getUserState().entrySet().size() == 1) {
+			if (user.getUserState().entrySet().size() == 1) {
 				Map.Entry<Faculty, UserState> entry = user.getUserState().entrySet().iterator().next();
 				faculty = entry.getKey();
 				auth = entry.getValue();
+			} else {
+				throw new InvalidInputException(
+						"more than one filter entry for userState and faculty, could not resolve");
 			}
-			else
-				throw new InvalidInputException("more than one filter entry for userState and faculty, could not resolve");
 		}
 
 		if (user != null && user.getEmail() != null) {

@@ -14,7 +14,6 @@ import jakarta.inject.Named;
 @Named
 public class SetNewPasswordBacking {
     private String password;
-    @Inject
     private UserDAO userDAO;
     @Inject
     private SessionInfo sessionInfo;

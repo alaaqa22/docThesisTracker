@@ -20,14 +20,14 @@ import dtt.dataAccess.exceptions.DBConnectionFailedException;
  */
 public class ConnectionPool {
 	private static final ConnectionPool connectionPool = new ConnectionPool();
-	private List<Connection> available; //List of available connections
-	private List<Connection> busy; //List of in use connections
-	
-    private static String DB_DRIVER;
-    private static String DB_HOST;
-    private static String DB_NAME;
-    private static String DB_USER;
-    private static String DB_PASSWORD;
+	private List<Connection> available; // List of available connections
+	private List<Connection> busy; // List of in use connections
+
+	private static String DB_DRIVER;
+	private static String DB_HOST;
+	private static String DB_NAME;
+	private static String DB_USER;
+	private static String DB_PASSWORD;
 	private static int DATABASE_SIZE;
 
 	/**
@@ -39,14 +39,14 @@ public class ConnectionPool {
 		DB_NAME = ConfigReader.getProperty(ConfigReader.DATABASE_USER);
 		DB_USER = ConfigReader.getProperty(ConfigReader.DATABASE_USER);
 		DB_PASSWORD = ConfigReader.getProperty(ConfigReader.DATABASE_PASSWORD);
-		
+
 		try {
 			DATABASE_SIZE = Integer.parseInt(ConfigReader.getProperty(ConfigReader.DATABASE_SIZE));
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			throw new ConfigurationReadException("DATABASE_SIZE not a readable integer", e);
 		}
-		
+
 		available = Collections.synchronizedList(new ArrayList<>());
 		busy = Collections.synchronizedList(new ArrayList<>());
 	}
@@ -55,7 +55,8 @@ public class ConnectionPool {
 	 * Initialize the connection pool with a given number of connections.
 	 * 
 	 * @param initialConnections The initial number of connections to create
-	 * @throws DBConnectionFailedException if there is an error while creating the initial connections
+	 * @throws DBConnectionFailedException if there is an error while creating the
+	 *                                     initial connections
 	 */
 	public void initialize(int initialConnections) throws DBConnectionFailedException {
 		try {
@@ -68,15 +69,18 @@ public class ConnectionPool {
 			throw new DBConnectionFailedException("Failed to initialize connection pool", e);
 		}
 	}
-	
+
 	/**
 	 * Get a connection from the connection pool.
 	 * 
-	 * <p> Returns a Connection from the list of available connections. 
-	 * If available connections fall below TODO then additional temporary connections are created, up to a maximum of TODO connections.
+	 * <p>
+	 * Returns a Connection from the list of available connections. If available
+	 * connections fall below TODO then additional temporary connections are
+	 * created, up to a maximum of TODO connections.
 	 * 
 	 * @return The database connection
-	 * @throws DBConnectionFailedException if there is an error while getting a connection from the pool
+	 * @throws DBConnectionFailedException if there is an error while getting a
+	 *                                     connection from the pool
 	 */
 	public synchronized Connection getConnection() throws DBConnectionFailedException {
 		if (available.isEmpty()) {
@@ -103,18 +107,21 @@ public class ConnectionPool {
 	/**
 	 * Release a connection back to the connection pool.
 	 * 
-	 * <p> Releases a connection and moves it back to the list of available connections, or removes them if they were temporary.
+	 * <p>
+	 * Releases a connection and moves it back to the list of available connections,
+	 * or removes them if they were temporary.
 	 * 
 	 * @param connection The connection to be released
-	 * @throws DBConnectionFailedException if there is an error while releasing the connection
+	 * @throws DBConnectionFailedException if there is an error while releasing the
+	 *                                     connection
 	 */
 	public synchronized void releaseConnection(Connection connection) throws DBConnectionFailedException {
-		//TODO release temporary connections
+		// TODO release temporary connections
 		if (busy.remove(connection)) {
 			available.add(connection);
 		} else {
 			throw new DBConnectionFailedException("Failed to release the connection back to the connection pool.");
-		}		
+		}
 	}
 
 	/**
@@ -122,26 +129,26 @@ public class ConnectionPool {
 	 * 
 	 * @return the created connection
 	 * 
-	 * @throws DBConnectionFailedException if there is an error while creating a connection
+	 * @throws DBConnectionFailedException if there is an error while creating a
+	 *                                     connection
 	 */
 	private Connection createConnection() throws DBConnectionFailedException {
-		//TODO Improve and test create conn
-		 Properties props = new Properties();
-	        props.setProperty("user", DB_USER);
-	        props.setProperty("password", DB_PASSWORD);
-	        props.setProperty("ssl", "true");
-	        props.setProperty("sslfactory",
-	            "org.postgresql.ssl.DefaultJavaSSLFactory");
+		// TODO Improve and test create conn
+		Properties props = new Properties();
+		props.setProperty("user", DB_USER);
+		props.setProperty("password", DB_PASSWORD);
+		props.setProperty("ssl", "true");
+		props.setProperty("sslfactory", "org.postgresql.ssl.DefaultJavaSSLFactory");
 		try {
 			Class.forName(DB_DRIVER);
 			String url = "jdbc:postgresql://" + DB_HOST + "/" + DB_NAME;
-			 Connection conn = DriverManager.getConnection(url, props);
-			 conn.setAutoCommit(false);
-			 return conn;
+			Connection conn = DriverManager.getConnection(url, props);
+			conn.setAutoCommit(false);
+			return conn;
 		} catch (ClassNotFoundException | SQLException e) {
 			throw new DBConnectionFailedException("Failed to create a new database connection.", e);
 		}
-		
+
 	}
 
 	/**
@@ -150,9 +157,9 @@ public class ConnectionPool {
 	 * @return The connection pool instance
 	 */
 	public static ConnectionPool getInstance() {
-		return connectionPool;	
+		return connectionPool;
 	}
-	
+
 	public void shutdown() throws DBConnectionFailedException {
 		for (Connection connection : available) {
 			try {

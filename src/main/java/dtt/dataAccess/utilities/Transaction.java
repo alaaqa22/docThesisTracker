@@ -14,7 +14,7 @@ import dtt.dataAccess.exceptions.DBConnectionFailedException;
 public class Transaction implements AutoCloseable {
 	private Connection connection; // connection on which the Transaction is run
 	private boolean didCommit; // boolean to check if a successful commit took place
-	
+
 	/**
 	 * Constructor for the transaction
 	 */
@@ -27,9 +27,10 @@ public class Transaction implements AutoCloseable {
 			throw new DBConnectionFailedException("Error disabling AutoCommit", e);
 		}
 	}
-	
+
 	/**
-	 * Aborts the transaction and rolls back any changes made within the transaction.
+	 * Aborts the transaction and rolls back any changes made within the
+	 * transaction.
 	 * 
 	 * @throws SQLException if there is an error aborting the transaction
 	 */
@@ -39,7 +40,7 @@ public class Transaction implements AutoCloseable {
 			didCommit = true;
 		}
 	};
-	
+
 	/**
 	 * Commits the transaction, persisting any changes made within the transaction.
 	 * 
@@ -51,7 +52,7 @@ public class Transaction implements AutoCloseable {
 			didCommit = true;
 		}
 	};
-	
+
 	/**
 	 * Retrieves the underlying connection associated with the transaction.
 	 * 
@@ -60,7 +61,7 @@ public class Transaction implements AutoCloseable {
 	public Connection getConnection() {
 		return connection;
 	};
-	
+
 	/**
 	 * {@inheritDoc}
 	 * 

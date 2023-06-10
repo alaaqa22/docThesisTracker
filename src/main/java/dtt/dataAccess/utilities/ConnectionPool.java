@@ -28,7 +28,7 @@ public class ConnectionPool {
 	private static String DB_NAME;
 	private static String DB_USER;
 	private static String DB_PASSWORD;
-	private static int DATABASE_SIZE;
+	private static int DB_MAX_SIZE;
 
 	/**
 	 * Private Constructor for singleton pattern
@@ -40,13 +40,14 @@ public class ConnectionPool {
 		DB_NAME = ConfigReader.getProperty(ConfigReader.DATABASE_USER);
 		DB_USER = ConfigReader.getProperty(ConfigReader.DATABASE_USER);
 		DB_PASSWORD = ConfigReader.getProperty(ConfigReader.DATABASE_PASSWORD);
+		DB_MAX_SIZE = 100;
 
-		try {
-			DATABASE_SIZE = Integer.parseInt(ConfigReader.getProperty(ConfigReader.DATABASE_SIZE));
-		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			throw new ConfigurationReadException("DATABASE_SIZE not a readable integer", e);
-		}
+//		try {
+//			DB_SIZE = Integer.parseInt(ConfigReader.getProperty(ConfigReader.DATABASE_SIZE));
+//		} catch (NumberFormatException e) {
+//			// TODO Auto-generated catch block
+//			throw new ConfigurationReadException("DATABASE_SIZE not a readable integer", e);
+//		}
 
 		available = Collections.synchronizedList(new ArrayList<>());
 		busy = Collections.synchronizedList(new ArrayList<>());
@@ -67,7 +68,7 @@ public class ConnectionPool {
 				available.add(connection);
 			}
 		} catch (ClassNotFoundException e) {
-			throw new DBConnectionFailedException("Failed to initialize connection pool", e);
+			throw new DBConnectionFailedException("JDBC Driver not found", e);
 		}
 	}
 
@@ -85,7 +86,7 @@ public class ConnectionPool {
 	 */
 	public synchronized Connection getConnection() throws DBConnectionFailedException {
 		if (available.isEmpty()) {
-			if (available.size() + busy.size() < DATABASE_SIZE) {
+			if (available.size() + busy.size() < DB_MAX_SIZE) {
 				try {
 					Connection connection = createConnection();
 					busy.add(connection);

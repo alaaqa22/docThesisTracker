@@ -13,7 +13,6 @@ import jakarta.inject.Named;
 public class VerificationBacking {
 
 
-    @Inject
     private UserDAO userDAO;
 
     /**

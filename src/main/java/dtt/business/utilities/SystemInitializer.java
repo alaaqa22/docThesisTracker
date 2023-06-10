@@ -1,11 +1,13 @@
 package dtt.business.utilities;
 
+import dtt.dataAccess.utilities.ConnectionPool;
 import dtt.global.utilities.ConfigReader;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jboss.weld.bean.proxy.CommonProxiedMethodFilters;
 
 /**
  * The SystemInitializer is responsible for initializing and configuring the
@@ -16,8 +18,8 @@ import org.apache.logging.log4j.Logger;
  */
 @WebListener
 public class SystemInitializer implements ServletContextListener {
-
     private static final Logger logger = LogManager.getLogger();
+
     private final MaintenanceThread maintenanceThread = new MaintenanceThread();
 
     /**
@@ -30,10 +32,15 @@ public class SystemInitializer implements ServletContextListener {
      */
     @Override
     public void contextInitialized(ServletContextEvent arg) {
-        logger.info("Logger initialized.");
+        logger.fatal("Logger initialized.");
         ConfigReader.loadProperties();
-        //Connection Pool
-        maintenanceThread.startMaintenance();
+       /*
+        ConnectionPool cp = ConnectionPool.getInstance();
+        cp.initialize(Integer.parseInt(ConfigReader.getProperty(ConfigReader.DATABASE_SIZE)));
+        */
+        ConnectionPool.getInstance().initialize(Integer.parseInt(ConfigReader.getProperty(ConfigReader.DATABASE_SIZE)));
+        logger.fatal("context initialized");
+        //maintenanceThread.startMaintenance();
     }
 
     /**
@@ -45,8 +52,8 @@ public class SystemInitializer implements ServletContextListener {
      */
     @Override
     public void contextDestroyed(ServletContextEvent arg) {
-        //Connection Pool
+        ConnectionPool.getInstance().shutdown();
         LogManager.shutdown();
-        maintenanceThread.stopMaintenance();
+        //maintenanceThread.stopMaintenance();
     }
 }

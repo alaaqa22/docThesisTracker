@@ -1,14 +1,20 @@
 package dtt.global.utilities;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 /**
  * Utility class for reading configuration properties from a properties file.
  * @author Johannes Silvennoinen
  */
 public class ConfigReader {
-    private static final String PROPERTIES_FILE_PATH = "configuration.properties";
+
+    private static final Logger logger = LogManager.getLogger();
+    private static final String PROPERTIES_FILE_PATH = "/config/configuration.properties";
     private static Properties properties;
 
     public static final String PAGINATION_MAX_ITEMS = "PAGINATION_MAX_ITEMS";
@@ -32,11 +38,12 @@ public class ConfigReader {
      * to a static Properties object.
      */
     public static void loadProperties() {
-        try (FileInputStream fis = new FileInputStream(PROPERTIES_FILE_PATH)) {
+        try (InputStream inputStream = ConfigReader.class.getResourceAsStream(PROPERTIES_FILE_PATH)) {
             properties = new Properties();
-            properties.load(fis);
-        } catch (IOException e) {
-            //Handle the exception.
+            properties.load(inputStream);
+            logger.fatal("Config read");
+        } catch (NullPointerException | IOException e) {
+            logger.fatal("Could not read configuration.properties, path is " + PROPERTIES_FILE_PATH);
         }
     }
     /**

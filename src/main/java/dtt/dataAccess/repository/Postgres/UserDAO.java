@@ -17,8 +17,6 @@ import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Faculty;
 import dtt.global.tansport.User;
 import dtt.global.tansport.UserState;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Named;
 
 /**
  * A Postgres implementation for a class handling database access related to
@@ -291,6 +289,92 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 		String query = "SELECT \"user\".user_id, \"user\".email_address, \"user\".first_name, \"user\".last_name, \"user\".birth_date, faculty.faculty_name, authentication.user_Level FROM \"user\" INNER JOIN authentication ON \"user\".user_id=authentication.user_id INNER JOIN faculty ON authentication.faculty_id=faculty.faculty_id WHERE ";
 		List<String> conditions = new ArrayList<>();
 		List<Object> parameters = new ArrayList<>();
+
+		if (user != null && user.getEmail() != null) {
+			conditions.add("\"user\".email_address = ?");
+			parameters.add(user.getEmail());
+		}
+
+		if (user != null && user.getFirstName() != null) {
+			conditions.add("\"user\".first_name = ?");
+			parameters.add(user.getFirstName());
+		}
+
+		if (user != null && user.getEmail() != null) {
+			conditions.add("\"user\".email_address = ?");
+			parameters.add(user.getEmail());
+		}
+
+//	    if (user != null && user.getBirthDate() != null) {
+//	        conditions.add("\"user\".birth_date = ?");
+//	        parameters.add(user.getBirthDate());
+//	    }
+
+		if (faculty != null) {
+			conditions.add("faculty.faculty_id = ?");
+			parameters.add(faculty.getId());
+		}
+
+		if (auth != null) {
+			conditions.add("authentication.user_state = ?");
+			parameters.add(auth.name());
+		}
+
+		if (!conditions.isEmpty()) {
+			query += String.join(" AND ", conditions);
+		} else {
+			query += "TRUE"; // No conditions, include all users
+		}
+
+		query += " LIMIT ? OFFSET ?";
+
+		parameters.add(count);
+		parameters.add(offset);
+
+		try (transaction; PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
+			for (int i = 0; i < parameters.size(); i++) {
+				statement.setObject(i + 1, parameters.get(i));
+			}
+
+			try (ResultSet resultSet = statement.executeQuery()) {
+				while (resultSet.next()) {
+					User fetchedUser = new User();
+					fetchedUser.setId(resultSet.getInt("user_id"));
+					fetchedUser.setEmail(resultSet.getString("email_address"));
+					fetchedUser.setFirstName(resultSet.getString("first_name"));
+					fetchedUser.setLastName(resultSet.getString("last_name"));
+//	                fetchedUser.setBirthDate(resultSet.getDate("birth_date"));
+
+					userList.add(fetchedUser);
+				}
+			}
+		} catch (SQLException e) {
+			// Handle any specific exceptions or logging as needed
+			throw new DBConnectionFailedException("Failed to retrieve users.", e);
+		}
+
+		return userList;
+	}
+
+	@Override
+	public List<User> getUsers(User user, Transaction transaction, int offset, int count) throws InvalidInputException {
+		Faculty faculty = null;
+		UserState auth = null;
+		List<User> userList = new ArrayList<>();
+		String query = "SELECT \"user\".user_id, \"user\".email_address, \"user\".first_name, \"user\".last_name, \"user\".birth_date, faculty.faculty_name, authentication.user_Level FROM \"user\" INNER JOIN authentication ON \"user\".user_id=authentication.user_id INNER JOIN faculty ON authentication.faculty_id=faculty.faculty_id WHERE ";
+		List<String> conditions = new ArrayList<>();
+		List<Object> parameters = new ArrayList<>();
+
+		if (user.getUserState() != null) {
+			if (user.getUserState().entrySet().size() == 1) {
+				Map.Entry<Faculty, UserState> entry = user.getUserState().entrySet().iterator().next();
+				faculty = entry.getKey();
+				auth = entry.getValue();
+			} else {
+				throw new InvalidInputException(
+						"more than one filter entry for userState and faculty, could not resolve");
+			}
+		}
 
 		if (user != null && user.getEmail() != null) {
 			conditions.add("\"user\".email_address = ?");

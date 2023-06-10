@@ -15,7 +15,7 @@ import jakarta.inject.Named;
 @Named
 public class UserControllerBacking {
     private User user;
-    @Inject
+
     private UserDAO userDAO;
     @Inject
     private SessionInfo sessionInfo;

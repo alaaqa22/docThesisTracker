@@ -11,7 +11,6 @@ import jakarta.inject.Named;
 @RequestScoped
 @Named
 public class ResetPasswordBacking {
-    @Inject
     private UserDAO userDAO;
     private String email;
 

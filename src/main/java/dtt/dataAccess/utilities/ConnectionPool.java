@@ -35,7 +35,8 @@ public class ConnectionPool {
 	 */
 	private ConnectionPool() {
 		DB_DRIVER = ConfigReader.getProperty(ConfigReader.DATABASE_DRIVER);
-		DB_HOST = ConfigReader.getProperty(ConfigReader.DATABASE_URL);
+//		DB_HOST = ConfigReader.getProperty(ConfigReader.DATABASE_URL);
+		DB_HOST = "bueno.fim.uni-passau.de";
 		DB_NAME = ConfigReader.getProperty(ConfigReader.DATABASE_USER);
 		DB_USER = ConfigReader.getProperty(ConfigReader.DATABASE_USER);
 		DB_PASSWORD = ConfigReader.getProperty(ConfigReader.DATABASE_PASSWORD);

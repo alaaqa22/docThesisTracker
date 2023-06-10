@@ -21,6 +21,8 @@ public abstract class Pagination <T>{
      *  Load data of next page, unless you are already on the last page.
      */
     public void nextPage(){
+        setCurrentPage(currentPage+1);
+        loadData();
 
     }
 
@@ -29,6 +31,8 @@ public abstract class Pagination <T>{
      */
 
     public void previousPage(){
+        setCurrentPage(currentPage-1);
+        loadData();
 
     }
 
@@ -80,12 +84,16 @@ public abstract class Pagination <T>{
      * Load data on last page.
      */
     public void lastPage(){
+        setCurrentPage(calculateNumberOfPages());
+        loadData();
 
     }
     /**
      * Load data on page 1.
      */
     public void firstPage(){
+        setCurrentPage(1);
+        loadData();
 
     }
 

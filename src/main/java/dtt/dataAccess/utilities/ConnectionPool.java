@@ -182,4 +182,22 @@ public class ConnectionPool {
 		busy.clear();
 	}
 
+	/**
+	 * Get the amount of available connections
+	 * 
+	 * @return the amount of available connections
+	 */
+	public int getAvailableConnectionsCount() {
+		return available.size();
+	}
+
+	/**
+	 * Get the amount of busy connections
+	 * 
+	 * @return the amount of busy connections
+	 */
+	public int getBusyConnectionsCount() {
+		return busy.size();
+	}
+
 }

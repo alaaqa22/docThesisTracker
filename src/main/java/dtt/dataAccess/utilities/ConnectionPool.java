@@ -28,6 +28,7 @@ public class ConnectionPool {
 	private static String DB_NAME;
 	private static String DB_USER;
 	private static String DB_PASSWORD;
+	private static int DB_INITIAL_SIZE;
 	private static int DB_MAX_SIZE;
 
 	/**
@@ -42,7 +43,7 @@ public class ConnectionPool {
 		DB_MAX_SIZE = 100;
 
 //		try {
-//			DB_SIZE = Integer.parseInt(ConfigReader.getProperty(ConfigReader.DATABASE_SIZE));
+//			DB_MAX_SIZE = Integer.parseInt(ConfigReader.getProperty(ConfigReader.DATABASE_MAX_SIZE));
 //		} catch (NumberFormatException e) {
 //			// TODO Auto-generated catch block
 //			throw new ConfigurationReadException("DATABASE_SIZE not a readable integer", e);
@@ -66,6 +67,7 @@ public class ConnectionPool {
 				Connection connection = createConnection();
 				available.add(connection);
 			}
+			DB_INITIAL_SIZE = initialConnections;
 		} catch (ClassNotFoundException e) {
 			throw new DBConnectionFailedException("JDBC Driver not found", e);
 		}
@@ -117,8 +119,16 @@ public class ConnectionPool {
 	 *                                     connection
 	 */
 	public synchronized void releaseConnection(Connection connection) throws DBConnectionFailedException {
-		// TODO release temporary connections
 		if (busy.remove(connection)) {
+			if (busy.size() + available.size() < DB_INITIAL_SIZE) {
+				available.add(connection);
+			} else {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					throw new DBConnectionFailedException("Failed to close connection", e);
+				}
+			}
 			available.add(connection);
 		} else {
 			throw new DBConnectionFailedException("Failed to release the connection back to the connection pool.");
@@ -158,7 +168,7 @@ public class ConnectionPool {
 	 * @return The connection pool instance
 	 */
 	public static ConnectionPool getInstance() {
-		if(connectionPool == null) {
+		if (connectionPool == null) {
 			connectionPool = new ConnectionPool();
 		}
 		return connectionPool;

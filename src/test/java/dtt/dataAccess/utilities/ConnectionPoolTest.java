@@ -9,12 +9,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import dtt.dataAccess.exceptions.DBConnectionFailedException;
+import dtt.global.utilities.ConfigReader;
 
 class ConnectionPoolTest {
     private ConnectionPool connectionPool;
 
     @BeforeEach
     public void setUp() {
+    	ConfigReader.loadProperties();
         connectionPool = ConnectionPool.getInstance();
         connectionPool.initialize(2); // Initialize the connection pool with 2 connections
     }

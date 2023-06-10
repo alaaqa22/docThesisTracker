@@ -15,17 +15,19 @@
 
     <!---  dataTable for a Circulaiton List -->
     <h:dataTable value="#{circulationListBacking.circPagination.entries}" var="circulation">
-        <h:column rendered="#{circulationListBacking.sessionInfo.isAdmin()}">
+        <h:column rendered="#{circulationListBacking.sessionInfo.user.roleId>=3}">
 
-            <!---  Fakultät -->
+        <!--- Fakultät -->
+        <h:column>
             <f:facet name="header">
-                <h:outputText value="Fakultät" />
+                <h:outputText value="Fakultät" rendered="#{circulationListBacking.sessionInfo.user.roleId>=4}" />
             </f:facet>
-            <h:outputText value= "#{circulation.faculty"/>
+            <h:outputText value="#{circulation.faculty}" />
             <h:inputText value="#{circulationListBacking.filter.faculty}">
                 <f:ajax event="keyup" listener="#{circulationListBacking.filterCirculations}" render="dataTable" />
             </h:inputText>
         </h:column>
+
 
         <!---  Titel -->
         <h:column>

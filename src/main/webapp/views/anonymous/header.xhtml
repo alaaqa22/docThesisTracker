@@ -10,20 +10,49 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core">
+<f:view>
+    <h:head>
 
-<h:head>
-    <title>header</title>
-</h:head>
+    </h:head>
 
-<!--logo -->
-<h:graphicImage value="src/main/resources/logo/LogoSeite.png" alt="logo" />
+    <h:body>
+        <div id="header">
+            <h:graphicImage value="src/main/resources/logo/LogoSeite.png" />
 
-<!-- Help link-->
-<a href="help.xhtml">Helfe</a>
 
-<h:body>
+            <!-- für Prüfungsberechtigte -->
+            <h:panelGroup rendered="#{sessionInfo.user.roleId>=1}">
+                <h:commandButton  outcome="abmelden" action="#{navigationBacking.logout}" />
+                <h:link outcome="profile" value="Profilseite" />
+                <h:link outcome="help1" value="Hilfeseite" />
+                <h:link outcome="circulationlist" value="Hauptseite" />
+            </h:panelGroup>
 
-</h:body>
+            <!-- für Prüfungskommissionsmitglieder -->
+            <h:panelGroup rendered="#{sessionInfo.user.roleId>=2}">
+                <h:link outcome="help2" value="Hilfeseite" />
+                <h:commandButton action="#{prufungsberichtKommissionBean.createCirculation()}" value="Create Circulation" />
+            </h:panelGroup>
+
+            <!-- für Dekanate -->
+            <h:panelGroup rendered="#{sessionInfo.user.roleId>=3}">
+                <h:link outcome="help3" value="Hilfeseite" />
+                <h:link outcome="userlist" value="Hauptseite" />
+            </h:panelGroup>
+
+
+            <!-- für Administratoren -->
+            <h:panelGroup rendered="#{sessionInfo.user.roleId>=4}">
+                <h:link outcome="help4" value="Hilfeseite" />
+            </h:panelGroup>
+
+
+        </div>
+
+
+        <!-- der Rest der Seite -->
+    </h:body>
+</f:view>
 
 </html>

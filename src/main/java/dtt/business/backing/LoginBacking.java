@@ -16,6 +16,7 @@ import jakarta.inject.Named;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.sql.SQLException;
 
 /**
  * Backing bean for the login page.
@@ -59,7 +60,7 @@ public class LoginBacking {
             //the user to retrieve by id, here userDB will be fulled
             userDAO.getUserById(userDB, transaction);
 
-            boolean verified = false;
+            boolean verified;
             try {
                 verified = Hashing.verifyPassword(user.getPassword(),userDB.getPasswordSalt(),userDB.getPasswordHashed());
             } catch (NoSuchAlgorithmException e) {
@@ -86,7 +87,11 @@ public class LoginBacking {
             FacesContext.getCurrentInstance().addMessage(null, message);
             return null;
         } finally {
-          //  transaction.commit();
+            try {
+                transaction.commit();
+            } catch (SQLException e) {
+                //TODO handle exception
+            }
         }
     }
 

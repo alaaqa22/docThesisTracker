@@ -2,16 +2,24 @@ package dtt.business.backing;
 
 import dtt.business.utilities.SessionInfo;
 import dtt.dataAccess.exceptions.DataIntegrityException;
+import dtt.dataAccess.exceptions.DataNotCompleteException;
+import dtt.dataAccess.exceptions.DataNotFoundException;
+import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.repository.Postgres.CirculationDAO;
+import dtt.dataAccess.repository.Postgres.VoteDAO;
+import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
 import dtt.global.tansport.Options;
 import dtt.global.tansport.Vote;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * Backing bean for the circulation details.
@@ -21,19 +29,25 @@ import java.io.IOException;
 @ViewScoped
 @Named
 public class CirculationDetailsBacking {
-    @Inject
-    private CirculationDAO circulationDAO;
+    private Options choice;
     @Inject
     private SessionInfo sessionInfo;
     private Circulation circulation;
-
     private Vote vote;
 
+    private Options[] options;
+
     /**
-     * Initialized circulation und vote dto objects.
+     * Initialize circulation und vote dto objects.
      */
     @PostConstruct
-    public void init(){
+    public void init() {
+        circulation = new Circulation();
+        circulation.setDoctoralSupervisor("Pas");
+        circulation.setDoctoralCandidateName("Pr.wew");
+        circulation.setTitle("geo");
+        vote = new Vote();
+        choice = Options.STIMME_ZU;
 
     }
 
@@ -44,7 +58,17 @@ public class CirculationDetailsBacking {
      * @throws DataIntegrityException If the user has no permission to see the circulation.
      */
 
-    public void loadCirculation(){
+    public void loadCirculation() {
+        Transaction tr = new Transaction();
+        CirculationDAO circ = new CirculationDAO();
+        Circulation circDB = new Circulation();
+        circDB.setId(circulation.getId());
+        try {
+            circ.getCirculationById(circDB,tr);
+        } catch (DataNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 
@@ -54,44 +78,64 @@ public class CirculationDetailsBacking {
      * @param circulation The circulation to download.
      * @throws IOException If the download fails.
      */
-   public void download(Circulation circulation){
+    public void download(Circulation circulation) {
 
     }
 
     /**
      * Delete a circulation.
-     *
-     * @param circulation The Circulation to remove.
      */
-    public void remove(Circulation circulation){
+    public void remove() {
+        Transaction transaction = new Transaction();
+        CirculationDAO cirDAO = new CirculationDAO();
+
+        try {
+            cirDAO.remove(circulation,transaction);
+            try {
+                transaction.commit();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (DataNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
 
     }
 
+
     /**
      * Modify the circulation details.
-     *
-     * @param circulation The Circulation to modify.
      */
-    public void modify(Circulation circulation){
+    public void modify() {
 
     }
 
     /**
      * Casts or change a vote for a specific choice.
-     *
-     * @param choice The choice to vote for.
-     *
      */
-    public  void vote(Options choice){
+    public void submitVote() {
+        Transaction transaction = new Transaction();
+        vote.setSelection(choice);
+        VoteDAO voteDAO= new VoteDAO();
+        try {
+            voteDAO.add(vote,transaction);
+        } catch (DataNotCompleteException e) {
+            e.printStackTrace();
+        } catch (InvalidInputException e) {
+            e.printStackTrace();
+        }
+
 
     }
 
     /**
-     * Load all the votes of a specified circulation.
-     *
-     * @param circulation The circulation that the votes should be loaded from.
+     * Load all the votes of the circulation.
      */
-    public void loadVotes(Circulation circulation){
+    public void loadVotes() {
+        Transaction tr = new Transaction();
+        VoteDAO voteDao = new VoteDAO();
+        voteDao.getVotes(vote,tr);
 
 
     }
@@ -101,7 +145,35 @@ public class CirculationDetailsBacking {
         return circulation;
     }
 
+    public SessionInfo getSessionInfo() {
+        return sessionInfo;
+    }
+
+    public void setSessionInfo(SessionInfo sessionInfo) {
+        this.sessionInfo = sessionInfo;
+    }
+
+    public Vote getVote() {
+        return vote;
+    }
+
+    public void setVote(Vote vote) {
+        this.vote = vote;
+    }
+
+    public Options getChoice() {
+        return choice;
+    }
+
+    public void setChoice(Options choice) {
+        this.choice = choice;
+    }
+
     public void setCirculation(Circulation circulation) {
         this.circulation = circulation;
+    }
+
+    public Options[] getOptions() {
+        return Options.values();
     }
 }

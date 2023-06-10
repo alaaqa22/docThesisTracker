@@ -19,6 +19,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.sql.SQLException;
 
 /**
@@ -27,8 +28,8 @@ import java.sql.SQLException;
  * @author Alaa Qasem
  */
 @ViewScoped
-@Named
-public class CirculationDetailsBacking {
+@Named("circulationDetailsBacking")
+public class CirculationDetailsBacking implements Serializable {
     private Options choice;
     @Inject
     private SessionInfo sessionInfo;

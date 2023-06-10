@@ -8,6 +8,8 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import java.io.Serializable;
+
 /**
  * Backing bean for the faculty management page.
  *
@@ -15,7 +17,7 @@ import jakarta.inject.Named;
  */
 @RequestScoped
 @Named
-public class FacultyBacking {
+public class FacultyBacking implements Serializable {
     @Inject
     private SessionInfo sessionInfo;
     private Faculty faculty;

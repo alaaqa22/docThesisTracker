@@ -8,12 +8,14 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import java.io.Serializable;
+
 /**
  * @author Hadi Abou Hassoun
  */
 @RequestScoped
 @Named
-public class UserControllerBacking {
+public class UserControllerBacking implements Serializable {
     private User user;
 
     private UserDAO userDAO;

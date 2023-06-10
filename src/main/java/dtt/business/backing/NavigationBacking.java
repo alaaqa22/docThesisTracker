@@ -5,13 +5,15 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import java.io.Serializable;
+
 /**
  * backing bean for navigation.
  * @author Hadi Abou Hassoun
  */
 @RequestScoped
 @Named
-public class NavigationBacking {
+public class NavigationBacking implements Serializable {
 
     @Inject
     SessionInfo sessionInfo;

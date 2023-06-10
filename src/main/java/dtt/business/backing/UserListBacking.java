@@ -32,7 +32,7 @@ public class UserListBacking implements Serializable {
     @Inject
     private SessionInfo sessionInfo;
 
-    @Inject
+
     UserDAO userDAO;
 
     User filter;

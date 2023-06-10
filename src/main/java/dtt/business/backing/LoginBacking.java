@@ -14,6 +14,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
@@ -25,7 +26,7 @@ import java.sql.SQLException;
  */
 @RequestScoped
 @Named
-public class LoginBacking {
+public class LoginBacking implements Serializable {
     @Inject
     private SessionInfo sessionInfo;
     private UserDAO userDAO;

@@ -6,13 +6,15 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import java.io.Serializable;
+
 /**
  * Backing bean for the new password page.
  * @author Alaa Qasem
  */
 @RequestScoped
 @Named
-public class SetNewPasswordBacking {
+public class SetNewPasswordBacking implements Serializable {
     private String password;
     private UserDAO userDAO;
     @Inject

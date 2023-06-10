@@ -4,6 +4,8 @@ import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 
+import java.io.Serializable;
+
 /**
  * Backing bean for the error page.
  * @author Alaa Qasem
@@ -11,7 +13,7 @@ import jakarta.inject.Named;
 
 @RequestScoped
 @Named
-public class ErrorPageBacking {
+public class ErrorPageBacking implements Serializable {
     private String errorMessage;
 
 

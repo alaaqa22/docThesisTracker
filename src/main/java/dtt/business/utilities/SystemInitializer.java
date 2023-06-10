@@ -32,14 +32,15 @@ public class SystemInitializer implements ServletContextListener {
      */
     @Override
     public void contextInitialized(ServletContextEvent arg) {
-        logger.fatal("Logger initialized.");
+        logger.fatal("Logger initialized");
         ConfigReader.loadProperties();
+        logger.fatal("Config read");
        /*
         ConnectionPool cp = ConnectionPool.getInstance();
         cp.initialize(Integer.parseInt(ConfigReader.getProperty(ConfigReader.DATABASE_SIZE)));
         */
         ConnectionPool.getInstance().initialize(Integer.parseInt(ConfigReader.getProperty(ConfigReader.DATABASE_SIZE)));
-        logger.fatal("context initialized");
+        logger.fatal("Connection pool initialized");
         //maintenanceThread.startMaintenance();
     }
 

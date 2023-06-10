@@ -5,12 +5,14 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import java.io.Serializable;
+
 /**
  * Backing bean for reset-password page.
  */
 @RequestScoped
 @Named
-public class ResetPasswordBacking {
+public class ResetPasswordBacking implements Serializable {
     private UserDAO userDAO;
     private String email;
 

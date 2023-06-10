@@ -3,7 +3,6 @@ package dtt.global.utilities;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -41,7 +40,6 @@ public class ConfigReader {
         try (InputStream inputStream = ConfigReader.class.getResourceAsStream(PROPERTIES_FILE_PATH)) {
             properties = new Properties();
             properties.load(inputStream);
-            logger.fatal("Config read");
         } catch (NullPointerException | IOException e) {
             logger.fatal("Could not read configuration.properties, path is " + PROPERTIES_FILE_PATH);
         }

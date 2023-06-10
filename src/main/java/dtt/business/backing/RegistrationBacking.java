@@ -6,13 +6,15 @@ import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 
+import java.io.Serializable;
+
 /**
  * Backing bean for the registration page.
  * @author Alaa Qasem
  */
 @RequestScoped
 @Named
-public class RegistrationBacking {
+public class RegistrationBacking implements Serializable {
 
     private User regUser;
     private UserDAO userDAO;

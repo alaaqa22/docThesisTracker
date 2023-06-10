@@ -9,15 +9,17 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import java.io.Serializable;
+
 /**
  * Backing bean for the profile page.
  * @author Alaa Qasem
  */
 @ViewScoped
 @Named
-public class ProfileBacking {
+public class ProfileBacking implements Serializable {
     private User user;
-    @Inject
+
     private UserDAO userDAO;
     @Inject
     private SessionInfo sessionInfo;

@@ -11,8 +11,7 @@
 
 <composite:implementation>
     <div class="btn-group">
-        <h:commandButton  action="#{cc.attrs.paginator.sortBy()}"
-                         styleClass="btn btn-primary" />
+        <h:commandButton  action="#{cc.attrs.paginator.sortBy()}"/>
     </div>
     <h:dataTable id="pagination" value="#{cc.attrs.paginator.entries}" var="var" >
         <composite:insertChildren/>
@@ -27,7 +26,7 @@
             <h:commandButton value="#previous" action="#{cc.attrs.paginator.previousPage}" />
         </li>
         <li class="page-item">
-            <h:outputText value="curr" title="#{help.pagiHelpCurrent}" styleClass="page-link active"/>
+            <h:outputText value="current" action="#{cc.attrs.paginator.currentPage}"  />
         </li>
         <li class="page-item">
             <h:commandButton value="next" action="#{cc.attrs.paginator.nextPage}" />

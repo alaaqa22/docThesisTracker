@@ -44,12 +44,7 @@ public class CirculationDetailsBacking implements Serializable {
     @PostConstruct
     public void init() {
         circulation = new Circulation();
-        circulation.setDoctoralSupervisor("Pas");
-        circulation.setDoctoralCandidateName("Pr.wew");
-        circulation.setTitle("geo");
         vote = new Vote();
-        choice = Options.STIMME_ZU;
-
     }
 
     /**

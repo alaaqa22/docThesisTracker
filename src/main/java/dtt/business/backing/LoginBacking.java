@@ -45,7 +45,7 @@ public class LoginBacking implements Serializable {
     public void init(){
         user = new User();
         userDAO = new UserDAO(); // Instantiate UserDAO
-
+        sessionInfo = new SessionInfo();
     }
 
     /**
@@ -61,7 +61,7 @@ public class LoginBacking implements Serializable {
             User userDB = new User();
             userDB.setEmail(user.getEmail());
            boolean found = userDAO.findUserByEmail(userDB, transaction);
-            if(found) {
+            if(found){
                 boolean verified;
                 try {
                     verified = Hashing.verifyPassword(user.getPassword(), userDB.getPasswordSalt(), userDB.getPasswordHashed());
@@ -81,8 +81,8 @@ public class LoginBacking implements Serializable {
                     return null;
                 }
             } else{
-                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "User not found!", null);
-                FacesContext.getCurrentInstance().addMessage(null, message);
+               // FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "User not found!", null);
+                //FacesContext.getCurrentInstance().addMessage(null, message);
                 return null;
             }
 
@@ -98,7 +98,7 @@ public class LoginBacking implements Serializable {
      * @return Go to register-page.
      */
     public String register(){
-        //return "/view/authenticated/circulationsList?faces-redirect=true";
+       // return "/view/authenticated/circulationDetails?faces-redirect=true";
         return null;
     }
 

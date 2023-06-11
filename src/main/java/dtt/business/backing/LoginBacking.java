@@ -7,8 +7,10 @@ import dtt.dataAccess.exceptions.DataNotFoundException;
 import dtt.dataAccess.repository.Postgres.UserDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.User;
+import dtt.global.utilities.ConfigReader;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.annotation.FacesConfig;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
@@ -18,12 +20,14 @@ import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 /**
  * Backing bean for the login page.
  *
  * @author Alaa Qasem
  */
+@FacesConfig
 @RequestScoped
 @Named
 public class LoginBacking implements Serializable {
@@ -54,46 +58,36 @@ public class LoginBacking implements Serializable {
     public String login() {
         Transaction transaction = new Transaction();
 
-        try {
-            // Retrieve user from the database using user id
+
             User userDB = new User();
-            userDB.setId(user.getId()); // Set the user id for retrieval
-            //the user to retrieve by id, here userDB will be fulled
-            userDAO.getUserById(userDB, transaction);
+            userDB.setEmail(user.getEmail());
+           boolean found = userDAO.findUserByEmail(userDB, transaction);
+            if(found) {
+                boolean verified;
+                try {
+                    verified = Hashing.verifyPassword(user.getPassword(), userDB.getPasswordSalt(), userDB.getPasswordHashed());
 
-            boolean verified;
-            try {
-                verified = Hashing.verifyPassword(user.getPassword(),userDB.getPasswordSalt(),userDB.getPasswordHashed());
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            } catch (InvalidKeySpecException e) {
-                throw new RuntimeException(e);
-            }
+                } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+                    throw new RuntimeException();
+                }
+                if (verified) {
+                    sessionInfo.setUser(userDB);
 
-
-            if (verified) {
-                sessionInfo.setUser(userDB);
-
-                // Password matches, login successful
-                return "/view/authenticated/circulationslist?faces-redirect=true";
-            } else {
-                // Password does not match, show error message
-                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid credentials", null);
+                    // Password matches, login successful
+                    return "/view/authenticated/circulationslist?faces-redirect=true";
+                } else {
+                    // Password does not match, show error message
+                    FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid credentials!", null);
+                    FacesContext.getCurrentInstance().addMessage(null, message);
+                    return null;
+                }
+            } else{
+                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "User not found!", null);
                 FacesContext.getCurrentInstance().addMessage(null, message);
                 return null;
+
             }
-        } catch (DataNotFoundException e) {
-            // User not found in the database, show error message
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "User not found", null);
-            FacesContext.getCurrentInstance().addMessage(null, message);
-            return null;
-        } finally {
-            try {
-                transaction.commit();
-            } catch (SQLException e) {
-                //TODO handle exception
-            }
-        }
+
     }
 
 
@@ -106,7 +100,8 @@ public class LoginBacking implements Serializable {
      * @return Go to register-page.
      */
     public String register(){
-        return "/view/authenticated/circulationslist?faces-redirect=true";
+        //return "/view/authenticated/circulationsList?faces-redirect=true";
+        return null;
     }
 
     /**
@@ -115,7 +110,8 @@ public class LoginBacking implements Serializable {
      * @return Go to forget-password page.
      */
     public String forgetPass(){
-        return "/view/authenticated/forgetPass?faces-redirect=true";
+        return null;
+        //return "/view/authenticated/forgetPass?faces-redirect=true";
     }
 
 
@@ -123,6 +119,32 @@ public class LoginBacking implements Serializable {
         return user;
     }
 
+  /*  public static void main(String[] args) throws DataNotFoundException {
+        new SystemInitializer().contextInitialized(null);
+        new ConfigReader();
+
+        User user1  = new User();
+        user1.setId(4);
+        UserDAO userDB = new UserDAO();
+        Transaction t = new Transaction();
+        System.out.println(user1.getId());
+        userDB.getUserById(user1,t);
+        System.out.println(user1.getEmail());
+
+
+        String hashed ="Vuy8xT+3S0aHMp8XCn1b9WeYvuLvklmPWqpRcWNC1fE=";
+        String salt = "somesaltvalue";
+        boolean verified;
+        try {
+             verified =Hashing.verifyPassword("password123", salt, hashed);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidKeySpecException e) {
+            throw new RuntimeException(e);
+        }
+
+        System.out.println(verified);
+    }*/
 
 
 

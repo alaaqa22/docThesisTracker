@@ -26,6 +26,7 @@
         <welcome-file>views/anonymous/login.xhtml</welcome-file>
     </welcome-file-list>
 
+
     <resource-env-ref>
         <description>Object factory for the CDI Bean Manager</description>
         <resource-env-ref-name>Bean Manager</resource-env-ref-name>

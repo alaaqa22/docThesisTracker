@@ -52,7 +52,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 		// TODO Email Check (I don't like it using 2 connections)
 		// if(findUserByEmail(user, transaction))
 
-		try (transaction;
+		try (
 				PreparedStatement statement = transaction.getConnection().prepareStatement(query,
 						PreparedStatement.RETURN_GENERATED_KEYS)) {
 
@@ -110,7 +110,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 	public void remove(User user, Transaction transaction) throws DataNotFoundException {
 		String query = "DELETE FROM \"user\" WHERE user_id = ?";
 
-		try (transaction; PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
+		try ( PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
 			statement.setInt(1, user.getId());
 
 			int affectedRows = statement.executeUpdate();
@@ -169,7 +169,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 
 		String query = queryBuilder.toString();
 
-		try (transaction; PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
+		try ( PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
 			// Set the parameter values
 			for (int i = 0; i < params.size(); i++) {
 				statement.setObject(i + 1, params.get(i));
@@ -220,7 +220,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 			try (ResultSet resultSet = statement.executeQuery(); ResultSet resultSet2 = statement2.executeQuery();) {
 				if (resultSet.next()) {
 					// Retrieve the user data from the result set
-					user.setEmail(resultSet.getString("email"));
+					user.setEmail(resultSet.getString("email_address"));
 					user.setFirstName(resultSet.getString("first_name"));
 					user.setLastName(resultSet.getString("last_name"));
 //	                user.setBirthDate(resultSet.getDate("birth_date"));
@@ -248,7 +248,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 		String query = "SELECT user_id, first_name, last_name, birth_date, password_hash, password_salt FROM \"user\" WHERE email_address = ?";
 		String query2 = "SELECT authentication.faculty_id, authentication.user_level, faculty.faculty_name FROM authentication INNER JOIN faculty ON authentication.faculty_id=faculty.faculty_id WHERE user_id = ?";
 
-		try (transaction;
+		try (
 				PreparedStatement statement = transaction.getConnection().prepareStatement(query);
 				PreparedStatement statement2 = transaction.getConnection().prepareStatement(query2)) {
 			statement.setString(1, user.getEmail());
@@ -335,7 +335,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 		parameters.add(count);
 		parameters.add(offset);
 
-		try (transaction; PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
+		try ( PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
 			for (int i = 0; i < parameters.size(); i++) {
 				statement.setObject(i + 1, parameters.get(i));
 			}
@@ -421,7 +421,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 		parameters.add(count);
 		parameters.add(offset);
 
-		try (transaction; PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
+		try ( PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
 			for (int i = 0; i < parameters.size(); i++) {
 				statement.setObject(i + 1, parameters.get(i));
 			}
@@ -488,7 +488,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 			query += "TRUE"; // No conditions, include all users
 		}
 
-		try (transaction; PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
+		try ( PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
 			for (int i = 0; i < parameters.size(); i++) {
 				statement.setObject(i + 1, parameters.get(i));
 			}
@@ -557,7 +557,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 	public void addAdmin(User user, Transaction transaction) throws KeyExistsException, InvalidInputException {
 		String query = "INSERT INTO \"admin\" (user_id) VALUES (?)";
 
-		try (transaction; PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
+		try ( PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
 			statement.setInt(1, user.getId());
 
 			statement.executeUpdate();
@@ -579,7 +579,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 	public void removeAdmin(User user, Transaction transaction) throws DataNotFoundException {
 		String query = "DELETE FROM \"admin\" WHERE user_id = ?";
 
-		try (transaction; PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
+		try ( PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
 			statement.setInt(1, user.getId());
 
 			int rowsAffected = statement.executeUpdate();
@@ -597,7 +597,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 		String query = "SELECT u.user_id, u.email_address, u.firstname, u.lastname, u.birthdate "
 				+ "FROM \"admin\" AS a " + "INNER JOIN \"user\" AS u ON a.user_id = u.user_id";
 
-		try (transaction;
+		try (
 				PreparedStatement statement = transaction.getConnection().prepareStatement(query);
 				ResultSet resultSet = statement.executeQuery()) {
 

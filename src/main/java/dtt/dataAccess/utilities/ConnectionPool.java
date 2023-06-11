@@ -129,7 +129,6 @@ public class ConnectionPool {
 					throw new DBConnectionFailedException("Failed to close connection", e);
 				}
 			}
-			available.add(connection);
 		} else {
 			throw new DBConnectionFailedException("Failed to release the connection back to the connection pool.");
 		}

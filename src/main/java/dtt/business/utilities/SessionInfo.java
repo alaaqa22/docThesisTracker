@@ -1,11 +1,14 @@
 package dtt.business.utilities;
 
+import dtt.global.tansport.Faculty;
 import dtt.global.tansport.User;
+import dtt.global.tansport.UserState;
 import jakarta.annotation.ManagedBean;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * The SessionInfo class represents the session-scoped bean that stores
@@ -43,7 +46,12 @@ public class SessionInfo implements Serializable {
      * @return true if the user is an Admin.
      */
     public boolean isAdmin() {
-        //Assuming we're still using magic numbers.
-        return user.getRoleId() == 5;
+        Map<Faculty, UserState> map = user.getUserState();
+        for (UserState state : map.values())  {
+            if (state == UserState.ADMIN) {
+                return true;
+            }
+        }
+        return false;
     }
 }

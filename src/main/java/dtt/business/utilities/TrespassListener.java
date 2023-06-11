@@ -8,6 +8,8 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PhaseEvent;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.PhaseListener;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
@@ -17,6 +19,7 @@ import java.util.Map;
  * @author Johannes Silvennoinen
  */
 public class TrespassListener implements PhaseListener {
+    private static final Logger logger = LogManager.getLogger();
     private SessionInfo sessionInfo;
 
     /**
@@ -28,6 +31,8 @@ public class TrespassListener implements PhaseListener {
      */
     @Override
     public void afterPhase(PhaseEvent phaseEvent) {
+        logger.info("afterPhase started!");
+
         final FacesContext fctx = phaseEvent.getFacesContext();
         final ExternalContext ctx = fctx.getExternalContext();
         final Map<String, Object> sessionMap = ctx.getSessionMap();

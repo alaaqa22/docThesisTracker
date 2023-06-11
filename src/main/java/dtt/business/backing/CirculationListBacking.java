@@ -39,6 +39,7 @@ public class CirculationListBacking implements Serializable {
      * Any SQLException that occurs during the transaction commit is caught and an error message is printed.
      */
     public CirculationListBacking() {
+
         circPagination = new Pagination<Circulation>() {
             @Override
             public void loadData() {

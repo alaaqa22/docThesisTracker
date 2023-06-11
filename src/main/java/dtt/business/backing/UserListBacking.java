@@ -2,6 +2,7 @@ package dtt.business.backing;
 
 import dtt.business.utilities.Pagination;
 import dtt.business.utilities.SessionInfo;
+import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.repository.Postgres.UserDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
@@ -41,11 +42,23 @@ public class UserListBacking implements Serializable {
         userPagination = new Pagination<User>() {
             @Override
             public void loadData() {
+                // Load User data using a transaction
+                try (Transaction transaction = new Transaction()) {
+                    int offset = (getCurrentPage() - 1) * getMaxPerPage();
+                    int count = getMaxPerPage();
 
-        }
+                    List<User> userList = userDAO.getUsers(filter, transaction, offset, count);
+                    setEntries(userList);
 
-
-    };
+                    // Commit the transaction
+                    transaction.commit();
+                } catch (SQLException e) {
+                    System.err.println("Error committing the transaction: " + e.getMessage());
+                } catch (InvalidInputException e) {
+                    throw new RuntimeException (e);
+                }
+            }
+        };
     }
 
     /**

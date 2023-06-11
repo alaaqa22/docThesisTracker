@@ -59,7 +59,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 			statement.setString(1, user.getEmail());
 			statement.setString(2, user.getFirstName());
 			statement.setString(3, user.getLastName());
-//			statement.setDate(4, user.getBirthDate());
+			statement.setDate(4, java.sql.Date.valueOf(user.getBirthDate()));
 			statement.setString(5, user.getPasswordHashed());
 			statement.setString(5, user.getPasswordSalt());
 
@@ -146,10 +146,10 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 			params.add(user.getLastName());
 		}
 
-//	    if (user.getBirthDate() != null) {
-//	        queryBuilder.append(" birth_date = ?,");
-//	        params.add(user.getBirthDate());
-//	    }
+	    if (user.getBirthDate() != null) {
+	        queryBuilder.append(" birth_date = ?,");
+	        params.add(user.getBirthDate());
+	    }
 
 		if (user.getPasswordHashed() != null) {
 			queryBuilder.append(" password_hash = ?,");
@@ -607,7 +607,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 				admin.setEmail(resultSet.getString("email_address"));
 				admin.setFirstName(resultSet.getString("firstname"));
 				admin.setLastName(resultSet.getString("lastname"));
-//	            admin.setBirthDate(resultSet.getDate("birthdate"));
+	            admin.setBirthDate(resultSet.getDate("birthdate").toString());
 
 				adminList.add(admin);
 			}

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core">
+
+<h:head>
+	<title>Create a new course</title>
+	<!-- h:outputStylesheet name="css/style.css"/-->
+</h:head>
+<h:body>
+	<h1>Create a new circulation</h1>
+	<hr />
+	<h:form id="createCirculation">
+		<h:panelGrid columns="3">
+			<h:outputLabel value="Title:" for="title-itxt" />
+			<h:inputText id="title-itxt"
+				value="#{circulationCreatingBacking.circulation.title}"
+				required="true">
+				<f:validator validatorId="UniqueCirculationNameValidator" />
+			</h:inputText>
+			<h:message for="title-itxt" styleClass="message" />
+
+			<h:outputLabel value="Doctoral Candidate:"
+				for="doctoral-candidate-name-itxt" />
+			<h:inputText id="doctoral-candidate-name-itxt"
+				value="#{circulationCreatingBacking.circulation.doctoralCandidateName}"
+				required="true" />
+			<h:message for="doctoral-candidate-name-itxt" styleClass="message" />
+
+			<h:outputLabel value="Doctoral Supervisor:"
+				for="doctoral-supervisor-itxt" />
+			<h:inputText id="doctoral-supervisor-itxt"
+				value="#{circulationCreatingBacking.circulation.doctoralSupervisor}"
+				required="true" />
+			<h:message for="doctoral-supervisor-itxt" styleClass="message" />
+
+			<h:outputLabel value="Description:" for="description-itxt" />
+			<h:inputText id="description-itxt"
+				value="#{circulationCreatingBacking.circulation.title}"
+				required="true" />
+			<h:message for="description-itxt" styleClass="message" />
+
+			<h:outputLabel value="Circulation Start Date:"
+				for="start-deedline-itxt" />
+			<h:inputText id="start-deedline-itxt"
+				value="#{circulationCreatingBacking.circulation.startDeedline}"
+				required="true">
+				<f:convertDateTime type="localDateTime" />
+			</h:inputText>
+			<h:message for="start-deedline-itxt" styleClass="message" />
+
+			<h:outputLabel value="Circulation End Date:" for="end-deedline-itxt" />
+			<h:inputText id="end-deedline-itxt"
+				value="#{circulationCreatingBacking.circulation.endDeedline}"
+				required="true">
+				<f:convertDateTime type="localDateTime" />
+			</h:inputText>
+			<h:message for="end-deedline-itxt" styleClass="message" />
+
+		</h:panelGrid>
+		<h:commandButton id="create" value="Create the course"
+			action="#{newCourse.createCourse()}" />
+	</h:form>
+	<hr />
+</h:body>
+
+</html>

@@ -220,7 +220,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 			try (ResultSet resultSet = statement.executeQuery(); ResultSet resultSet2 = statement2.executeQuery();) {
 				if (resultSet.next()) {
 					// Retrieve the user data from the result set
-					user.setEmail(resultSet.getString("email"));
+					user.setEmail(resultSet.getString("email_address"));
 					user.setFirstName(resultSet.getString("first_name"));
 					user.setLastName(resultSet.getString("last_name"));
 //	                user.setBirthDate(resultSet.getDate("birth_date"));

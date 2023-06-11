@@ -37,7 +37,6 @@ public class Transaction implements AutoCloseable {
 	public void abort() throws SQLException {
 		if (!didCommit) {
 			connection.rollback();
-			didCommit = true;
 		}
 	};
 

@@ -20,7 +20,7 @@ public class User {
 
     private int roleId; // The role ID of the user
 
-    private String birth_date;
+    private String birthDate;
 
 
 
@@ -192,12 +192,12 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-    public String getBirth_date () {
-        return birth_date;
+    public String getBirthDate () {
+        return birthDate;
     }
 
-    public void setBirth_date (String birth_date) {
-        this.birth_date = birth_date;
+    public void setBirthDate (String birthDate) {
+        this.birthDate = birthDate;
     }
 }
 

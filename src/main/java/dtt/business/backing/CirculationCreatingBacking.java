@@ -42,9 +42,9 @@ public class CirculationCreatingBacking implements Serializable {
     public void init() {
     	circulation = new Circulation();
     	//TODO Set Faculty of circulation, or set possible faculties to choose from
-    	Faculty f = new Faculty();
-    	f.setId(1);//TODO temporary. needs change
-    	circulation.setFaculty(f);
+    	//Faculty f = new Faculty();
+    	//f.setId(1);//TODO temporary. needs change
+    	//circulation.setFaculty(f);
     }
 
 

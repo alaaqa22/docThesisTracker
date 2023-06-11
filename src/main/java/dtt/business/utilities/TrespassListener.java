@@ -1,8 +1,15 @@
 package dtt.business.utilities;
 
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.application.NavigationHandler;
+import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.PhaseEvent;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.PhaseListener;
+
+import java.util.Map;
 
 /**
  * The TrespassListener class implements the PhaseListener interface to handle
@@ -21,7 +28,30 @@ public class TrespassListener implements PhaseListener {
      */
     @Override
     public void afterPhase(PhaseEvent phaseEvent) {
+        final FacesContext fctx = phaseEvent.getFacesContext();
+        final ExternalContext ctx = fctx.getExternalContext();
+        final Map<String, Object> sessionMap = ctx.getSessionMap();
 
+        boolean publicArea = false;
+        final UIViewRoot viewRoot = fctx.getViewRoot();
+        if (viewRoot != null) {
+            final String url = viewRoot.getViewId();
+            publicArea = url.endsWith("login.xhtml");
+        }
+
+        final boolean loggedIn = sessionMap.containsKey("logged in");
+
+        if (!publicArea && !loggedIn) {
+            FacesMessage fmsg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "You have to log in first.", null);
+            fctx.addMessage(null, fmsg);
+
+            ctx.getFlash().setKeepMessages(true);
+
+            NavigationHandler navigationHandler = fctx.getApplication().getNavigationHandler();
+            navigationHandler.handleNavigation(fctx, null, "login.xhtml?faces-redirect=true");
+
+            fctx.responseComplete();
+        }
     }
     /**
      * Invoked before the start of the restore view phase. This method does nothing in this implementation.
@@ -39,6 +69,6 @@ public class TrespassListener implements PhaseListener {
      */
     @Override
     public PhaseId getPhaseId() {
-        return null;
+        return PhaseId.RESTORE_VIEW;
     }
 }

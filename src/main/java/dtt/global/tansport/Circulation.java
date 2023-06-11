@@ -1,8 +1,6 @@
 package dtt.global.tansport;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
+import java.sql.Timestamp;
 
 /**
  *  Represents a circulation in the System.
@@ -11,19 +9,37 @@ import java.util.Map;
 public class Circulation {
     private int id; // The ID of the circulation
     private String title; // The title of the circulation
-    private String description; // The description of the circulation
     private String doctoralCandidateName; // The name of the doctoral candidate
     private String doctoralSupervisor; // The name of the doctoral supervisor
+    private String description; // The description of the circulation
+    Timestamp startDate; // The start deadline of the circulation
+    Timestamp endDate; // The end deadline of the circulation
     private boolean isObligatory; // Indicates if the circulation is obligatory
-    LocalDateTime startDeedline; // The start deadline of the circulation
-    LocalDateTime endDeedline; // The end deadline of the circulation
 
 
-    private Faculty faculty;
+    private int createdBy; // The userId of the creator.
+    private int facultyId;
+
+    public boolean isValid() {
+        return isValid;
+    }
+
+    public void setValid(boolean valid) {
+        isValid = valid;
+    }
+
+    private boolean isValid; // Represents the vote status.
 
 
     public Circulation() {}
 
+    public int getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(int createdBy) {
+        this.createdBy = createdBy;
+    }
 
     public void setId(int id) {
         this.id = id;
@@ -50,22 +66,22 @@ public class Circulation {
     }
 
 
-    public void setStartDeedline(LocalDateTime startDeedline) {
-        this.startDeedline = startDeedline;
+    public void setStartDate(Timestamp startDate) {
+        this.startDate = startDate;
     }
 
-    public void setEndDeedline(LocalDateTime endDeedline) {
-        this.endDeedline = endDeedline;
+    public void setEndDate(Timestamp endDate) {
+        this.endDate = endDate;
     }
 
 
 
-    public void setFaculty (Faculty faculty) {
-        this.faculty = faculty;
+    public void setFacultyId (int facultyId) {
+        this.facultyId = facultyId;
     }
 
-    public Faculty getFaculty () {
-        return faculty;
+    public int getFacultyId () {
+        return facultyId;
     }
 
     public int getId() {
@@ -93,12 +109,12 @@ public class Circulation {
     }
 
 
-    public LocalDateTime getStartDeedline() {
-        return startDeedline;
+    public Timestamp getStartDate() {
+        return startDate;
     }
 
-    public LocalDateTime getEndDeedline() {
-        return endDeedline;
+    public Timestamp getEndDate() {
+        return endDate;
     }
 
 }

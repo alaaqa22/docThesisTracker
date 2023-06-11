@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Named
 public class UserControllerBacking implements Serializable {
     private User user;
-
+    @Inject
     private UserDAO userDAO;
     @Inject
     private SessionInfo sessionInfo;

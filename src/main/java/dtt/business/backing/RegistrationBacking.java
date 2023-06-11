@@ -4,6 +4,7 @@ import dtt.dataAccess.repository.Postgres.UserDAO;
 import dtt.global.tansport.User;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
@@ -17,6 +18,7 @@ import java.io.Serializable;
 public class RegistrationBacking implements Serializable {
 
     private User regUser;
+    @Inject
     private UserDAO userDAO;
 
 

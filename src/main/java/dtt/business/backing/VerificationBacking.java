@@ -14,8 +14,7 @@ import java.io.Serializable;
 @RequestScoped
 @Named
 public class VerificationBacking implements Serializable {
-
-
+    @Inject
     private UserDAO userDAO;
 
     /**

@@ -13,6 +13,7 @@ import java.io.Serializable;
 @RequestScoped
 @Named
 public class ResetPasswordBacking implements Serializable {
+    @Inject
     private UserDAO userDAO;
     private String email;
 

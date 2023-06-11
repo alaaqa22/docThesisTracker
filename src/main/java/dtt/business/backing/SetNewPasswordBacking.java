@@ -16,6 +16,7 @@ import java.io.Serializable;
 @Named
 public class SetNewPasswordBacking implements Serializable {
     private String password;
+    @Inject
     private UserDAO userDAO;
     @Inject
     private SessionInfo sessionInfo;

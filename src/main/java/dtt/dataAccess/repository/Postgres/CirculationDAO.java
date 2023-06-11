@@ -5,16 +5,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
 
 import dtt.dataAccess.exceptions.*;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
-import dtt.global.tansport.Faculty;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
-import jakarta.persistence.Tuple;
 
 /**
  * A Postgres implementation for a class handling database access related to Circulations.

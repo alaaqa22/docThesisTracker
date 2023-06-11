@@ -75,7 +75,7 @@ public class LoginBacking implements Serializable {
                 sessionInfo.setUser(userDB);
 
                 // Password matches, login successful
-                return "/view/authenticated/circulationsList?faces-redirect=true";
+                return "/view/authenticated/circulationslist?faces-redirect=true";
             } else {
                 // Password does not match, show error message
                 FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid credentials", null);
@@ -106,8 +106,7 @@ public class LoginBacking implements Serializable {
      * @return Go to register-page.
      */
     public String register(){
-        //return "/view/authenticated/circulationsList?faces-redirect=true";
-        return null;
+        return "/view/authenticated/circulationslist?faces-redirect=true";
     }
 
     /**
@@ -116,8 +115,7 @@ public class LoginBacking implements Serializable {
      * @return Go to forget-password page.
      */
     public String forgetPass(){
-        return null;
-        //return "/view/authenticated/forgetPass?faces-redirect=true";
+        return "/view/authenticated/forgetPass?faces-redirect=true";
     }
 
 

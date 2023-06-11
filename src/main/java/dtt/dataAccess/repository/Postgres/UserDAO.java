@@ -17,6 +17,8 @@ import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Faculty;
 import dtt.global.tansport.User;
 import dtt.global.tansport.UserState;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
 
 /**
  * A Postgres implementation for a class handling database access related to
@@ -26,6 +28,8 @@ import dtt.global.tansport.UserState;
  *
  */
 
+@ApplicationScoped
+@Named
 public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 
 	/**

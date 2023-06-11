@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
  * Backing bean for new circulation page.
  * @author Alaa Qasem
  */
+
 @RequestScoped
 @Named
 public class CirculationCreatingBacking implements Serializable {

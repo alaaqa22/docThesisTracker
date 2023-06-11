@@ -23,7 +23,7 @@
                         </f:facet>
                         <h:outputText value="#{circulation.faculty}" />
                         <h:inputText value="#{circulationListBacking.filter.faculty}">
-                            <f:ajax event="keyup" listener="#{circulationListBacking.filterCirculations}" render="dataTable" />
+                            <f:ajax event="keyup" listener="#{circulationListBacking.loadCirculations}" render="dataTable" />
                         </h:inputText>
                     </h:column>
 
@@ -36,7 +36,7 @@
                             <h:outputText value="#{circulation.title}" />
                         </h:outputLink>
                         <h:inputText value="#{circulationListBacking.filter.title}">
-                            <f:ajax event="keyup" listener="#{circulationListBacking.filterCirculations}" render="dataTable" />
+                            <f:ajax event="keyup" listener="#{circulationListBacking.loadCirculations}" render="dataTable" />
                         </h:inputText>
                     </h:column>
 
@@ -46,8 +46,8 @@
                             <h:outputText value="Name des Doktoranden" />
                         </f:facet>
                         <h:outputText value="#{circulation.doctoralCandidateName}" />
-                        <h:inputText value="#{circulationListBacking.filter.doctoralCandidate}">
-                            <f:ajax event="keyup" listener="#{circulationListBacking.filterCirculations}" render="dataTable" />
+                        <h:inputText value="#{circulationListBacking.filter.doctoralCandidateName}">
+                            <f:ajax event="keyup" listener="#{circulationListBacking.loadCirculations}" render="dataTable" />
                         </h:inputText>
                     </h:column>
 
@@ -58,7 +58,7 @@
                         </f:facet>
                         <h:outputText value="#{circulation.doctoralSupervisor}" />
                         <h:inputText value="#{circulationListBacking.filter.doctoralSupervisor}">
-                            <f:ajax event="keyup" listener="#{circulationListBacking.filterCirculations}" render="dataTable" />
+                            <f:ajax event="keyup" listener="#{circulationListBacking.loadCirculations}" render="dataTable" />
                         </h:inputText>
                     </h:column>
 
@@ -67,7 +67,7 @@
                         <f:facet name="header">
                             <h:outputText value="Startzeit" />
                         </f:facet>
-                        <h:outputText value="#{circulation.startTime}" />
+                        <h:outputText value="#{circulation.startDeedline}" />
                     </h:column>
 
                     <!---  Endzeit -->
@@ -75,7 +75,7 @@
                         <f:facet name="header">
                             <h:outputText value="Endzeit" />
                         </f:facet>
-                        <h:outputText value="#{circulation.endTime}" />
+                        <h:outputText value="#{circulation.endDeedline}" />
                     </h:column>
                 </h:column>
             </h:dataTable>
@@ -84,7 +84,7 @@
             <h:panelGroup rendered="#{circulationListBacking.circPagination.maxPerPage > 1}">
                 <h:commandLink value="First" action="#{circulationListBacking.circPagination.firstPage}" />
                 <h:commandLink value="Previous" action="#{circulationListBacking.circPagination.previousPage}" />
-                Page #{circulationListBacking.circPagination.currentPage} of #{circulationListBacking.circPagination.calculateNumberOfPages()}
+                <h:outputText value="Page : #{circulationListBacking.circPagination.currentPage} of #{circulationListBacking.circPagination.calculateNumberOfPages()}" />
                 <h:commandLink value="Next" action="#{circulationListBacking.circPagination.nextPage}" />
                 <h:commandLink value="Last" action="#{circulationListBacking.circPagination.lastPage}" />
             </h:panelGroup>

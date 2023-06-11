@@ -23,7 +23,7 @@ import java.util.List;
 @ViewScoped
 @Named
 public class CirculationListBacking implements Serializable {
-    Circulation filter;
+    private Circulation filter;
     private Pagination<Circulation> circPagination;
     private List<Circulation> circulations;
     @Inject
@@ -106,5 +106,19 @@ public class CirculationListBacking implements Serializable {
         this.sessionInfo = sessionInfo;
     }
 
+    public void setFilter (Circulation filter) {
+        this.filter = filter;
+    }
 
+    public void setCircDAO (CirculationDAO circDAO) {
+        this.circDAO = circDAO;
+    }
+
+    public Circulation getFilter () {
+        return filter;
+    }
+
+    public CirculationDAO getCircDAO () {
+        return circDAO;
+    }
 }

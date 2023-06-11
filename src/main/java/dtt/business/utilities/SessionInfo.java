@@ -1,7 +1,9 @@
 package dtt.business.utilities;
 
 import dtt.global.tansport.User;
+import jakarta.annotation.ManagedBean;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
 
 import java.io.Serializable;
 
@@ -21,6 +23,7 @@ import java.io.Serializable;
  * for repetitive retrieval from a data source.
  * @author Johannes Silvennoinen
  */
+@Named("sessionInfo")
 @SessionScoped
 public class SessionInfo implements Serializable {
 

@@ -58,7 +58,6 @@ public class LoginBacking implements Serializable {
     public String login() {
         Transaction transaction = new Transaction();
 
-
             User userDB = new User();
             userDB.setEmail(user.getEmail());
            boolean found = userDAO.findUserByEmail(userDB, transaction);
@@ -85,7 +84,6 @@ public class LoginBacking implements Serializable {
                 FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "User not found!", null);
                 FacesContext.getCurrentInstance().addMessage(null, message);
                 return null;
-
             }
 
     }
@@ -118,34 +116,4 @@ public class LoginBacking implements Serializable {
     public User getUser() {
         return user;
     }
-
-  /*  public static void main(String[] args) throws DataNotFoundException {
-        new SystemInitializer().contextInitialized(null);
-        new ConfigReader();
-
-        User user1  = new User();
-        user1.setId(4);
-        UserDAO userDB = new UserDAO();
-        Transaction t = new Transaction();
-        System.out.println(user1.getId());
-        userDB.getUserById(user1,t);
-        System.out.println(user1.getEmail());
-
-
-        String hashed ="Vuy8xT+3S0aHMp8XCn1b9WeYvuLvklmPWqpRcWNC1fE=";
-        String salt = "somesaltvalue";
-        boolean verified;
-        try {
-             verified =Hashing.verifyPassword("password123", salt, hashed);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        } catch (InvalidKeySpecException e) {
-            throw new RuntimeException(e);
-        }
-
-        System.out.println(verified);
-    }*/
-
-
-
 }

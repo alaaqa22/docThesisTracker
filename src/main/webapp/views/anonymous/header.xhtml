@@ -1,51 +1,90 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="jakarta.faces.html"
-      xmlns:f="jakarta.faces.core">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" >
+
 <f:view>
     <h:head>
-
+        <title>Page Title</title>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"/>
     </h:head>
 
     <h:body>
-        <div id="header">
-            <h:graphicImage value="src/main/resources/logo/LogoSeite.png" />
+        <div class="navbar navbar-expand-lg navbar-light bg-light">
 
 
-            <!-- für Prüfungsberechtigte -->
-            <h:panelGroup rendered="#{sessionInfo.user.roleId>=1}">
-                <h:commandButton  outcome="abmelden" action="#{navigationBacking.logout}" />
-                <h:link outcome="profile" value="Profilseite" />
-                <h:link outcome="help1" value="Hilfeseite" />
-                <h:link outcome="circulationlist" value="Hauptseite" />
-            </h:panelGroup>
-
-            <!-- für Prüfungskommissionsmitglieder -->
-            <h:panelGroup rendered="#{sessionInfo.user.roleId>=2}">
-                <h:link outcome="help2" value="Hilfeseite" />
-                <h:commandButton action="#{prufungsberichtKommissionBean.createCirculation()}" value="Create Circulation" />
-            </h:panelGroup>
-
-            <!-- für Dekanate -->
-            <h:panelGroup rendered="#{sessionInfo.user.roleId>=3}">
-                <h:link outcome="help3" value="Hilfeseite" />
-                <h:link outcome="userlist" value="Hauptseite" />
-            </h:panelGroup>
 
 
-            <!-- für Administratoren -->
-            <h:panelGroup rendered="#{sessionInfo.user.roleId>=4}">
-                <h:link outcome="help4" value="Hilfeseite" />
-            </h:panelGroup>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+
+                    <h:form id="navbarForm">
+
+                        <!--  für anonymous User -->
+                        <ul class="navbar-nav" style="display: flex; justify-content: space-between;">
+                            <li class="nav-item" style="list-style-type: none;">
+                                <h:graphicImage value="/logo/LogoSeite.png" style="max-width: 200px; max-height: 200px;" />
+                            </li>
 
 
+                            <li class="nav-item justify-content-end">
+                                <h:link outcome="Impressum" value="Impressum" styleClass="nav-link" />
+                            </li>
+                            <li class="nav-item justify-content-end">
+                                <h:link outcome="help" value="Hilfeseite" styleClass="nav-link" />
+                            </li>
+
+                        </ul>
+
+
+                        <!-- für Prüfungsberechtigte -->
+                        <h:panelGroup rendered="#{sessionInfo.user.roleId >= 1}">
+                            <li class="nav-item">
+                                <h:commandButton value="Abmelden" action="#{navigationBacking.logout}" styleClass="nav-link" />
+                            </li>
+                            <li class="nav-item">
+                                <h:link outcome="profile" value="Profilseite" styleClass="nav-link" />
+                            </li>
+
+                        </h:panelGroup>
+
+                        <!-- für Prüfungskommissionsmitglieder -->
+                        <h:panelGroup rendered="#{sessionInfo.user.roleId >= 2}">
+                            <li class="nav-item">
+                                <h:link outcome="help2" value="Hilfeseite" styleClass="nav-link" />
+                            </li>
+                            <li class="nav-item">
+                                <h:commandButton action="#{prufungsberichtKommissionBean.createCirculation}" value="Create Circulation" styleClass="nav-link" />
+                            </li>
+                        </h:panelGroup>
+
+                        <!-- für Dekanate -->
+                        <h:panelGroup rendered="#{sessionInfo.user.roleId >= 3}">
+                            <li class="nav-item">
+                                <h:link outcome="help3" value="Hilfeseite" styleClass="nav-link" />
+                            </li>
+                            <li class="nav-item">
+                                <h:link outcome="userlist" value="Hauptseite" styleClass="nav-link" />
+                            </li>
+                        </h:panelGroup>
+
+                        <!-- für Administratoren -->
+                        <h:panelGroup rendered="#{sessionInfo.user.roleId >= 4}">
+                            <li class="nav-item">
+                                <h:link outcome="help4" value="Hilfeseite" styleClass="nav-link" />
+                            </li>
+                        </h:panelGroup>
+
+
+                    </h:form>
+
+                </ul>
+            </div>
         </div>
 
 
-        <!-- der Rest der Seite -->
     </h:body>
 </f:view>
-
 </html>

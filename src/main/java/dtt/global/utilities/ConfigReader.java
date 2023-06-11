@@ -31,7 +31,6 @@ public class ConfigReader {
     public static final String SSL = "SSL";
     public static final String SSL_FACTORY = "SSL_FACTORY";
     public static final String PASSWORD_PATTERN = "PASSWORD_PATTERN";
-
     /**
      * Reads the configuration properties from the properties file and assigns them
      * to a static Properties object.
@@ -53,5 +52,9 @@ public class ConfigReader {
      */
     public static String getProperty(String key) {
         return properties.getProperty(key);
+    }
+
+    static {
+        loadProperties();
     }
 }

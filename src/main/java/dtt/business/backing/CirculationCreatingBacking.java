@@ -1,5 +1,6 @@
 package dtt.business.backing;
 
+import dtt.business.utilities.SessionInfo;
 import dtt.dataAccess.exceptions.DBConnectionFailedException;
 import dtt.dataAccess.exceptions.DataNotCompleteException;
 import dtt.dataAccess.exceptions.InvalidInputException;
@@ -7,6 +8,7 @@ import dtt.dataAccess.exceptions.KeyExistsException;
 import dtt.dataAccess.repository.Postgres.CirculationDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
+import dtt.global.tansport.Faculty;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -28,6 +30,8 @@ public class CirculationCreatingBacking implements Serializable {
 
 	@Inject
     private CirculationDAO circulationDAO;
+	@Inject
+	private SessionInfo session;
 
     private Circulation circulation;
 
@@ -37,6 +41,10 @@ public class CirculationCreatingBacking implements Serializable {
     @PostConstruct
     public void init() {
     	circulation = new Circulation();
+    	//TODO Set Faculty of circulation, or set possible faculties to choose from
+    	Faculty f = new Faculty();
+    	f.setId(1);//TODO temporary. needs change
+    	circulation.setFaculty(f);
     }
 
 

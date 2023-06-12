@@ -7,7 +7,7 @@
         <from-view-id>/views/anonymous/login.xhtml</from-view-id>
         <navigation-case>
             <from-action>#{loginBacking.login}</from-action>
-            <from-outcome>/view/authenticated/circulationslist?faces-redirect=true</from-outcome>
+            <from-outcome>/views/authenticated/circulationslist?faces-redirect=true</from-outcome>
             <to-view-id>/views/authenticated/circulationslist.xhtml</to-view-id>
             <redirect/>
         </navigation-case>

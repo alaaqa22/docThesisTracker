@@ -11,55 +11,65 @@
     </h:head>
 
     <h:body>
-        <h:form>
-            <!---  dataTable for a Circulation List -->
-            <h:dataTable value="#{circulationListBacking.circPagination.entries}" var="circulation">
-                <h:column rendered="#{circulationListBacking.sessionInfo.user.roleId >= 3}">
 
-                    <!--- Fakultät -->
-                    <h:column>
+        <h:form>
+
+            <!---  dataTable for a Circulation List -->
+            <h:dataTable value="#{circulationListBacking.circPagination.entries}" var="circulation" styleClass="my-table" border="2" >
+
+                <f:facet name="header">
+                    <h:outputText value="Circulations" />
+
+                </f:facet>
+
+                    <!-- Fakultät -->
+                    <h:column  rendered="#{circulationListBacking.sessionInfo.user.roleId >= 4}">
                         <f:facet name="header">
-                            <h:outputText value="Fakultät" rendered="#{circulationListBacking.sessionInfo.user.roleId >= 4}" />
+                            <h:outputText value="Fakultät" />
+                            <h:inputText value="#{circulationListBacking.filter.facultyId}">
+                                <f:ajax event="keyup" listener="#{circulationListBacking.loadCirculations}" render="dataTable" />
+                            </h:inputText>
                         </f:facet>
-                        <h:outputText value="#{circulation.faculty}" />
-                        <h:inputText value="#{circulationListBacking.filter.faculty}">
-                            <f:ajax event="keyup" listener="#{circulationListBacking.loadCirculations}" render="dataTable" />
-                        </h:inputText>
+                        <h:outputText value="#{circulation.facultyId}" />
+
                     </h:column>
 
-                    <!---  Titel -->
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Titel" />
-                        </f:facet>
-                        <h:outputLink value="circulationdetails.xhtml?id=#{circulation.id}">
-                            <h:outputText value="#{circulation.title}" />
-                        </h:outputLink>
+                <!--> Titel <!-->
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Titel" />
                         <h:inputText value="#{circulationListBacking.filter.title}">
                             <f:ajax event="keyup" listener="#{circulationListBacking.loadCirculations}" render="dataTable" />
                         </h:inputText>
-                    </h:column>
+                    </f:facet>
+                    <h:outputText value="#{circulation.title}" />
 
-                    <!---  Name des Doktoranden -->
+                </h:column>
+
+
+
+                <!---  Name des Doktoranden -->
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="Name des Doktoranden" />
+                            <h:outputText value="Doktoranden" />
+                            <h:inputText value="#{circulationListBacking.filter.doctoralCandidateName}">
+                                <f:ajax event="keyup" listener="#{circulationListBacking.loadCirculations}" render="dataTable" />
+                            </h:inputText>
                         </f:facet>
                         <h:outputText value="#{circulation.doctoralCandidateName}" />
-                        <h:inputText value="#{circulationListBacking.filter.doctoralCandidateName}">
-                            <f:ajax event="keyup" listener="#{circulationListBacking.loadCirculations}" render="dataTable" />
-                        </h:inputText>
+
                     </h:column>
 
                     <!---  Doktorvater -->
                     <h:column>
                         <f:facet name="header">
                             <h:outputText value="Doktorvater" />
+                            <h:inputText value="#{circulationListBacking.filter.doctoralSupervisor}">
+                                <f:ajax event="keyup" listener="#{circulationListBacking.loadCirculations}" render="dataTable" />
+                            </h:inputText>
                         </f:facet>
                         <h:outputText value="#{circulation.doctoralSupervisor}" />
-                        <h:inputText value="#{circulationListBacking.filter.doctoralSupervisor}">
-                            <f:ajax event="keyup" listener="#{circulationListBacking.loadCirculations}" render="dataTable" />
-                        </h:inputText>
+
                     </h:column>
 
                     <!---  Startzeit -->
@@ -67,7 +77,8 @@
                         <f:facet name="header">
                             <h:outputText value="Startzeit" />
                         </f:facet>
-                        <h:outputText value="#{circulation.startDeedline}" />
+                        <h:outputText value="#{circulation.startDate}" />
+
                     </h:column>
 
                     <!---  Endzeit -->
@@ -75,13 +86,14 @@
                         <f:facet name="header">
                             <h:outputText value="Endzeit" />
                         </f:facet>
-                        <h:outputText value="#{circulation.endDeedline}" />
+                        <h:outputText value="#{circulation.endDate}" />
                     </h:column>
-                </h:column>
+
+
             </h:dataTable>
 
             <!-- Pagination Controls -->
-            <h:panelGroup rendered="#{circulationListBacking.circPagination.maxPerPage > 1}">
+            <h:panelGroup rendered="#{circulationListBacking.circPagination.maxPerPage>1}" >
                 <h:commandLink value="First" action="#{circulationListBacking.circPagination.firstPage}" />
                 <h:commandLink value="Previous" action="#{circulationListBacking.circPagination.previousPage}" />
                 <h:outputText value="Page : #{circulationListBacking.circPagination.currentPage} of #{circulationListBacking.circPagination.calculateNumberOfPages()}" />

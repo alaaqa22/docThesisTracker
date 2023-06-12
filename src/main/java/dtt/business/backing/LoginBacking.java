@@ -73,7 +73,7 @@ public class LoginBacking implements Serializable {
                     sessionInfo.setUser(userDB);
 
                     // Password matches, login successful
-                    return "/view/authenticated/circulationslist?faces-redirect=true";
+                    return "/views/authenticated/circulationslist?faces-redirect=true";
                 } else {
                     // Password does not match, show error message
                     FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid credentials!", null);

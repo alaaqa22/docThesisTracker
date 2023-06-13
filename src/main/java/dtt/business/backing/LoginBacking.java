@@ -20,7 +20,8 @@ import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Backing bean for the login page.
@@ -33,9 +34,10 @@ import java.util.logging.Logger;
 public class LoginBacking implements Serializable {
     @Inject
     private SessionInfo sessionInfo;
+    @Inject
     private UserDAO userDAO;
     private User user;
-
+    private final Logger logger = LogManager.getLogger();
 
 
     /**
@@ -44,8 +46,6 @@ public class LoginBacking implements Serializable {
     @PostConstruct
     public void init(){
         user = new User();
-        userDAO = new UserDAO(); // Instantiate UserDAO
-        sessionInfo = new SessionInfo();
     }
 
     /**
@@ -67,7 +67,8 @@ public class LoginBacking implements Serializable {
                     verified = Hashing.verifyPassword(user.getPassword(), userDB.getPasswordSalt(), userDB.getPasswordHashed());
 
                 } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-                    throw new RuntimeException();
+                    logger.error("Login attempt unsuccessful for user " + user.getId());
+                    throw new IllegalStateException(e);
                 }
                 if (verified) {
                     sessionInfo.setUser(userDB);
@@ -76,13 +77,15 @@ public class LoginBacking implements Serializable {
                     return "/views/authenticated/circulationslist?faces-redirect=true";
                 } else {
                     // Password does not match, show error message
+
                     FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid credentials!", null);
                     FacesContext.getCurrentInstance().addMessage(null, message);
                     return null;
                 }
             } else{
-               // FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "User not found!", null);
-                //FacesContext.getCurrentInstance().addMessage(null, message);
+                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "User not found!", null);
+                FacesContext.getCurrentInstance().addMessage(null, message);
+                logger.error("User not found ");
                 return null;
             }
 

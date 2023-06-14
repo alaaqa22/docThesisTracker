@@ -1,0 +1,42 @@
+.my-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.my-table th {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    text-align: left;
+}
+
+.my-table td {
+    border-right: 1px solid #ddd;
+    padding: 8px;
+}
+
+.my-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.my-table tr:hover {
+    background-color: #ddd;
+}
+.my-table td:last-child {
+    border-right: none;
+}
+.Plink {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}

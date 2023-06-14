@@ -1,6 +1,5 @@
 package dtt.business.utilities;
 
-import dtt.business.backing.UserListBacking;
 import dtt.global.utilities.ConfigReader;
 
 import java.util.List;
@@ -14,7 +13,7 @@ public abstract class Pagination <T>{
 
     protected int maxItems = Integer.parseInt(ConfigReader.getProperty(ConfigReader.PAGINATION_MAX_ITEMS));
     private int currentPage;
-    private int maxPerPage;
+    private int maxPages;
     private List<T> entries;
     private String sortColumn;
     /**
@@ -44,8 +43,8 @@ public abstract class Pagination <T>{
         this.currentPage = currentPage;
     }
 
-    public void setMaxPerPage (int maxPerPage) {
-        this.maxPerPage = maxPerPage;
+    public void setMaxPages (int maxPages) {
+        this.maxPages = maxPages;
     }
 
     public void setEntries (List<T> entries) {
@@ -64,8 +63,8 @@ public abstract class Pagination <T>{
         return currentPage;
     }
 
-    public int getMaxPerPage () {
-        return maxPerPage;
+    public int getMaxPages () {
+        return maxPages;
     }
 
     public List<T> getEntries () {
@@ -110,6 +109,14 @@ public abstract class Pagination <T>{
      * @return The number of pages.
      */
     public Integer calculateNumberOfPages(){
-        return 0;
+        return maxPages;
+    }
+
+    public boolean isFirstPage(){
+        return currentPage == 1 ;
+    }
+    public boolean isLastPage(){
+        return currentPage == maxPages;
     }
 }
+

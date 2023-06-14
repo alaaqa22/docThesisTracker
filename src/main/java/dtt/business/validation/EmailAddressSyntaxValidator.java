@@ -57,7 +57,7 @@ public class EmailAddressSyntaxValidator implements Validator {
         }
 
         if (validDomains == null) {
-            validDomains = ConfigReader.getProperty("EMAIL_PATTERN").split(",");
+            validDomains = ConfigReader.getProperty(ConfigReader.EMAIL_PATTERN).split(",");
         }
 
         String domain = email.substring(email.indexOf("@") + 1);  // Extract the domain from the email

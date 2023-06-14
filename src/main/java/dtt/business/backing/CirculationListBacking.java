@@ -45,8 +45,8 @@ public class CirculationListBacking implements Serializable {
             public void loadData() {
                 // Load circulations data using a transaction
                 try (Transaction transaction = new Transaction()) {
-                    int offset = (getCurrentPage() - 1) * getMaxPerPage();
-                    int count = getMaxPerPage();
+                    int offset = (getCurrentPage() - 1) * getMaxItems ();
+                    int count = getMaxItems();
                     List<Circulation> cir = circDAO.getCirculations(filter, transaction, offset, count);
                     setEntries(cir);
 

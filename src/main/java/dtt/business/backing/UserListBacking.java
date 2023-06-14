@@ -44,8 +44,8 @@ public class UserListBacking implements Serializable {
             public void loadData() {
                 // Load User data using a transaction
                 try (Transaction transaction = new Transaction()) {
-                    int offset = (getCurrentPage() - 1) * getMaxPerPage();
-                    int count = getMaxPerPage();
+                    int offset = (getCurrentPage() - 1) * getMaxItems ();
+                    int count = getMaxItems ();
 
                     List<User> userList = userDAO.getUsers(filter, transaction, offset, count);
                     setEntries(userList);

@@ -10,13 +10,19 @@
 
     <h:head>
         <title>circList</title>
-        <link href="#{request.contextPath}src/main/resources/css/style.css" rel="stylesheet" type="text/css"/>
+        <link href="${request.contextPath}/resources/css/style.css" rel="stylesheet" type="text/css"/>
+
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"/>
-        <ui:include src="src/main/webapp/views/anonymous/header.xhtml"/>
+
+
+
+
+
 
     </h:head>
 
     <h:body>
+        <ui:include src="/views/anonymous/header.xhtml" />
 
         <div class="container">
         <h:form>
@@ -26,7 +32,7 @@
             <h:dataTable value="#{circulationListBacking.circPagination.entries}" var="circulation" styleClass="my-table" border="2" >
 
                 <f:facet name="header">
-                    <h:outputText value="Circulations" />
+                    <h:outputText value="Circulations"  styleClass="text-center" />
 
                 </f:facet>
 

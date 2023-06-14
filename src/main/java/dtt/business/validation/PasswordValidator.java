@@ -42,13 +42,13 @@ public class PasswordValidator implements Validator {
      * @return {@code true} if the password is valid, {@code false} otherwise.
      */
     private boolean isValidPassword(String password) {
+        if(!ConfigReader.arePropertiesLoaded()) {
+            ConfigReader.loadProperties();
+        }
+        String passwordPattern = ConfigReader.getProperty (ConfigReader.PASSWORD_PATTERN);
+        pattern = Pattern.compile (passwordPattern);
 
         return pattern.matcher(password).matches();
-    }
-
-    static {
-        String passwordPattern = ConfigReader.getProperty(ConfigReader.PASSWORD_PATTERN);
-        pattern = Pattern.compile(passwordPattern);
     }
 
 }

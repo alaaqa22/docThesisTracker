@@ -44,7 +44,7 @@
 
 
                         <!-- für Prüfungsberechtigte -->
-                        <h:panelGroup rendered="#{sessionInfo.user.roleId >= 1}">
+                        <h:panelGroup rendered="#{sessionInfo.user.roleId >= 1}" >
                             <li class="nav-item">
                                 <h:commandButton value="Abmelden" action="#{navigationBacking.logout}" styleClass="nav-link" />
                             </li>

@@ -12,6 +12,7 @@
             <redirect/>
         </navigation-case>
     </navigation-rule>
+
     <lifecycle>
         <phase-listener>dtt.business.utilities.TrespassListener</phase-listener>
     </lifecycle>

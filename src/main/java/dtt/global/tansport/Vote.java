@@ -4,10 +4,12 @@ package dtt.global.tansport;
  *  @author Hadi Abou Hassoun
  */
 public class Vote {
-    private Options selection; // The selected option for the vote
-    private User user; // The user who cast the vote
 
-    private Circulation circulation; // The circulation associated with the vote
+    private int voteId;  // The ID of the Vote.
+    private Options selection; // The selected option for the vote
+    private int  userId; //
+
+    private int  circulationId; //
 
     private String  description; // The text field for the short explanation
 
@@ -26,12 +28,12 @@ public class Vote {
      * Sets the user who cast the vote.
      * @param user The user who cast the vote
      */
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(int user) {
+        this.userId = user;
     }
 
-    public void setCirculation (Circulation circulation) {
-        this.circulation = circulation;
+    public void setCirculation (int circulation) {
+        this.circulationId = circulation;
     }
 
     /**
@@ -46,11 +48,27 @@ public class Vote {
      * Returns the user who cast the vote.
      * @return The user who cast the vote
      */
-    public User getUser() {
-        return user;
+    public int getUserId() {
+        return userId;
     }
 
-    public Circulation getCirculation () {
-        return circulation;
+    public int getCirculationId () {
+        return circulationId;
+    }
+
+    public void setDescription (String description) {
+        this.description = description;
+    }
+
+    public String getDescription () {
+        return description;
+    }
+
+    public int getVoteId () {
+        return voteId;
+    }
+
+    public void setVoteId (int voteId) {
+        this.voteId = voteId;
     }
 }

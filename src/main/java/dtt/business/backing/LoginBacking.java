@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,19 +33,18 @@ import org.apache.logging.log4j.Logger;
 @RequestScoped
 @Named
 public class LoginBacking implements Serializable {
+    private final Logger logger = LogManager.getLogger();
     @Inject
     private SessionInfo sessionInfo;
     @Inject
     private UserDAO userDAO;
     private User user;
-    private final Logger logger = LogManager.getLogger();
-
 
     /**
      * Initializes the login backing bean.
      */
     @PostConstruct
-    public void init(){
+    public void init() {
         user = new User();
     }
 
@@ -57,42 +57,39 @@ public class LoginBacking implements Serializable {
      */
     public String login() {
         Transaction transaction = new Transaction();
+        User userDB = new User();
+        userDB.setEmail(user.getEmail());
+        boolean found = userDAO.findUserByEmail(userDB, transaction);
+        if (found) {
+            boolean verified;
+            try {
+                verified = Hashing.verifyPassword(user.getPassword(), userDB.getPasswordSalt(), userDB.getPasswordHashed());
 
-            User userDB = new User();
-            userDB.setEmail(user.getEmail());
-           boolean found = userDAO.findUserByEmail(userDB, transaction);
-            if(found){
-                boolean verified;
-                try {
-                    verified = Hashing.verifyPassword(user.getPassword(), userDB.getPasswordSalt(), userDB.getPasswordHashed());
+            } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+                logger.error("Login attempt unsuccessful for user " + user.getId());
+                throw new IllegalStateException(e);
+            }
+            if (verified) {
+                user = userDB;
+                sessionInfo.setUser(user);
 
-                } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-                    logger.error("Login attempt unsuccessful for user " + user.getId());
-                    throw new IllegalStateException(e);
-                }
-                if (verified) {
-                    sessionInfo.setUser(userDB);
+                // Password matches, login successful
+                return "/views/authenticated/circulationslist?faces-redirect=true";
+            } else {
+                // Password does not match, show error message
 
-                    // Password matches, login successful
-                    return "/views/authenticated/circulationslist?faces-redirect=true";
-                } else {
-                    // Password does not match, show error message
-
-                    FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid credentials!", null);
-                    FacesContext.getCurrentInstance().addMessage(null, message);
-                    return null;
-                }
-            } else{
-                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "User not found!", null);
+                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid credentials!", null);
                 FacesContext.getCurrentInstance().addMessage(null, message);
-                logger.error("User not found ");
                 return null;
             }
+        } else {
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "User not found!", null);
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            logger.error("User not found");
+            return null;
+        }
 
     }
-
-
-
 
 
     /**
@@ -100,9 +97,8 @@ public class LoginBacking implements Serializable {
      *
      * @return Go to register-page.
      */
-    public String register(){
-       // return "/view/authenticated/circulationDetails?faces-redirect=true";
-        return null;
+    public String register() {
+        return "/views/anonymous/registration?faces-redirect=true";
     }
 
     /**
@@ -110,7 +106,7 @@ public class LoginBacking implements Serializable {
      *
      * @return Go to forget-password page.
      */
-    public String forgetPass(){
+    public String forgetPass() {
         return null;
         //return "/view/authenticated/forgetPass?faces-redirect=true";
     }

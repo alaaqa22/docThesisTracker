@@ -1,80 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="jakarta.faces.html"
-      xmlns:f="jakarta.faces.core">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
 <h:head>
     <title>Circulation Details</title>
 </h:head>
 
 <h:body>
-    <h2>Circulation Details</h2>
-    <f:viewAction action="#{circulationDetailsBacking.loadCirculation}" />
+    <h:form>
+        <h2>Circulation Details</h2>
+        <f:view>
 
-    <div>
-        <label for="title-otxt">Title:</label>
-        <h:outputText id="title-otxt" value ="#{circulationDetailsBacking.circulation.title}"/>
-    </div>
-    <div>
-        <label for="doctoralcandidatename-otxt">Doctoral Candidate Name:</label>
-        <div id="doctoralcandidatename-otxt">#{circulationDetailsBacking.circulation.doctoralCandidateName}</div>
-    </div>
-    <div>
-        <label for="doctoralsupervisororotxt">Doctoral Supervisoror:</label>
-        <div id="doctoralsupervisororotxt">#{circulationDetailsBacking.circulation.doctoralSupervisor}</div>
-    </div>
-    <div>
-        <label for="description-otxt">Description:</label>
-        <div id="description-otxt">#{circulationDetailsBacking.circulation.description}</div>
-    </div>
-    <div>
-        <label for="start-deedlineotxt">Start Deadline:</label>
-        <div id="start-deedlineotxt">#{circulationDetailsBacking.circulation.startDate}</div>
-    </div>
-    <div>
-        <label for="end-deedlineotxt">End Deadline:</label>
-        <div id="end-deedlineotxt">#{circulationDetailsBacking.circulation.endDate}</div>
-    </div>
-    <div>
+            <f:metadata>
+                <f:viewAction action="#{circulationDetailsBacking.loadCirculation}" />
+                <f:viewParam name="id" value="#{circulationDetailsBacking.circulation.id}" />
+            </f:metadata>
+        </f:view>
 
+        <h:panelGrid columns="2">
+            <h:outputLabel for="title-otxt" value="Title:" />
+            <h:outputText id="title-otxt" value="#{circulationDetailsBacking.circulation.title}" />
 
-    <h:outputLabel for="vote-optionsslcom" value="Select vote:" />
+            <h:outputLabel for="doctoralcandidatename-otxt" value="Doctoral Candidate Name:" />
+            <h:outputText id="doctoralcandidatename-otxt" value="#{circulationDetailsBacking.circulation.doctoralCandidateName}" />
 
-    <h:selectOneMenu id="vote-optionsslcom" value="#{circulationDetailsBacking.choice}">
+            <h:outputLabel for="doctoralsupervisororotxt" value="Doctoral Supervisoror:" />
+            <h:outputText id="doctoralsupervisororotxt" value="#{circulationDetailsBacking.circulation.doctoralSupervisor}" />
 
-        <f:selectItems value="#{circulationDetailsBacking.options}" var="option"
-                       itemValue="#{option}"
-                       itemLabel="#{option.label}"/>
+            <h:outputLabel for="description-otxt" value="Description:" />
+            <h:outputText id="description-otxt" value="#{circulationDetailsBacking.circulation.description}" />
 
-        <!-- <f:selectItems value="#{circulationDetailsBacking.choice.values()}" var="option" itemValue="#{option}" itemLabel="#{option.label}" />
-         <f:ajax listener="#{circulationDetailsBacking.vote}" />-->
-    </h:selectOneMenu>
-</div>
-    <div>
-        <h:commandButton id="vote-btn" action="#{circulationDetailsBacking.submitVote}" value="vote" />
+            <h:outputLabel for="start-deadlineotxt" value="Start Deadline:" />
+            <h:outputText id="start-deadlineotxt" value="#{circulationDetailsBacking.circulation.startDate}" />
 
-    </div>
-
-    <div>
-        <label for="description-itxt">add description</label>
-
-        <h:inputText id="description-itxt" value="#{circulationDetailsBacking.circulation.description}" />
-    </div>
+            <h:outputLabel for="end-deadlineotxt" value="End Deadline:" />
+            <h:outputText id="end-deadlineotxt" value="#{circulationDetailsBacking.circulation.endDate}" />
 
 
-    <div>
+            <h:outputLabel for="created-byotxt" value="Created By:" />
+            <h:outputText id="created-byotxt" value="#{circulationDetailsBacking.circulation.createdBy}" />
 
-        <h:commandButton id="modify-cbtn" action="#{circulationDetailsBacking.modify}" value="modify ">
-            <!-- <f:param name="circulationId" value="#{circulation.id}" />-->
-        </h:commandButton>
-    </div>
-    <div>
+            <h:outputLabel for="faculty-idotxt" value="Faculty ID:" />
+            <h:outputText id="faculty-idotxt" value="#{circulationDetailsBacking.circulation.facultyId}" />
+        </h:panelGrid>
 
-        <h:commandButton id="remove-cbtn" action="#{circulationDetailsBacking.remove}" value="Remove Circulation" />
-    </div>
+        <div>
+            <h:outputLabel for="vote-optionsslcom" value="Select vote:" />
+            <h:selectOneMenu id="vote-optionsslcom" value="#{circulationDetailsBacking.choice}">
+                <f:selectItems value="#{circulationDetailsBacking.options}" var="option"
+                               itemValue="#{option}"
+                               itemLabel="#{option.label}"/>
+            </h:selectOneMenu>
+        </div>
 
 
+            <div>
+                <h:commandButton id="vote-btn" action="#{circulationDetailsBacking.submitVote}" value="Vote" />
+            </div>
+
+            <div>
+                <h:commandButton id="modify-cbtn" action="#{circulationDetailsBacking.modify}" value="Modify" />
+            </div>
+
+            <div>
+                <h:commandButton id="remove-cbtn" action="#{circulationDetailsBacking.remove}" value="Remove Circulation" />
+            </div>
+    </h:form>
 </h:body>
 
 </html>

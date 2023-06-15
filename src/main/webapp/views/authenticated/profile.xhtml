@@ -1,0 +1,55 @@
+<!-- profile.xhtml -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+
+<h:head>
+    <title>Profile</title>
+</h:head>
+
+<h:body>
+    <h:form>
+        <h3>Profile</h3>
+
+        <f:view>
+
+        <f:metadata>
+            <f:viewAction action="#{profileBacking.load()}"/>
+            <f:viewParam name="id" value="#{profileBacking.user.id}" />
+        </f:metadata>
+        </f:view>
+
+        <div class="form-field">
+            <label for="firstName">First Name:</label>
+            <h:inputText id="firstName" value="#{profileBacking.user.firstName}" />
+        </div>
+
+        <div class="form-field">
+            <label for="lastName">Last Name:</label>
+            <h:inputText id="lastName" value="#{profileBacking.user.lastName}" />
+        </div>
+        <div class="form-field">
+            <label for="email">Email:</label>
+            <h:inputText id="email" value="#{profileBacking.user.email}"/>
+        </div>
+
+
+        <div class="form-field">
+            <label for="password">Password:</label>
+            <h:inputSecret id="password" value="#{profileBacking.user.password}"/>
+        </div>
+
+        <div class="form-field">
+            <label for="birthDate">Birth Date:</label>
+            <h:inputText id="birthDate" value="#{profileBacking.user.birthDate}">
+            </h:inputText>
+        </div>
+
+        <h:commandButton value="delete" action="#{profileBacking.deleteProfile()}" />
+
+        <h:commandButton value="Save" action="#{profileBacking.save()}" />
+
+    </h:form>
+</h:body>
+</html>

@@ -1,7 +1,11 @@
 package dtt.business.backing;
 
 import dtt.business.utilities.SessionInfo;
+import dtt.dataAccess.exceptions.DataNotFoundException;
+import dtt.dataAccess.exceptions.InvalidInputException;
+import dtt.dataAccess.exceptions.KeyExistsException;
 import dtt.dataAccess.repository.Postgres.UserDAO;
+import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.User;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
@@ -13,6 +17,7 @@ import java.io.Serializable;
 
 /**
  * Backing bean for the profile page.
+ *
  * @author Alaa Qasem
  */
 @ViewScoped
@@ -29,33 +34,62 @@ public class ProfileBacking implements Serializable {
      * Initializes the dto objects.
      */
     @PostConstruct
-    private void init(){
+    private void init() {
+        user = new User();
 
     }
 
     /**
      * Load the user's information.
      */
-    private void load(){
+    public void load() {
+        Transaction tr = new Transaction();
+        System.out.println("ID received: " + sessionInfo.getUser().getUserState());
+
+        try {
+            userDAO.getUserById(sessionInfo.getUser(), tr);
+            user = sessionInfo.getUser();
+        } catch (DataNotFoundException e) {
+
+        }
 
     }
 
     /**
      * Save the updated data to the user profile.
      */
-    private void save(){
+    public void save() {
+        Transaction transaction = new Transaction();
+        try {
+            userDAO.update(user, transaction);
+        } catch (DataNotFoundException | InvalidInputException | KeyExistsException e) {
+
+        }
 
     }
 
-    public User getUser() {
-        return user;
-    }
 
     /**
      * Method to delete the profile.
      */
-    public void deleteProfile(){
+    public String deleteProfile() {
+        Transaction transaction = new Transaction();
+        if (sessionInfo.getUser().equals(user)) {
 
+            try {
+                userDAO.remove(user, transaction);
+                sessionInfo.setUser(null);
+
+            } catch (DataNotFoundException e) {
+            }
+            return "/views/anonymous/login.xhtml?faces-redirect=true";
+        } else {
+            return null;
+        }
+    }
+
+    public User getUser() {
+        return user;
     }
 
     public void setUser(User user) {
@@ -73,7 +107,6 @@ public class ProfileBacking implements Serializable {
     public SessionInfo getSessionInfo() {
         return sessionInfo;
     }
-
 
 
 }

@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Named
 public class RegistrationBacking implements Serializable {
 
-    private User regUser;
+    private User user;
     @Inject
     private UserDAO userDAO;
 
@@ -42,15 +42,11 @@ public class RegistrationBacking implements Serializable {
 
     }
 
-    public User getRegUser() {
-        return regUser;
+    public User getUser() {
+        return user;
     }
 
-    public void setRegUser(User regUser) {
-        this.regUser = regUser;
+    public void setUser(User regUser) {
+        this.user = regUser;
     }
-
-
-
-
 }

@@ -3,9 +3,10 @@ package dtt.business.utilities;
 import dtt.global.tansport.Faculty;
 import dtt.global.tansport.User;
 import dtt.global.tansport.UserState;
-import jakarta.annotation.ManagedBean;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -29,7 +30,7 @@ import java.util.Map;
 @Named("sessionInfo")
 @SessionScoped
 public class SessionInfo implements Serializable {
-
+    private static final Logger LOGGER = LogManager.getLogger();
     private static final long serialVersionUID = 10;
     private User user;
 
@@ -38,20 +39,31 @@ public class SessionInfo implements Serializable {
     }
 
     public void setUser(User user) {
+        LOGGER.info("User set:" + user.getId());
+        LOGGER.info("User is a:" + user.getUserState());
         this.user = user;
     }
 
     /**
      * Checks if the user is an Admin.
+     *
      * @return true if the user is an Admin.
      */
     public boolean isAdmin() {
         Map<Faculty, UserState> map = user.getUserState();
-        for (UserState state : map.values())  {
+        for (UserState state : map.values()) {
             if (state == UserState.ADMIN) {
                 return true;
             }
         }
         return false;
+    }
+    public boolean isCommitteeMember(Faculty faculty) {
+        Map<Faculty, UserState> map = user.getUserState();
+        return (map.get(faculty) == UserState.EXAMINCOMMITTEEMEMBERS);
+    }
+    public boolean isPending(Faculty faculty) {
+        Map<Faculty, UserState> map = user.getUserState();
+        return (map.get(faculty) == UserState.PENDING);
     }
 }

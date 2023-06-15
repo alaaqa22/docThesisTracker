@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
  */
 @WebListener
 public class SystemInitializer implements ServletContextListener {
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger(SystemInitializer.class);
 
     private final MaintenanceThread maintenanceThread = new MaintenanceThread();
 
@@ -32,11 +32,11 @@ public class SystemInitializer implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent arg) {
 
-        logger.info("-----Logger initialized-----");
+        LOGGER.info("-----Logger initialized-----");
         ConfigReader.loadProperties();
-        logger.info("Config read");
+        LOGGER.info("Config read");
         ConnectionPool.getInstance().initialize(Integer.parseInt(ConfigReader.getProperty(ConfigReader.DATABASE_SIZE)));
-        logger.info("Connection pool initialized");
+        LOGGER.info("Connection pool initialized");
         //maintenanceThread.startMaintenance();
     }
 
@@ -50,7 +50,7 @@ public class SystemInitializer implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent arg) {
         ConnectionPool.getInstance().shutdown();
-        logger.info("-----Logger shutting down-----");
+        LOGGER.info("-----Logger shutting down-----");
         LogManager.shutdown();
         //maintenanceThread.stopMaintenance();
     }

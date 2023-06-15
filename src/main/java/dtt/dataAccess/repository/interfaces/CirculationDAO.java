@@ -32,7 +32,7 @@ public interface CirculationDAO {
 	 * @throws InvalidInputException if input data is faulty
 	 * @throws KeyExistsException if the circulation title is not unique
 	 */
-	public void add(Circulation circulation, Transaction transaction) throws DataNotCompleteException, InvalidInputException, KeyExistsException;
+    void add(Circulation circulation, Transaction transaction) throws DataNotCompleteException, InvalidInputException, KeyExistsException;
 	
 	/**
 	 * Remove a circulation record from the database.
@@ -46,7 +46,7 @@ public interface CirculationDAO {
 	 * @param transaction The transaction associated with this operation.
 	 * @throws DataNotFoundException if the {@code circulation} record is not found in the database
 	 */
-	public void remove(Circulation circulation, Transaction transaction) throws DataNotFoundException;
+    void remove(Circulation circulation, Transaction transaction) throws DataNotFoundException;
 	
 	/**
 	 * Update a circulation record in the database.
@@ -61,7 +61,7 @@ public interface CirculationDAO {
 	 * @throws InvalidInputException if input data is faulty
 	 * @throws KeyExistsException if the email address of the {@code user} is already present in the Database
 	 */
-	public void update(Circulation circulation, Transaction transaction) throws DataNotFoundException, InvalidInputException, KeyExistsException;
+    void update(Circulation circulation, Transaction transaction) throws DataNotFoundException, InvalidInputException, KeyExistsException;
 	
 	/**
 	 * Retrieve a circulation record from the database.
@@ -74,7 +74,7 @@ public interface CirculationDAO {
 	 * @param transaction The transaction associated with this operation.
 	 * @throws DataNotFoundException if the {@code circulation} record is not found in the database
 	 */
-	public void getCirculationById(Circulation circulation, Transaction transaction) throws DataNotFoundException;
+    void getCirculationById(Circulation circulation, Transaction transaction) throws DataNotFoundException;
 	
 	/**
 	 * Check if a circulation with a given title exists and retrieve it from the Database.
@@ -87,7 +87,7 @@ public interface CirculationDAO {
 	 * @param transaction The transaction associated with this operation.
 	 * @return {@code true} if circulation with that same title was found in the Database; {@code false} if no circulation with that title was found 
 	 */
-	public boolean findCirculationByTitle(Circulation circulation, Transaction transaction);
+    boolean findCirculationByTitle(Circulation circulation, Transaction transaction);
 
 	/**
 	 * Retrieve a list of circulation records from the database with pagination support.
@@ -101,7 +101,7 @@ public interface CirculationDAO {
 	 * @param count The maximum number of circulation records to retrieve.
 	 * @return A list of Users matching the filter criteria, or an empty list if no matches were found.
 	 */
-	public List<Circulation> getCirculations(Circulation circulation, Transaction transaction, int offset, int count);
+    List<Circulation> getCirculations(Circulation circulation, Transaction transaction, int offset, int count);
 	
 	/**
 	 * Get the Total Number of Circulations matching a given filter.
@@ -110,5 +110,5 @@ public interface CirculationDAO {
 	 * @param transaction The transaction associated with this operation.
 	 * @return the total number of Users found matching the filter.
 	 */
-	public int getTotalCirculationNumber(Circulation circulation, Transaction transaction);
+    int getTotalCirculationNumber(Circulation circulation, Transaction transaction);
 }

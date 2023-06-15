@@ -12,8 +12,8 @@ public class Circulation {
     private String doctoralCandidateName; // The name of the doctoral candidate
     private String doctoralSupervisor; // The name of the doctoral supervisor
     private String description; // The description of the circulation
-    Timestamp startDate; // The start deadline of the circulation
-    Timestamp endDate; // The end deadline of the circulation
+    private Timestamp startDate; // The start deadline of the circulation
+    private Timestamp endDate; // The end deadline of the circulation
     private boolean isObligatory; // Indicates if the circulation is obligatory
 
 

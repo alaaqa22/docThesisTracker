@@ -34,9 +34,13 @@ public class Transaction implements AutoCloseable {
 	 * 
 	 * @throws SQLException if there is an error aborting the transaction
 	 */
-	public void abort() throws SQLException {
+	public void abort() {
 		if (!didCommit) {
-			connection.rollback();
+			try {
+				connection.rollback();
+			} catch (SQLException e) {
+				throw new DBConnectionFailedException("Error aborting the Transaction", e);
+			}
 		}
 	};
 
@@ -45,9 +49,13 @@ public class Transaction implements AutoCloseable {
 	 * 
 	 * @throws SQLException if there is an error committing the transaction
 	 */
-	public void commit() throws SQLException {
+	public void commit() {
 		if (!didCommit) {
-			connection.commit();
+			try {
+				connection.commit();
+			} catch (SQLException e) {
+				throw new DBConnectionFailedException("Error committing transaction", e);
+			}
 			didCommit = true;
 		}
 	};
@@ -67,9 +75,13 @@ public class Transaction implements AutoCloseable {
 	 * @throws SQLException if there is an error closing the transaction
 	 */
 	@Override
-	public void close() throws SQLException {
+	public void close() {
 		if (!didCommit) {
-			connection.rollback();
+			try {
+				connection.rollback();
+			} catch (SQLException e) {
+				throw new DBConnectionFailedException("Rollback failed", e);
+			}
 			didCommit = true;
 		}
 		ConnectionPool.getInstance().releaseConnection(connection);

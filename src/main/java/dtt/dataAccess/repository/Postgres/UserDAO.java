@@ -49,8 +49,9 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 //			throw new DataNotCompleteException();
 //		}
 
-		// TODO Email Check (I don't like it using 2 connections)
-		// if(findUserByEmail(user, transaction))
+		if(findUserByEmail(user, transaction)) {
+			throw new KeyExistsException();
+		}
 
 		try (
 				PreparedStatement statement = transaction.getConnection().prepareStatement(query,
@@ -309,10 +310,10 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 			parameters.add(user.getEmail());
 		}
 
-//	    if (user != null && user.getBirthDate() != null) {
-//	        conditions.add("\"user\".birth_date = ?");
-//	        parameters.add(user.getBirthDate());
-//	    }
+	    if (user != null && user.getBirthDate() != null) {
+	        conditions.add("\"user\".birth_date = ?");
+	        parameters.add(user.getBirthDate());
+	    }
 
 		if (faculty != null) {
 			conditions.add("faculty.faculty_id = ?");
@@ -347,7 +348,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 					fetchedUser.setEmail(resultSet.getString("email_address"));
 					fetchedUser.setFirstName(resultSet.getString("first_name"));
 					fetchedUser.setLastName(resultSet.getString("last_name"));
-//	                fetchedUser.setBirthDate(resultSet.getDate("birth_date"));
+	                fetchedUser.setBirthDate(resultSet.getDate("birth_date").toString());
 
 					userList.add(fetchedUser);
 				}
@@ -395,10 +396,10 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 			parameters.add(user.getEmail());
 		}
 
-//	    if (user != null && user.getBirthDate() != null) {
-//	        conditions.add("\"user\".birth_date = ?");
-//	        parameters.add(user.getBirthDate());
-//	    }
+	    if (user != null && user.getBirthDate() != null) {
+	        conditions.add("\"user\".birth_date = ?");
+	        parameters.add(user.getBirthDate());
+	    }
 
 		if (faculty != null) {
 			conditions.add("faculty.faculty_id = ?");
@@ -433,7 +434,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 					fetchedUser.setEmail(resultSet.getString("email_address"));
 					fetchedUser.setFirstName(resultSet.getString("first_name"));
 					fetchedUser.setLastName(resultSet.getString("last_name"));
-//	                fetchedUser.setBirthDate(resultSet.getDate("birth_date"));
+	                fetchedUser.setBirthDate(resultSet.getDate("birth_date").toString());
 
 					userList.add(fetchedUser);
 				}
@@ -467,10 +468,10 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 			parameters.add(user.getEmail());
 		}
 
-//	    if (user != null && user.getBirthDate() != null) {
-//	        conditions.add("\"user\".birth_date = ?");
-//	        parameters.add(user.getBirthDate());
-//	    }
+	    if (user != null && user.getBirthDate() != null) {
+	        conditions.add("\"user\".birth_date = ?");
+	        parameters.add(user.getBirthDate());
+	    }
 
 		if (faculty != null) {
 			conditions.add("faculty.faculty_id = ?");

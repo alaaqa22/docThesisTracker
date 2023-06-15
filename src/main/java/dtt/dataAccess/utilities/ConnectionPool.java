@@ -23,13 +23,13 @@ public class ConnectionPool {
 	private List<Connection> available; // List of available connections
 	private List<Connection> busy; // List of in use connections
 
-	private static String DB_DRIVER;
-	private static String DB_HOST;
-	private static String DB_NAME;
-	private static String DB_USER;
-	private static String DB_PASSWORD;
-	private static int DB_INITIAL_SIZE;
-	private static int DB_MAX_SIZE;
+	private final String DB_DRIVER;
+	private final String DB_HOST;
+	private final String DB_NAME;
+	private final String DB_USER;
+	private final String DB_PASSWORD;
+	private final int DB_MAX_SIZE;
+	private int dbInitialSize;
 
 	/**
 	 * Private Constructor for singleton pattern
@@ -60,14 +60,14 @@ public class ConnectionPool {
 	 * @throws DBConnectionFailedException if there is an error while creating the
 	 *                                     initial connections
 	 */
-	public void initialize(int initialConnections) throws DBConnectionFailedException {
+	public void initialize(int initialConnections) {
 		try {
 			Class.forName(DB_DRIVER);
 			for (int i = 0; i < initialConnections; i++) {
 				Connection connection = createConnection();
 				available.add(connection);
 			}
-			DB_INITIAL_SIZE = initialConnections;
+			dbInitialSize = initialConnections;
 		} catch (ClassNotFoundException e) {
 			throw new DBConnectionFailedException("JDBC Driver not found", e);
 		}
@@ -85,7 +85,7 @@ public class ConnectionPool {
 	 * @throws DBConnectionFailedException if there is an error while getting a
 	 *                                     connection from the pool
 	 */
-	public synchronized Connection getConnection() throws DBConnectionFailedException {
+	public synchronized Connection getConnection() {
 		if (available.isEmpty()) {
 			if (available.size() + busy.size() < DB_MAX_SIZE) {
 				try {
@@ -118,9 +118,9 @@ public class ConnectionPool {
 	 * @throws DBConnectionFailedException if there is an error while releasing the
 	 *                                     connection
 	 */
-	public synchronized void releaseConnection(Connection connection) throws DBConnectionFailedException {
+	public synchronized void releaseConnection(Connection connection) {
 		if (busy.remove(connection)) {
-			if (busy.size() + available.size() < DB_INITIAL_SIZE) {
+			if (busy.size() + available.size() < dbInitialSize) {
 				available.add(connection);
 			} else {
 				try {
@@ -142,7 +142,7 @@ public class ConnectionPool {
 	 * @throws DBConnectionFailedException if there is an error while creating a
 	 *                                     connection
 	 */
-	private Connection createConnection() throws DBConnectionFailedException {
+	private Connection createConnection() {
 		// TODO Improve and test create conn
 		Properties props = new Properties();
 		props.setProperty("user", DB_USER);
@@ -173,12 +173,12 @@ public class ConnectionPool {
 		return connectionPool;
 	}
 
-	public void shutdown() throws DBConnectionFailedException {
+	public void shutdown() {
 		for (Connection connection : available) {
 			try {
 				connection.close();
 			} catch (SQLException e) {
-				throw new DBConnectionFailedException("Failed to close connection", e);
+				//TODO throw new DBConnectionFailedException("Failed to close connection", e);
 			}
 		}
 		available.clear();
@@ -186,7 +186,7 @@ public class ConnectionPool {
 			try {
 				connection.close();
 			} catch (SQLException e) {
-				throw new DBConnectionFailedException("Failed to close connection", e);
+				//TODO throw new DBConnectionFailedException("Failed to close connection", e);
 			}
 		}
 		busy.clear();

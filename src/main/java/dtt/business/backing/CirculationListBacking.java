@@ -53,7 +53,7 @@ public class CirculationListBacking implements Serializable {
                     int currentPage = getCurrentPage();
                     int maxItems = getMaxItems();
                     if (currentPage <= 0 || maxItems <= 0) {
-                     //   logger.error("Invalid currentPage or maxItems value.");
+                        logger.error("Invalid currentPage or maxItems value.");
                         return;
                     }
 
@@ -65,7 +65,7 @@ public class CirculationListBacking implements Serializable {
                     // Commit the transaction
                     transaction.commit();
                 } catch (SQLException e) {
-                   // logger.error("Error committing the transaction: " + e.getMessage());
+                    logger.error("Error committing the transaction: " + e.getMessage());
                 }
             }
         };

@@ -5,7 +5,12 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
+
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
+
+
+
 /**
  * Utility class for reading configuration properties from a properties file.
  * @author Johannes Silvennoinen
@@ -23,6 +28,8 @@ public final class ConfigReader {
     public static final String COLOR_SCHEME = "COLOR_SCHEME";
     public static final String IMPRINT = "IMPRINT";
     public static final String LOGO_PATH = "LOGO_PATH";
+    public static final String IMPRINT_FILE_PATH = "/config/impressumContent.txt";
+
     public static final String PRODUCTION_MODE = "PRODUCTION_MODE";
     public static final String EMAIL_PATTERN = "EMAIL_PATTERN";
     public static final String DATABASE_URL = "DATABASE_URL";
@@ -33,6 +40,8 @@ public final class ConfigReader {
     public static final String SSL = "SSL";
     public static final String SSL_FACTORY = "SSL_FACTORY";
     public static final String PASSWORD_PATTERN = "PASSWORD_PATTERN";
+    private final Logger logger = LogManager.getLogger();
+
     /**
      * Reads the configuration properties from the properties file and assigns them
      * to a static Properties object.
@@ -61,4 +70,18 @@ public final class ConfigReader {
         return properties != null;
     }
 
-}
+    public static String getImpressumContent(){
+        String impressumContent = null;
+        try (InputStream inputStream = ConfigReader.class.getResourceAsStream(IMPRINT_FILE_PATH)) {
+            if (inputStream != null) {
+                impressumContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+            }
+        } catch (IOException e) {
+            LOGGER.fatal("Failed to read impressum.txt file.", e);
+            throw new RuntimeException(e);
+        }
+        return impressumContent;
+
+
+    }}
+

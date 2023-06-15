@@ -27,6 +27,7 @@
 
 
                         <!--  für anonymous User -->
+                        <h:panelGroup  >
                         <ul class="navbar-nav" style="display: flex; flex-wrap: wrap;">
                             <li class="nav-item" style="list-style-type: none;">
                                 <h:graphicImage value="/logo/LogoSeite.png" style="max-width: 200px; max-height: 200px;" />
@@ -34,13 +35,15 @@
 
 
                             <li class="nav-item justify-content-end">
-                                <h:link outcome="Impressum" value="Impressum" styleClass="nav-link" />
+                                <h:commandLink value="impressum" action="impressum"  styleClass="nav-link"/>
+
                             </li>
                             <li class="nav-item justify-content-end">
                                 <h:link outcome="help" value="Hilfeseite" styleClass="nav-link" />
                             </li>
 
                         </ul>
+                        </h:panelGroup >
 
 
                         <!-- für Prüfungsberechtigte -->

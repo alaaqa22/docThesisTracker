@@ -7,27 +7,12 @@
 
 <h:head>
    <title>Impressum</title>
+   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"/>
+
 </h:head>
 
 <h:body>
-   <!--Imprssum info -->
-   <h1>Impressum</h1>
-   <p>
-
-      Team 2 SEP   <br/>
-      Uni Passau <br/>
-      Innstraße 41 , 94032 Passau
-
-   </p>
-
-
-   <!--Kontakt info -->
-   <h2>Kontakt:</h2>
-   <p>
-      Telefon: 01234-567890<br/>
-      E-Mail: info@DockThesisTracker.de
-   </p>
-
+   <h:outputText value="#{impressumBacking.impressumContent}"  />
 
 
 

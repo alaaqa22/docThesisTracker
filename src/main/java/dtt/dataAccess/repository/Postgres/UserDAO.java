@@ -30,7 +30,7 @@ import jakarta.inject.Named;
 
 @ApplicationScoped
 @Named
-public final class UserDAO
+public class UserDAO
         implements dtt.dataAccess.repository.interfaces.UserDAO {
 
     /**

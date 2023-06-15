@@ -14,11 +14,6 @@
 
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"/>
 
-
-
-
-
-
     </h:head>
 
     <h:body>
@@ -119,7 +114,7 @@
                     </h:panelGroup>
 
 
-                    <h:outputText styleClass="page-item" value="Page : #{circulationListBacking.circPagination.currentPage} of #{circulationListBacking.circPagination.calculateNumberOfPages()}" />
+                    <h:outputText styleClass="page-item" value="Page : #{circulationListBacking.circPagination.currentPage} of #{circulationListBacking.circPagination.getTotalNumOfPages() }" />
 
 
                     <h:panelGroup layout="block" styleClass="page-item">

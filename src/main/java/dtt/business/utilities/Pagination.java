@@ -117,5 +117,7 @@ public abstract class Pagination<T> {
         this.sortColumn = sortColumn;
     }
 
-
+    public int getMaxItems () {
+        return maxItems;
+    }
 }

@@ -10,10 +10,15 @@ import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.util.JsonUtils;
 
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
+
+
 
 /**
  * Backing bean for the circulation list page.
@@ -30,6 +35,7 @@ public class CirculationListBacking implements Serializable {
     private CirculationDAO circDAO;
     @Inject
     private SessionInfo sessionInfo;
+    private final Logger logger = LogManager.getLogger();
 
 
     /**
@@ -39,25 +45,32 @@ public class CirculationListBacking implements Serializable {
      * Any SQLException that occurs during the transaction commit is caught and an error message is printed.
      */
     public CirculationListBacking() {
-
         circPagination = new Pagination<Circulation>() {
             @Override
             public void loadData() {
                 // Load circulations data using a transaction
                 try (Transaction transaction = new Transaction()) {
-                    int offset = (getCurrentPage() - 1) * getMaxItems ();
-                    int count = getMaxItems();
+                    int currentPage = getCurrentPage();
+                    int maxItems = getMaxItems();
+                    if (currentPage <= 0 || maxItems <= 0) {
+                     //   logger.error("Invalid currentPage or maxItems value.");
+                        return;
+                    }
+
+                    int offset = (currentPage - 1) * maxItems;
+                    int count = maxItems;
                     List<Circulation> cir = circDAO.getCirculations(filter, transaction, offset, count);
                     setEntries(cir);
 
                     // Commit the transaction
                     transaction.commit();
                 } catch (SQLException e) {
-                    System.err.println("Error committing the transaction: " + e.getMessage());
+                   // logger.error("Error committing the transaction: " + e.getMessage());
                 }
             }
         };
     }
+
 
 
     /**

@@ -24,7 +24,7 @@
 
 
             <!---  dataTable for a Circulation List -->
-            <h:dataTable value="#{circulationListBacking.circPagination.entries}" var="circulation" styleClass="my-table" border="2" >
+            <h:dataTable value="#{circulationListBacking.circulations}" var="circulation" styleClass="my-table" border="2" >
 
                 <f:facet name="header">
                     <h:outputText value="Circulations"  styleClass="text-center" />
@@ -32,7 +32,7 @@
                 </f:facet>
 
                     <!-- Fakultät -->
-                    <h:column  rendered="#{circulationListBacking.sessionInfo.user.roleId >= 4}">
+                    <h:column  rendered="#{circulationListBacking.sessionInfo.admin}">
                         <f:facet name="header">
                             <h:outputText value="Fakultät" />
                             <h:inputText value="#{circulationListBacking.filter.facultyId}">
@@ -52,6 +52,7 @@
                         </h:inputText>
                     </f:facet>
                     <h:outputText value="#{circulation.title}" />
+
 
                 </h:column>
 
@@ -104,26 +105,28 @@
 
             <!-- Pagination Controls -->
             <div class="d-flex justify-content-center">
-                <ul class="pagination">
+                <ul class="pagination" >
+                   <h:panelGroup rendered="#{circulationListBacking.circPagination.totalNumOfPages>1}" >
                     <h:panelGroup layout="block" styleClass="page-item">
                         <h:commandLink value="First" action="#{circulationListBacking.circPagination.firstPage}" styleClass="page-link"/>
                     </h:panelGroup>
 
-                    <h:panelGroup layout="block" styleClass="page-item" rendered="#{!circulationListBacking.circPagination.firstPage()}">
-                        <h:commandLink value="Previous" action="#{circulationListBacking.circPagination.previousPage}" styleClass="page-link" />
+                    <h:panelGroup layout="block" styleClass="page-item" rendered="#{!circulationListBacking.circPagination.isFirstPage()}">
+                        <h:commandLink value="Previous" action="#{circulationListBacking.circPagination.previousPage()}" styleClass="page-link" />
                     </h:panelGroup>
 
 
                     <h:outputText styleClass="page-item" value="Page : #{circulationListBacking.circPagination.currentPage} of #{circulationListBacking.circPagination.getTotalNumOfPages() }" />
 
 
-                    <h:panelGroup layout="block" styleClass="page-item">
-                        <h:commandLink value="Next" action="#{circulationListBacking.circPagination.nextPage}"
+                    <h:panelGroup layout="block" styleClass="page-item" rendered="#{!circulationListBacking.circPagination.isLastPage()}">
+                        <h:commandLink value="Next" action="#{circulationListBacking.circPagination.nextPage()}"
                                        rendered="#{!circulationListBacking.circPagination.lastPage()}" styleClass="page-link"/>
                     </h:panelGroup>
                     <h:panelGroup layout="block" styleClass="page-item">
-                        <h:commandLink value="Last" action="#{circulationListBacking.circPagination.lastPage}" styleClass="page-link"/>
-                    </h:panelGroup>
+                        <h:commandLink value="Last" action="#{circulationListBacking.circPagination.lastPage()}" styleClass="page-link"/>
+                   </h:panelGroup>
+                   </h:panelGroup>
                 </ul>
             </div>
         </h:form>

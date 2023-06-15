@@ -120,4 +120,10 @@ public abstract class Pagination<T> {
     public int getMaxItems () {
         return maxItems;
     }
+    public boolean isFirstPage(){
+        return currentPage ==1 ;
+    }
+    public boolean isLastPage(){
+        return currentPage ==totalNumOfPages ;
+    }
 }

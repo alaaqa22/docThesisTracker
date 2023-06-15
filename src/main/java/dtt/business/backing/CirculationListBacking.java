@@ -45,24 +45,28 @@ public class CirculationListBacking implements Serializable {
      * Any SQLException that occurs during the transaction commit is caught and an error message is printed.
      */
     public CirculationListBacking() {
-        circPagination = new Pagination<Circulation>() {
+        this.circPagination = createPagination();
+    }
+
+    private Pagination<Circulation> createPagination() {
+        return new Pagination<Circulation>() {
             @Override
             public void loadData() {
-                // Load circulations data using a transaction
-                Transaction transaction = new Transaction();
-                    int currentPage = getCurrentPage();
-                    int maxItems = getMaxItems();
-                    if (currentPage <= 0 || maxItems <= 0) {
-                        logger.error("Invalid currentPage or maxItems value.");
-                        return;
-                    }
+                int currentPage = getCurrentPage();
+                int maxItems = getMaxItems ();
+                if (currentPage <= 0 || maxItems <= 0) {
+                    logger.error("Invalid currentPage or maxItems value.");
+                }
 
-                    int offset = (currentPage - 1) * maxItems;
-                    int count = maxItems;
+                int offset = (currentPage - 1) * maxItems;
+                int count = maxItems;
+
+                Transaction transaction ;
+
+                    transaction = new Transaction();
                     List<Circulation> cir = circDAO.getCirculations(filter, transaction, offset, count);
                     setEntries(cir);
-
-                    // Commit the transaction
+                    circulations = cir;
                     transaction.commit();
 
             }
@@ -77,6 +81,9 @@ public class CirculationListBacking implements Serializable {
     @PostConstruct
     public void init(){
         filter = new Circulation ();
+        loadCirculations();
+
+
     }
 
 

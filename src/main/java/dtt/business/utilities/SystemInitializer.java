@@ -7,7 +7,6 @@ import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jboss.weld.bean.proxy.CommonProxiedMethodFilters;
 
 /**
  * The SystemInitializer is responsible for initializing and configuring the
@@ -33,13 +32,9 @@ public class SystemInitializer implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent arg) {
 
-        logger.info("Logger initialized");
+        logger.info("-----Logger initialized-----");
         ConfigReader.loadProperties();
         logger.info("Config read");
-       /*
-        ConnectionPool cp = ConnectionPool.getInstance();
-        cp.initialize(Integer.parseInt(ConfigReader.getProperty(ConfigReader.DATABASE_SIZE)));
-        */
         ConnectionPool.getInstance().initialize(Integer.parseInt(ConfigReader.getProperty(ConfigReader.DATABASE_SIZE)));
         logger.info("Connection pool initialized");
         //maintenanceThread.startMaintenance();
@@ -55,6 +50,7 @@ public class SystemInitializer implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent arg) {
         ConnectionPool.getInstance().shutdown();
+        logger.info("-----Logger shutting down-----");
         LogManager.shutdown();
         //maintenanceThread.stopMaintenance();
     }

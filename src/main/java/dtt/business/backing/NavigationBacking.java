@@ -32,7 +32,7 @@ public class NavigationBacking implements Serializable {
      * After successful logout, the user will be redirected to the login page.
      */
     public String logout() {
-        logger.fatal("User: " + sessionInfo.getUser().getId() + "logged out.");
+        logger.info("User: " + sessionInfo.getUser().getId() + "logged out.");
         sessionInfo.setUser(null);
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
         externalContext.invalidateSession();

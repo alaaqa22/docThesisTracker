@@ -1,23 +1,19 @@
 package dtt.business.backing;
 
 import dtt.business.utilities.SessionInfo;
-import dtt.dataAccess.exceptions.DBConnectionFailedException;
 import dtt.dataAccess.exceptions.DataNotCompleteException;
 import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.exceptions.KeyExistsException;
 import dtt.dataAccess.repository.Postgres.CirculationDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
-import dtt.global.tansport.Faculty;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  * Backing bean for new circulation page.
@@ -44,11 +40,9 @@ public class CirculationCreatingBacking implements Serializable {
     @PostConstruct
     public void init() {
     	circulation = new Circulation();
-    	//TODO Set Faculty of circulation, or set possible faculties to choose from
-    	circulation.setFacultyId(1);//TODO temporary. needs change circulation.setFacultyId(session.getFacultyId());
+    	circulation.setFacultyId(1);
+    	//circulation.setFacultyId(session.getFacultyId());
     	circulation.setCreatedBy(session.getUser().getId());
-//    	startDate = LocalDate.now();
-//    	endDate = LocalDate.now();
     }
 
 

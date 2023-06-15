@@ -1,6 +1,10 @@
 package dtt.business.utilities;
 
+import dtt.dataAccess.repository.Postgres.CirculationDAO;
+import dtt.dataAccess.utilities.Transaction;
+import dtt.global.tansport.Circulation;
 import dtt.global.utilities.ConfigReader;
+import jakarta.inject.Inject;
 
 import java.util.List;
 
@@ -9,88 +13,47 @@ import java.util.List;
  *
  * @author Alaa Aasem
  */
-public abstract class Pagination <T>{
+public abstract class Pagination<T> {
 
     protected int maxItems = Integer.parseInt(ConfigReader.getProperty(ConfigReader.PAGINATION_MAX_ITEMS));
     private int currentPage;
-    private int maxPages;
+    private int totalNumOfPages;
     private List<T> entries;
     private String sortColumn;
-    /**
-     *  Load data of next page, unless you are already on the last page.
-     */
-    public void nextPage(){
-        setCurrentPage(currentPage+1);
-        loadData();
 
+    public Pagination(){
+        setCurrentPage(1);
     }
 
     /**
-     *  Load data of previous page, unless you are already on the first page.
+     * Load data of next page, unless you are already on the last page.
      */
-
-    public void previousPage(){
-        setCurrentPage(currentPage-1);
-        loadData();
-
+    public void nextPage() {
+        if (currentPage < getTotalNumOfPages()) {
+            setCurrentPage(currentPage + 1);
+            loadData();
+        }
     }
 
-    public void setMaxItems (int maxItems) {
-        this.maxItems = maxItems;
-    }
-
-    public void setCurrentPage (int currentPage) {
-        this.currentPage = currentPage;
-    }
-
-    public void setMaxPages (int maxPages) {
-        this.maxPages = maxPages;
-    }
-
-    public void setEntries (List<T> entries) {
-        this.entries = entries;
-    }
-
-    public void setSortColumn (String sortColumn) {
-        this.sortColumn = sortColumn;
-    }
-
-    public int getMaxItems () {
-        return maxItems;
-    }
-
-    public int getCurrentPage () {
-        return currentPage;
-    }
-
-    public int getMaxPages () {
-        return maxPages;
-    }
-
-    public List<T> getEntries () {
-        return entries;
-    }
-
-    public String getSortColumn () {
-        return sortColumn;
-    }
 
     /**
      * Needs to be overwritten to load the correct data items for the page.
      */
     public abstract void loadData();
+
     /**
      * Load data on last page.
      */
-    public void lastPage(){
-        setCurrentPage(calculateNumberOfPages());
+    public void lastPage() {
+        setCurrentPage(getTotalNumOfPages());
         loadData();
 
     }
+
     /**
      * Load data on page 1.
      */
-    public void firstPage(){
+    public void firstPage() {
         setCurrentPage(1);
         loadData();
 
@@ -98,25 +61,61 @@ public abstract class Pagination <T>{
 
     /**
      * Sort the data in the list by a certain column.
+     *
+     * @param column column identifier to sort by.
      */
-    public void sortBy(){
+    public void sortBy(String column) {
+        sortColumn = column;
+        loadData();
 
+    }
+
+    public void previousPage() {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+            loadData();
+        }
+
+    }
+
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
     }
 
     /**
-     * Calculate the number of pages.
+     * Get the total pages that will be needed to arrange the pages.
      *
-     * @return The number of pages.
+     * @return Total number of Pages.
      */
-    public Integer calculateNumberOfPages(){
-        return maxPages;
+    public int getTotalNumOfPages() {
+     /*   totalNumOfPages = circulationDAO.getTotalCirculationNumber(new Circulation(), new Transaction())
+                / maxItems;*/
+        return totalNumOfPages;
     }
 
-    public boolean isFirstPage(){
-        return currentPage == 1 ;
+    public void setTotalNumOfPages(int totalNumOfPages) {
+        this.totalNumOfPages = totalNumOfPages;
     }
-    public boolean isLastPage(){
-        return currentPage == maxPages;
+
+    public List<T> getEntries() {
+        return entries;
     }
+
+    public void setEntries(List<T> entries) {
+        this.entries = entries;
+    }
+
+    public String getSortColumn() {
+        return sortColumn;
+    }
+
+    public void setSortColumn(String sortColumn) {
+        this.sortColumn = sortColumn;
+    }
+
+
 }
-

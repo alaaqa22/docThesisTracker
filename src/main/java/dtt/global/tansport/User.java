@@ -1,5 +1,6 @@
 package dtt.global.tansport;
 
+import java.util.HashMap;
 import java.util.Map;
 /**
  *  Represents a User in the System.
@@ -30,6 +31,7 @@ public class User {
 
 
     public User() {
+        userState = new HashMap<> ();
     }
 
 

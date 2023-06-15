@@ -20,6 +20,8 @@ import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
+import java.util.HashMap;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,6 +48,7 @@ public class LoginBacking implements Serializable {
     @PostConstruct
     public void init(){
         user = new User();
+
     }
 
     /**

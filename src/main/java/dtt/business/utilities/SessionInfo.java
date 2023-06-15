@@ -30,17 +30,17 @@ import java.util.Map;
 @Named("sessionInfo")
 @SessionScoped
 public class SessionInfo implements Serializable {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger ();
     private static final long serialVersionUID = 10;
-    private User user;
+    private User user = new User ();
 
-    public User getUser() {
+    public User getUser () {
         return user;
     }
 
-    public void setUser(User user) {
-        LOGGER.info("User set:" + user.getId());
-        LOGGER.info("User is a:" + user.getUserState());
+    public void setUser (User user) {
+        LOGGER.info ("User set:" + user.getId ());
+        LOGGER.info ("User is a:" + user.getUserState ());
         this.user = user;
     }
 
@@ -49,9 +49,9 @@ public class SessionInfo implements Serializable {
      *
      * @return true if the user is an Admin.
      */
-    public boolean isAdmin() {
-        Map<Faculty, UserState> map = user.getUserState();
-        for (UserState state : map.values()) {
+    public boolean isAdmin () {
+        Map<Faculty, UserState> map = user.getUserState ();
+        for (UserState state : map.values ()) {
             if (state == UserState.ADMIN) {
                 return true;
             }
@@ -59,40 +59,53 @@ public class SessionInfo implements Serializable {
         return false;
     }
 
-    public boolean isCommitteeMember() {
-        Map<Faculty, UserState> map = user.getUserState();
-        for (UserState state : map.values()) {
+    public boolean isCommitteeMember () {
+        Map<Faculty, UserState> map = user.getUserState ();
+        for (UserState state : map.values ()) {
             if (state == UserState.EXAMINCOMMITTEEMEMBERS) {
                 return true;
             }
         }
         return false;
     }
-    public boolean isExaminer() {
-        Map<Faculty, UserState> map = user.getUserState();
-        for (UserState state : map.values()) {
+
+    public boolean isExaminer () {
+        Map<Faculty, UserState> map = user.getUserState ();
+        for (UserState state : map.values ()) {
             if (state == UserState.EXAMINER) {
                 return true;
             }
         }
         return false;
-     }
-    public boolean isDeanery() {
-        Map<Faculty, UserState> map = user.getUserState();
-        for (UserState state : map.values()) {
+    }
+
+    public boolean isDeanery () {
+        Map<Faculty, UserState> map = user.getUserState ();
+        for (UserState state : map.values ()) {
             if (state == UserState.DEANERY) {
                 return true;
             }
         }
         return false;
     }
-    public boolean isPending() {
-        Map<Faculty, UserState> map = user.getUserState();
-        for (UserState state : map.values()) {
+
+    public boolean isPending () {
+        Map<Faculty, UserState> map = user.getUserState ();
+        for (UserState state : map.values ()) {
             if (state == UserState.PENDING) {
                 return true;
             }
         }
         return false;
     }
+
+    // test
+    public boolean isAnonymous () {
+        Map<Faculty, UserState> map = user.getUserState();
+        if (map == null || map.isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
 }

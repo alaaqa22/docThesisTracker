@@ -12,6 +12,8 @@ import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A Postgres implementation for a class handling database access related to Circulations.
@@ -22,6 +24,7 @@ import jakarta.inject.Named;
 @Named
 @ApplicationScoped
 public class CirculationDAO implements dtt.dataAccess.repository.interfaces.CirculationDAO {
+	private static final Logger logger = LogManager.getLogger();
 	// Column names
 	private final String CIRCULATION_ID = "circulation_id";
 	private final String TITLE = "title";
@@ -47,8 +50,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 		String query = "INSERT INTO circulation (title, doctoral_candidate_name, doctoral_supervisor_name, " +
 				"description, start_date, end_date, is_obligatory, created_by, faculty_id , is_valid) " +
 				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		try (transaction;
-			 PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
+		try (PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
 			setCirculationStatement(circulation, statement);
 
 			int affectedRows = statement.executeUpdate();
@@ -86,7 +88,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 	public void remove(Circulation circulation, Transaction transaction) throws DataNotFoundException {
 		String query = "DELETE FROM circulation WHERE circulation_id = ?";
 
-		try (transaction; PreparedStatement statement = transaction.getConnection().prepareStatement(query)){
+		try (PreparedStatement statement = transaction.getConnection().prepareStatement(query)){
 			statement.setInt(1, circulation.getId());
 
 			int affectedRows = statement.executeUpdate();
@@ -107,7 +109,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 				"description = ?, start_date = ?, end_date = ?, is_obligatory = ?, created_by = ?, faculty_id = ?, is_valid = ?" +
 				"WHERE circulation_id = ?";
 
-		try (transaction; PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
+		try (PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
 			setCirculationStatement(circulation, statement);
 			statement.setInt(11, circulation.getId());
 
@@ -174,7 +176,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 		}
 
 		if (circulation.getDoctoralSupervisor() != null) {
-			query.append(" AND doctoral_supervisor = ?");
+			query.append(" AND doctoral_supervisor_name = ?");
 		}
 
 		if (circulation.getStartDate() != null) {
@@ -185,7 +187,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 			query.append(" AND end_deadline = ?");
 		}
 
-		query.append(" LIMIT ?, ?");
+		query.append(" LIMIT ? OFFSET ?");
 
 		try (PreparedStatement statement = transaction.getConnection().prepareStatement(query.toString())) {
 			int paramIndex = 1;
@@ -220,15 +222,18 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 			}
 
 			// Set pagination parameters
-			statement.setInt(paramIndex++, offset);
 			statement.setInt(paramIndex++, count);
+			statement.setInt(paramIndex, offset);
 
 			try (ResultSet resultSet = statement.executeQuery()) {
+				logger.fatal("We made it here and we are filling the list.");
 				// Iterate over the result set and populate the list of circulations
 				while (resultSet.next()) {
 					Circulation resultCirculation = new Circulation();
 					//Populate the circulation with data from the result set
+					logger.fatal("Result circulation id: " + resultSet.getInt(CIRCULATION_ID));
 					resultCirculation.setId(resultSet.getInt(CIRCULATION_ID));
+					logger.fatal("Result circulation title: " + resultSet.getString(TITLE));
 					resultCirculation.setTitle(resultSet.getString(TITLE));
 					resultCirculation.setDescription(resultSet.getString(DESCRIPTION));
 					resultCirculation.setDoctoralCandidateName(resultSet.getString(DOC_CANDIDATE));
@@ -237,6 +242,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 					resultCirculation.setStartDate(resultSet.getTimestamp(START_DATE));
 					resultCirculation.setEndDate(resultSet.getTimestamp(END_DATE));
 					resultCirculation.setFacultyId(resultSet.getInt(FACULTY_ID));
+
 					circulations.add(resultCirculation);
 				}
 			}
@@ -294,7 +300,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 			}
 		}
 
-		try (transaction; PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
+		try (PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
 			for (int i = 0; i < parameters.size(); i++) {
 				statement.setObject(i + 1, parameters.get(i));
 			}
@@ -308,7 +314,6 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 			// Handle any specific exceptions or logging as needed
 			throw new DBConnectionFailedException("Failed to retrieve circulations.", e);
 		}
-
 		return 0;
 	}
 

@@ -58,12 +58,41 @@ public class SessionInfo implements Serializable {
         }
         return false;
     }
-    public boolean isCommitteeMember(Faculty faculty) {
+
+    public boolean isCommitteeMember() {
         Map<Faculty, UserState> map = user.getUserState();
-        return (map.get(faculty) == UserState.EXAMINCOMMITTEEMEMBERS);
+        for (UserState state : map.values()) {
+            if (state == UserState.EXAMINCOMMITTEEMEMBERS) {
+                return true;
+            }
+        }
+        return false;
     }
-    public boolean isPending(Faculty faculty) {
+    public boolean isExaminer() {
         Map<Faculty, UserState> map = user.getUserState();
-        return (map.get(faculty) == UserState.PENDING);
+        for (UserState state : map.values()) {
+            if (state == UserState.EXAMINER) {
+                return true;
+            }
+        }
+        return false;
+     }
+    public boolean isDeanery() {
+        Map<Faculty, UserState> map = user.getUserState();
+        for (UserState state : map.values()) {
+            if (state == UserState.DEANERY) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean isPending() {
+        Map<Faculty, UserState> map = user.getUserState();
+        for (UserState state : map.values()) {
+            if (state == UserState.PENDING) {
+                return true;
+            }
+        }
+        return false;
     }
 }

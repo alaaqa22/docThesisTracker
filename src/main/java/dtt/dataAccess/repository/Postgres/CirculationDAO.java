@@ -24,19 +24,19 @@ import org.apache.logging.log4j.Logger;
 @Named
 @ApplicationScoped
 public class CirculationDAO implements dtt.dataAccess.repository.interfaces.CirculationDAO {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger LOGGER = LogManager.getLogger(CirculationDAO.class);
 	// Column names
-	private final String CIRCULATION_ID = "circulation_id";
-	private final String TITLE = "title";
-	private final String DOC_CANDIDATE = "doctoral_candidate_name";
-	private final String DOC_SUPERVISOR = "doctoral_supervisor_name";
-	private final String DESCRIPTION = "description";
-	private final String START_DATE = "start_date";
-	private final String END_DATE = "end_date";
-	private final String IS_OBLIGATORY = "is_obligatory";
-	private final String CREATED_BY = "created_by";
-	private final String FACULTY_ID = "faculty_id";
-	private final String IS_VALID = "is_valid";
+	private static final String CIRCULATION_ID = "circulation_id";
+	private static final String TITLE = "title";
+	private static final String DOC_CANDIDATE = "doctoral_candidate_name";
+	private static final String DOC_SUPERVISOR = "doctoral_supervisor_name";
+	private static final String DESCRIPTION = "description";
+	private static final String START_DATE = "start_date";
+	private static final String END_DATE = "end_date";
+	private static final String IS_OBLIGATORY = "is_obligatory";
+	private static final String CREATED_BY = "created_by";
+	private static final String FACULTY_ID = "faculty_id";
+	private static final String IS_VALID = "is_valid";
 	/**
 	 * Constructor for CirculationDAO
 	 */
@@ -226,14 +226,14 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 			statement.setInt(paramIndex, offset);
 
 			try (ResultSet resultSet = statement.executeQuery()) {
-				logger.fatal("We made it here and we are filling the list.");
+				LOGGER.fatal("We made it here and we are filling the list.");
 				// Iterate over the result set and populate the list of circulations
 				while (resultSet.next()) {
 					Circulation resultCirculation = new Circulation();
 					//Populate the circulation with data from the result set
-					logger.fatal("Result circulation id: " + resultSet.getInt(CIRCULATION_ID));
+					LOGGER.fatal("Result circulation id: " + resultSet.getInt(CIRCULATION_ID));
 					resultCirculation.setId(resultSet.getInt(CIRCULATION_ID));
-					logger.fatal("Result circulation title: " + resultSet.getString(TITLE));
+					LOGGER.fatal("Result circulation title: " + resultSet.getString(TITLE));
 					resultCirculation.setTitle(resultSet.getString(TITLE));
 					resultCirculation.setDescription(resultSet.getString(DESCRIPTION));
 					resultCirculation.setDoctoralCandidateName(resultSet.getString(DOC_CANDIDATE));

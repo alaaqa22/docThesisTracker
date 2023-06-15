@@ -10,9 +10,11 @@ import java.util.Properties;
  * Utility class for reading configuration properties from a properties file.
  * @author Johannes Silvennoinen
  */
-public class ConfigReader {
+public final class ConfigReader {
 
-    private static final Logger logger = LogManager.getLogger();
+    private ConfigReader() {}
+
+    private static final Logger LOGGER = LogManager.getLogger(ConfigReader.class);
     private static final String PROPERTIES_FILE_PATH = "/config/configuration.properties";
     private static Properties properties;
 
@@ -39,8 +41,9 @@ public class ConfigReader {
         try (InputStream inputStream = ConfigReader.class.getResourceAsStream(PROPERTIES_FILE_PATH)) {
             properties = new Properties();
             properties.load(inputStream);
-        } catch (NullPointerException | IOException e) {
-            logger.fatal("Could not read configuration.properties, path is " + PROPERTIES_FILE_PATH);
+        } catch (IOException e) {
+            LOGGER.fatal("Could not read configuration.properties, path is " + PROPERTIES_FILE_PATH);
+            throw new RuntimeException(e);
         }
     }
     /**

@@ -1,6 +1,5 @@
 package dtt.business.utilities;
 
-import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.security.NoSuchAlgorithmException;
@@ -16,9 +15,14 @@ import java.util.Base64;
  * that performs multiple iterations and requires a salt.
  * @author Johannes Silvennoinen
  */
-public class Hashing {
+public final class Hashing {
     private static final int ITERATIONS = 10000;
     private static final int KEY_LENGTH = 256;
+    private static final int SALT_LENGTH = 16;
+
+    private Hashing() {
+
+    }
 
     /**
      * Hashes the provided password using the PBKDF2 algorithm.
@@ -66,7 +70,7 @@ public class Hashing {
      */
     private static String generateSalt() {
         SecureRandom random = new SecureRandom();
-        byte[] saltBytes = new byte[16];
+        byte[] saltBytes = new byte[SALT_LENGTH];
         random.nextBytes(saltBytes);
         return Base64.getEncoder().encodeToString(saltBytes);
     }

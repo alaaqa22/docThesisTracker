@@ -88,10 +88,7 @@ public class CirculationDetailsBacking implements Serializable {
 
         try {
             circulationDAO.remove(circulation, transaction);
-            try {
-                transaction.commit();
-            } catch (SQLException e) {
-            }
+
         } catch (DataNotFoundException e) {
             throw new IllegalStateException();
         }

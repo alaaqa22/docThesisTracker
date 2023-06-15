@@ -43,20 +43,21 @@ public class UserListBacking implements Serializable {
             @Override
             public void loadData() {
                 // Load User data using a transaction
-                try (Transaction transaction = new Transaction()) {
+                Transaction transaction = new Transaction();
                     int offset = (getCurrentPage() - 1) * getMaxItems ();
                     int count = getMaxItems ();
 
-                    List<User> userList = userDAO.getUsers(filter, transaction, offset, count);
-                    setEntries(userList);
-
-                    // Commit the transaction
-                    transaction.commit();
-                } catch (SQLException e) {
-                    System.err.println("Error committing the transaction: " + e.getMessage());
+                List<User> userList = null;
+                try {
+                    userList = userDAO.getUsers(filter, transaction, offset, count);
                 } catch (InvalidInputException e) {
                     throw new RuntimeException (e);
                 }
+                setEntries(userList);
+
+                    // Commit the transaction
+                    transaction.commit();
+
             }
         };
     }

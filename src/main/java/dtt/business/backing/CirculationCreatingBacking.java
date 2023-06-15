@@ -16,6 +16,7 @@ import jakarta.inject.Named;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -34,6 +35,8 @@ public class CirculationCreatingBacking implements Serializable {
 	private SessionInfo session;
 
     private Circulation circulation;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     /**
      * Initialize the dto object in bean.
@@ -42,8 +45,10 @@ public class CirculationCreatingBacking implements Serializable {
     public void init() {
     	circulation = new Circulation();
     	//TODO Set Faculty of circulation, or set possible faculties to choose from
-    	circulation.setFacultyId(1);//TODO temporary. needs change
+    	circulation.setFacultyId(1);//TODO temporary. needs change circulation.setFacultyId(session.getFacultyId());
     	circulation.setCreatedBy(session.getUser().getId());
+//    	startDate = LocalDate.now();
+//    	endDate = LocalDate.now();
     }
 
 
@@ -52,9 +57,13 @@ public class CirculationCreatingBacking implements Serializable {
      *
      * @param circ The circulation to create.
      */
-    public void create(){
+    public String create(){
+    	circulation.setStartDate(java.sql.Timestamp.valueOf(startDate.atStartOfDay()));
+    	circulation.setEndDate(java.sql.Timestamp.valueOf(endDate.atStartOfDay()));
     	try(Transaction transaction = new Transaction()){
     		circulationDAO.add(circulation, transaction);
+    		transaction.commit();
+    		return "/views/examineCommittee/createCirculation.xhtml";
 		} catch (InvalidInputException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -64,12 +73,31 @@ public class CirculationCreatingBacking implements Serializable {
 		} catch (KeyExistsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (SQLException e) {
-			throw new DBConnectionFailedException("Transaction failed to close", e);
 		}
+		return null;
     }
 
     public Circulation getCirculation() {
         return circulation;
     }
+
+
+	public LocalDate getStartDate() {
+		return startDate;
+	}
+
+
+	public void setStartDate(LocalDate startDate) {
+		this.startDate = startDate;
+	}
+
+
+	public LocalDate getEndDate() {
+		return endDate;
+	}
+
+
+	public void setEndDate(LocalDate endDate) {
+		this.endDate = endDate;
+	}
 }

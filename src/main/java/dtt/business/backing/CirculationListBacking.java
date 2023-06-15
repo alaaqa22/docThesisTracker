@@ -49,7 +49,7 @@ public class CirculationListBacking implements Serializable {
             @Override
             public void loadData() {
                 // Load circulations data using a transaction
-                try (Transaction transaction = new Transaction()) {
+                Transaction transaction = new Transaction();
                     int currentPage = getCurrentPage();
                     int maxItems = getMaxItems();
                     if (currentPage <= 0 || maxItems <= 0) {
@@ -64,9 +64,7 @@ public class CirculationListBacking implements Serializable {
 
                     // Commit the transaction
                     transaction.commit();
-                } catch (SQLException e) {
-                    logger.error("Error committing the transaction: " + e.getMessage());
-                }
+
             }
         };
     }

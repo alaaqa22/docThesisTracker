@@ -38,6 +38,7 @@ public class UniqueCirculationNameValidator implements Validator {
      * @return {@code true} if the Circulation name is unique, {@code false} otherwise.
      */
     private boolean isValueUnique(String CirculationName) {
+    	
         return true;
     }
 

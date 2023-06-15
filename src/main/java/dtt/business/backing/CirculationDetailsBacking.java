@@ -1,10 +1,7 @@
 package dtt.business.backing;
 
 import dtt.business.utilities.SessionInfo;
-import dtt.dataAccess.exceptions.DataIntegrityException;
-import dtt.dataAccess.exceptions.DataNotCompleteException;
-import dtt.dataAccess.exceptions.DataNotFoundException;
-import dtt.dataAccess.exceptions.InvalidInputException;
+import dtt.dataAccess.exceptions.*;
 import dtt.dataAccess.repository.Postgres.CirculationDAO;
 import dtt.dataAccess.repository.Postgres.VoteDAO;
 import dtt.dataAccess.utilities.Transaction;
@@ -17,6 +14,8 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -33,10 +32,15 @@ public class CirculationDetailsBacking implements Serializable {
     private Options choice;
     @Inject
     private SessionInfo sessionInfo;
+    @Inject
+    private CirculationDAO circulationDAO;
+    @Inject
+    private VoteDAO voteDAO;
     private Circulation circulation;
     private Vote vote;
 
     private Options[] options;
+    Logger logger = LogManager.getLogger();
 
     /**
      * Initialize circulation und vote dto objects.
@@ -56,13 +60,11 @@ public class CirculationDetailsBacking implements Serializable {
 
     public void loadCirculation() {
         Transaction tr = new Transaction();
-        CirculationDAO circ = new CirculationDAO();
-        Circulation circDB = new Circulation();
-        circDB.setId(circulation.getId());
         try {
-            circ.getCirculationById(circDB,tr);
+            circulationDAO.getCirculationById(circulation, tr);
+
         } catch (DataNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
 
     }
@@ -83,20 +85,16 @@ public class CirculationDetailsBacking implements Serializable {
      */
     public void remove() {
         Transaction transaction = new Transaction();
-        CirculationDAO cirDAO = new CirculationDAO();
 
         try {
-            cirDAO.remove(circulation,transaction);
+            circulationDAO.remove(circulation, transaction);
             try {
                 transaction.commit();
             } catch (SQLException e) {
-                throw new RuntimeException(e);
             }
         } catch (DataNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException();
         }
-
-
     }
 
 
@@ -104,7 +102,11 @@ public class CirculationDetailsBacking implements Serializable {
      * Modify the circulation details.
      */
     public void modify() {
-
+        Transaction transaction = new Transaction();
+        try {
+            circulationDAO.update(circulation,transaction);
+        } catch (DataNotFoundException | InvalidInputException | KeyExistsException e) {
+        }
     }
 
     /**
@@ -113,12 +115,10 @@ public class CirculationDetailsBacking implements Serializable {
     public void submitVote() {
         Transaction transaction = new Transaction();
         vote.setSelection(choice);
-        VoteDAO voteDAO= new VoteDAO();
+        VoteDAO voteDAO = new VoteDAO();
         try {
-            voteDAO.add(vote,transaction);
-        } catch (DataNotCompleteException e) {
-            e.printStackTrace();
-        } catch (InvalidInputException e) {
+            voteDAO.add(vote, transaction);
+        } catch (DataNotCompleteException | InvalidInputException e) {
             e.printStackTrace();
         }
 
@@ -130,15 +130,17 @@ public class CirculationDetailsBacking implements Serializable {
      */
     public void loadVotes() {
         Transaction tr = new Transaction();
-        VoteDAO voteDao = new VoteDAO();
-        voteDao.getVotes(vote,tr);
-
+        voteDAO.getVotes(vote, tr);
 
     }
 
 
     public Circulation getCirculation() {
         return circulation;
+    }
+
+    public void setCirculation(Circulation circulation) {
+        this.circulation = circulation;
     }
 
     public SessionInfo getSessionInfo() {
@@ -163,10 +165,6 @@ public class CirculationDetailsBacking implements Serializable {
 
     public void setChoice(Options choice) {
         this.choice = choice;
-    }
-
-    public void setCirculation(Circulation circulation) {
-        this.circulation = circulation;
     }
 
     public Options[] getOptions() {

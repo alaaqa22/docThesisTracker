@@ -37,30 +37,30 @@
 
 			<h:outputLabel value="Description:" for="description-itxt" />
 			<h:inputText id="description-itxt"
-				value="#{circulationCreatingBacking.circulation.title}"
+				value="#{circulationCreatingBacking.circulation.description}"
 				required="true" />
 			<h:message for="description-itxt" styleClass="message" />
 
 			<h:outputLabel value="Circulation Start Date:"
-				for="start-deedline-itxt" />
-			<h:inputText id="start-deedline-itxt"
-				value="#{circulationCreatingBacking.circulation.startDeedline}"
+				for="start-date-itxt" />
+			<h:inputText id="start-date-itxt"
+				value="#{circulationCreatingBacking.startDate}"
 				required="true">
-				<f:convertDateTime type="localDateTime" />
+				<f:convertDateTime type="localDate" />
 			</h:inputText>
-			<h:message for="start-deedline-itxt" styleClass="message" />
+			<h:message for="start-date-itxt" styleClass="message" />
 
-			<h:outputLabel value="Circulation End Date:" for="end-deedline-itxt" />
-			<h:inputText id="end-deedline-itxt"
-				value="#{circulationCreatingBacking.circulation.endDeedline}"
+			<h:outputLabel value="Circulation End Date:" for="end-date-itxt" />
+			<h:inputText id="end-date-itxt"
+				value="#{circulationCreatingBacking.endDate}"
 				required="true">
-				<f:convertDateTime type="localDateTime" />
+				<f:convertDateTime type="localDate" />
 			</h:inputText>
-			<h:message for="end-deedline-itxt" styleClass="message" />
+			<h:message for="end-date-itxt" styleClass="message" />
 
 		</h:panelGrid>
 		<h:commandButton id="create" value="Create the course"
-			action="#{newCourse.createCourse()}" />
+			action="#{circulationCreatingBacking.create()}" />
 	</h:form>
 	<hr />
 </h:body>

@@ -80,6 +80,7 @@ public class CirculationListBacking implements Serializable {
      */
     @PostConstruct
     public void init(){
+
         filter = new Circulation ();
         loadCirculations();
 

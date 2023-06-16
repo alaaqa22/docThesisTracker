@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="jakarta.faces.facelets">
+
+<f:view>
+    <h:head>
+        <title>User List</title>
+        <link href="${request.contextPath}/resources/css/style.css" rel="stylesheet" type="text/css"/>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"/>
+    </h:head>
+
+    <h:body>
+        <ui:include src="/views/anonymous/header.xhtml" />
+
+        <div class="container">
+            <h:form>
+                <!-- dataTable for a User List -->
+                <h:dataTable value="#{userListBacking.users}" var="user" styleClass="my-table" border="2" >
+
+                    <f:facet name="header">
+                        <h:outputText value="Users"  styleClass="text-center" />
+                    </f:facet>
+
+                    <!-- User ID -->
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="ID" />
+                        </f:facet>
+                        <h:outputText value="#{user.id}" />
+                    </h:column>
+
+                    <!-- First Name -->
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="First Name" />
+                        </f:facet>
+                        <h:outputText value="#{user.firstName}" />
+                    </h:column>
+
+                    <!-- Last Name -->
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Last Name" />
+                        </f:facet>
+                        <h:outputText value="#{user.lastName}" />
+                    </h:column>
+
+                    <!-- Email -->
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Email" />
+                        </f:facet>
+                        <h:outputText value="#{user.email}" />
+                    </h:column>
+
+                    <!-- Account Status -->
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Account Status" />
+                        </f:facet>
+                        <h:outputText value="#{user.accountState}" />
+                    </h:column>
+
+                </h:dataTable>
+
+                <!-- Pagination Controls -->
+                <div class="d-flex justify-content-center">
+                    <ul class="pagination" >
+                        <h:panelGroup rendered="#{userListBacking.userPagination.totalNumOfPages>1}" >
+                            <h:panelGroup layout="block" styleClass="page-item">
+                                <h:commandLink value="First" action="#{userListBacking.userPagination.firstPage}" styleClass="page-link"/>
+                            </h:panelGroup>
+
+                            <h:panelGroup layout="block" styleClass="page-item" rendered="#{!userListBacking.userPagination.isFirstPage()}">
+                                <h:commandLink value="Previous" action="#{userListBacking.userPagination.previousPage()}" styleClass="page-link" />
+                            </h:panelGroup>
+
+                            <h:outputText styleClass="page-item" value="Page : #{userListBacking.userPagination.currentPage} of #{userListBacking.userPagination.getTotalNumOfPages() }" />
+
+                            <h:panelGroup layout="block" styleClass="page-item" rendered="#{!userListBacking.userPagination.isLastPage()}">
+                                <h:commandLink value="Next" action="#{userListBacking.userPagination.nextPage()}"
+                                               rendered="#{!userListBacking.userPagination.lastPage()}" styleClass="page-link"/>
+                            </h:panelGroup>
+                            <h:panelGroup layout="block" styleClass="page-item">
+                                <h:commandLink value="Last" action="#{userListBacking.userPagination.lastPage()}" styleClass="page-link"/>
+                            </h:panelGroup>
+                        </h:panelGroup>
+                    </ul>
+                </div>
+            </h:form>
+        </div>
+    </h:body>
+</f:view>
+
+</html>

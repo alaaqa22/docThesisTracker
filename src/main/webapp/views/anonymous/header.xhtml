@@ -107,10 +107,11 @@
                         <!-- für Administratoren -->
                         <h:panelGroup rendered="#{sessionInfo.admin}">
                             <li class="nav-item">
-                                <h:link outcome="/views/help/helpAdmin.xhtml" value="Hilfeseite" styleClass="nav-link" />
+                                <h:link outcome="/views/help/helpAdmin" value="Hilfeseite" styleClass="nav-link" />
                             </li>
                         </h:panelGroup>
 
+                        <!-- für committeeMember/ deanery/ admin-->
                         <h:panelGroup rendered="#{sessionInfo.committeeMember or sessionInfo.deanery or sessionInfo.admin}">
 
                         <div class="navbar">
@@ -122,12 +123,13 @@
                         </div>
                         </h:panelGroup>
 
+                        <!-- deanery/ admin-->
                         <h:panelGroup rendered="#{ sessionInfo.deanery or sessionInfo.admin}">
 
                             <div class="navbar">
                                 <ul class="nav navbar-nav">
                                     <li class="nav-item">
-                                        <h:commandLink outcome="/views/examineCommittee/userList.xhtml" value="BenutzerListe" styleClass="nav-link" />
+                                        <h:link outcome="/views/deanery/userList" value="BenutzerListe" styleClass="nav-link" />
                                     </li>
                                 </ul>
                             </div>

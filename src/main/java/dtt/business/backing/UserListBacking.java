@@ -6,12 +6,16 @@ import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.repository.Postgres.UserDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
+import dtt.global.tansport.Faculty;
 import dtt.global.tansport.User;
+import dtt.global.tansport.UserState;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jboss.logging.annotations.Pos;
 
 import java.io.Serializable;
@@ -26,50 +30,63 @@ import java.util.List;
 @ViewScoped
 @Named
 public class UserListBacking implements Serializable {
-
+    private User filter;
     private Pagination<User> userPagination;
     private List<User> users;
 
     @Inject
+    private UserDAO userDAO;
+
+    @Inject
     private SessionInfo sessionInfo;
-
-
-    UserDAO userDAO;
-
-    User filter;
+    private final Logger logger = LogManager.getLogger();
 
     public UserListBacking(){
-        userPagination = new Pagination<User>() {
+        userPagination = createPagination();
+    }
+
+    private Pagination<User> createPagination() {
+        return new Pagination<User>() {
             @Override
             public void loadData() {
-                // Load User data using a transaction
-                Transaction transaction = new Transaction();
-                    int offset = (getCurrentPage() - 1) * getMaxItems ();
-                    int count = getMaxItems ();
-
-                List<User> userList = null;
-                try {
-                    userList = userDAO.getUsers(filter, transaction, offset, count);
-                } catch (InvalidInputException e) {
-                    throw new RuntimeException (e);
+                int currentPage = getCurrentPage();
+                int maxItems = getMaxItems();
+                if (currentPage <= 0 || maxItems <= 0) {
+                    logger.error("Invalid currentPage or maxItems value.");
                 }
-                setEntries(userList);
 
-                    // Commit the transaction
+                int offset = (currentPage - 1) * maxItems;
+                int count = maxItems;
+
+                Transaction transaction;
+
+                try {
+                    transaction = new Transaction();
+                    Faculty faculty = null; // Update this with your filter criteria
+                    UserState auth = null; // Update this with your filter criteria
+                    users = userDAO.getUsers(filter, faculty, auth, transaction, offset, count);
+                    setEntries(users);
+
                     transaction.commit();
-
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         };
     }
 
-    /**
-     *  Initialize the dto object.
-     */
+
+
     @PostConstruct
     public void init(){
-        filter = new User ();
+        filter = new User();
+        loadUsers();
     }
 
+    public void loadUsers() {
+        userPagination.loadData();
+        users = userPagination.getEntries();
+    }
 
     public Pagination<User> getUserPagination() {
         return userPagination;
@@ -80,6 +97,12 @@ public class UserListBacking implements Serializable {
         this.userPagination = userPagination;
     }
 
+    public void setUsers (List<User> users) {
+        this.users = users;
+    }
 
+    public List<User> getUsers () {
+        return users;
+    }
 }
 

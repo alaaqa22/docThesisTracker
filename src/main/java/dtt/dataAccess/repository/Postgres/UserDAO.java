@@ -360,14 +360,14 @@ public class UserDAO
 
     @Override
     public List<User> getUsers(final User user, final Faculty faculty,
-            final UserState auth, final Transaction transaction,
-            final int offset, final int count) {
-        List<User> userList = new ArrayList<>();
-        String query = "SELECT \"user\".user_id, \"user\".email_address, "
-                + "\"user\".first_name, \"user\".last_name,"
-                + " \"user\".birth_date, faculty.faculty_name, "
-                + "authentication.user_Level FROM \"user\" "
-                + "INNER JOIN authentication "
+        final UserState auth, final Transaction transaction,
+        final int offset, final int count) {
+            List<User> userList = new ArrayList<>();
+            String query = "SELECT \"user\".user_id, \"user\".email_address, "
+                    + "\"user\".first_name, \"user\".last_name,"
+                    + " \"user\".birth_date, faculty.faculty_name, "
+                    + "authentication.user_Level FROM \"user\" "
+                    + "INNER JOIN authentication "
                 + "ON \"user\".user_id=authentication.user_id "
                 + "INNER JOIN faculty "
                 + "ON authentication.faculty_id=faculty.faculty_id WHERE ";

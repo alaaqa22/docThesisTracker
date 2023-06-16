@@ -44,9 +44,13 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 		
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public void add(Circulation circulation, Transaction transaction)
 			throws DataNotCompleteException, InvalidInputException, KeyExistsException {
+		LOGGER.debug("add() called.");
 		String query = "INSERT INTO circulation (title, doctoral_candidate_name, doctoral_supervisor_name, " +
 				"description, start_date, end_date, is_obligatory, created_by, faculty_id , is_valid) " +
 				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -70,7 +74,9 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 		}
 		
 	}
-
+	/**
+	 * @inheritDoc
+	 */
 	private void setCirculationStatement(Circulation circulation, PreparedStatement statement) throws SQLException {
 		statement.setString(1, circulation.getTitle());
 		statement.setString(2, circulation.getDoctoralCandidateName());
@@ -83,9 +89,12 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 		statement.setInt(9, circulation.getFacultyId());
 		statement.setBoolean(10, circulation.isValid());
 	}
-
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public void remove(Circulation circulation, Transaction transaction) throws DataNotFoundException {
+		LOGGER.debug("remove() called.");
 		String query = "DELETE FROM circulation WHERE circulation_id = ?";
 
 		try (PreparedStatement statement = transaction.getConnection().prepareStatement(query)){
@@ -101,10 +110,13 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 		}
 		
 	}
-
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public void update(Circulation circulation, Transaction transaction)
 			throws DataNotFoundException, InvalidInputException, KeyExistsException {
+		LOGGER.debug("update() called.");
 		String query = "UPDATE circulation SET title = ?, doctoral_candidate_name = ?, doctoral_supervisor_name = ?," +
 				"description = ?, start_date = ?, end_date = ?, is_obligatory = ?, created_by = ?, faculty_id = ?, is_valid = ?" +
 				"WHERE circulation_id = ?";
@@ -124,9 +136,12 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 			}
 		}
 	}
-
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public void getCirculationById(Circulation circulation, Transaction transaction) throws DataNotFoundException {
+		LOGGER.debug("getCirculationById() called.");
 		String query = "SELECT * FROM circulation WHERE circulation_id = ?";
 
 		try (PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
@@ -152,10 +167,13 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 			throw new DataNotFoundException("Failed to retrieve circulation data.");
 		}
 	}
-
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public List<Circulation> getCirculations(Circulation circulation, Transaction transaction,
 											 int offset, int count) {
+		LOGGER.debug("getCirculations() called.");
 		List<Circulation> circulations = new ArrayList<>();
 
 		// Build the SQL query string
@@ -226,14 +244,11 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 			statement.setInt(paramIndex, offset);
 
 			try (ResultSet resultSet = statement.executeQuery()) {
-				LOGGER.fatal("We made it here and we are filling the list.");
 				// Iterate over the result set and populate the list of circulations
 				while (resultSet.next()) {
 					Circulation resultCirculation = new Circulation();
 					//Populate the circulation with data from the result set
-					LOGGER.fatal("Result circulation id: " + resultSet.getInt(CIRCULATION_ID));
 					resultCirculation.setId(resultSet.getInt(CIRCULATION_ID));
-					LOGGER.fatal("Result circulation title: " + resultSet.getString(TITLE));
 					resultCirculation.setTitle(resultSet.getString(TITLE));
 					resultCirculation.setDescription(resultSet.getString(DESCRIPTION));
 					resultCirculation.setDoctoralCandidateName(resultSet.getString(DOC_CANDIDATE));
@@ -254,8 +269,12 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 		return circulations;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public int getTotalCirculationNumber(Circulation circulation, Transaction transaction) {
+		LOGGER.debug("getTotalCirculationNumber() called.");
 		String query = "SELECT COUNT(*) FROM circulation WHERE 1=1";
 		List<Object> parameters = new ArrayList<>();
 
@@ -316,9 +335,12 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 		}
 		return 0;
 	}
-
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public boolean findCirculationByTitle(Circulation circulation, Transaction transaction) {
+		LOGGER.debug("findCirculationByTitle() called.");
 		String query = "SELECT * FROM circulation WHERE title = ?";
 		try (PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
 			statement.setString(1, circulation.getTitle());

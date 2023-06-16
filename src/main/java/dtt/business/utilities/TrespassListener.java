@@ -47,25 +47,21 @@ public class TrespassListener implements PhaseListener {
         }
     }
     private boolean checkAccessControl(String url, SessionInfo sessionInfo) {
-        if (url.startsWith("/views/anonymous/")) {
-            LOGGER.info("/anonymous/");
+        if (url.startsWith("/views/anonymous/") || url.startsWith("/views/help/")) {
+            LOGGER.debug("/anonymous/ or /help/");
             return true;
         } else if (url.startsWith("/views/authenticated/") && (sessionInfo.isExaminer() ||
                 sessionInfo.isCommitteeMember() || sessionInfo.isDeanery()) || sessionInfo.isAdmin()) {
-            LOGGER.info("/authenticated/");
+            LOGGER.debug("/authenticated/");
             return true;
         } else if (url.startsWith("/views/examineCommittee/") && (sessionInfo.isCommitteeMember() ||
                 sessionInfo.isDeanery()) || sessionInfo.isAdmin()) {
-            LOGGER.info("/examineCommittee/");
+            LOGGER.debug("/examineCommittee/");
             return true;
         } else if (url.startsWith("/views/deanery/") && (sessionInfo.isDeanery() || sessionInfo.isAdmin()) ){
-            LOGGER.info("/deanery/");
-            return true;
-        } else if (url.startsWith("/views/help")) {
-            LOGGER.info("/help/");
+            LOGGER.debug("/deanery/");
             return true;
         }
-
         // Deny access to all other pages
         return false;
     }

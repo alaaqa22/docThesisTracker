@@ -1,5 +1,8 @@
 package dtt.business.utilities;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.security.NoSuchAlgorithmException;
@@ -16,6 +19,7 @@ import java.util.Base64;
  * @author Johannes Silvennoinen
  */
 public final class Hashing {
+    private static final Logger LOGGER = LogManager.getLogger(Hashing.class);
     private static final int ITERATIONS = 10000;
     private static final int KEY_LENGTH = 256;
     private static final int SALT_LENGTH = 16;
@@ -34,6 +38,7 @@ public final class Hashing {
      * @throws InvalidKeySpecException  if the provided key specification is invalid
      */
     public static String hashPassword(String password, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        LOGGER.debug("hashPassword() called.");
 
         try {
             KeySpec spec = new PBEKeySpec(password.toCharArray(), salt.getBytes(), ITERATIONS, KEY_LENGTH);
@@ -55,6 +60,7 @@ public final class Hashing {
      * @throws InvalidKeySpecException  if the provided key specification is invalid
      */
     public static boolean verifyPassword(String password, String salt, String hashedPassword) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        LOGGER.debug("verifyPassword() called.");
         try {
             String computedHash = hashPassword(password, salt);
             return hashedPassword.equals(computedHash);
@@ -69,6 +75,7 @@ public final class Hashing {
      * @return the generated salt as a Base64-encoded string
      */
     private static String generateSalt() {
+        LOGGER.debug("generateSalt() called.");
         SecureRandom random = new SecureRandom();
         byte[] saltBytes = new byte[SALT_LENGTH];
         random.nextBytes(saltBytes);

@@ -40,7 +40,6 @@ public final class ConfigReader {
     public static final String SSL = "SSL";
     public static final String SSL_FACTORY = "SSL_FACTORY";
     public static final String PASSWORD_PATTERN = "PASSWORD_PATTERN";
-    private final Logger logger = LogManager.getLogger();
 
     /**
      * Reads the configuration properties from the properties file and assigns them
@@ -81,7 +80,6 @@ public final class ConfigReader {
             throw new RuntimeException(e);
         }
         return impressumContent;
-
-
-    }}
+    }
+}
 

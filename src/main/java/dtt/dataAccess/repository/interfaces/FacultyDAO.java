@@ -28,7 +28,7 @@ public interface FacultyDAO {
 	 * @param transaction The transaction associated with this operation.
 	 * @throws DataNotCompleteException if necessary values of the {@code faculty} are not set
 	 */
-	public void add(Faculty faculty, Transaction transaction) throws DataNotCompleteException;
+	public void add(Faculty faculty, Transaction transaction) throws DataNotCompleteException, InvalidInputException, KeyExistsException;
 	
 	/**
 	 * Remove a faculty from the database.

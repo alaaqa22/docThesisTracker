@@ -30,9 +30,19 @@ import java.util.Map;
 @Named("sessionInfo")
 @SessionScoped
 public class SessionInfo implements Serializable {
-    private static final Logger LOGGER = LogManager.getLogger ();
+    private static final Logger LOGGER = LogManager.getLogger();
     private static final long serialVersionUID = 10;
     private User user = new User ();
+
+    public boolean isLoggedIn() {
+        return loggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        this.loggedIn = loggedIn;
+    }
+
+    private boolean loggedIn;
 
     public User getUser () {
         return user;

@@ -20,6 +20,7 @@
         </navigation-case>
     </navigation-rule>
 
+
     <navigation-rule>
         <from-view-id>/views/deanery/userList.xhtml</from-view-id>
         <navigation-case>
@@ -34,4 +35,9 @@
     <!--    <lifecycle>-->
 <!--        <phase-listener>dtt.business.utilities.TrespassListener</phase-listener>-->
 <!--    </lifecycle>-->
+
+        <lifecycle>
+            <phase-listener>dtt.business.utilities.TrespassListener</phase-listener>
+        </lifecycle>
+
 </faces-config>

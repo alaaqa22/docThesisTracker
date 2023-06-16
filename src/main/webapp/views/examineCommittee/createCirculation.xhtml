@@ -36,7 +36,7 @@
 			<h:message for="doctoral-supervisor-itxt" styleClass="message" />
 
 			<h:outputLabel value="Description:" for="description-itxt" />
-			<h:inputText id="description-itxt"
+			<h:inputTextarea id="description-itxt"
 				value="#{circulationCreatingBacking.circulation.description}"
 				required="true" />
 			<h:message for="description-itxt" styleClass="message" />
@@ -57,6 +57,12 @@
 				<f:convertDateTime type="localDate" />
 			</h:inputText>
 			<h:message for="end-date-itxt" styleClass="message" />
+
+            <h:outputLabel value="Obligatory:" for="obligatory-bcb" />
+            <h:selectBooleanCheckbox id="obligatory-bcb"
+                value="#{circulationCreatingBacking.circulation.obligatory}">
+            </h:selectBooleanCheckbox>
+            <h:message for="obligatory-bcb" styleClass="message" />
 
 		</h:panelGrid>
 		<h:commandButton id="create" value="Create the course"

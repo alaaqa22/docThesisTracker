@@ -1,5 +1,6 @@
 package dtt.business.utilities;
 
+
 import dtt.dataAccess.repository.Postgres.CirculationDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
@@ -11,17 +12,19 @@ import java.util.List;
 /**
  * Abstract class which implements a list pagination.
  *
- * @author Alaa Aasem
+ * @author Alaa Qasem
  */
 public abstract class Pagination<T> {
 
     protected int maxItems = Integer.parseInt(ConfigReader.getProperty(ConfigReader.PAGINATION_MAX_ITEMS));
     private int currentPage;
-    private int totalNumOfPages;
+    protected int totalNumOfPages;
     private List<T> entries;
     private String sortColumn;
+    private CirculationDAO circDAO = new CirculationDAO();
 
-    public Pagination(){
+
+    public Pagination() {
         setCurrentPage(1);
     }
 
@@ -29,7 +32,7 @@ public abstract class Pagination<T> {
      * Load data of next page, unless you are already on the last page.
      */
     public void nextPage() {
-        if (currentPage < getTotalNumOfPages()) {
+        if (currentPage < totalNumOfPages) {
             setCurrentPage(currentPage + 1);
             loadData();
         }
@@ -45,7 +48,7 @@ public abstract class Pagination<T> {
      * Load data on last page.
      */
     public void lastPage() {
-        setCurrentPage(getTotalNumOfPages());
+        setCurrentPage(totalNumOfPages);
         loadData();
 
     }
@@ -75,7 +78,6 @@ public abstract class Pagination<T> {
             setCurrentPage(currentPage - 1);
             loadData();
         }
-
     }
 
     public int getCurrentPage() {
@@ -91,11 +93,7 @@ public abstract class Pagination<T> {
      *
      * @return Total number of Pages.
      */
-    public int getTotalNumOfPages() {
-     /*   totalNumOfPages = circulationDAO.getTotalCirculationNumber(new Circulation(), new Transaction())
-                / maxItems;*/
-        return totalNumOfPages;
-    }
+    public abstract int getTotalNumOfPages();
 
     public void setTotalNumOfPages(int totalNumOfPages) {
         this.totalNumOfPages = totalNumOfPages;
@@ -117,13 +115,17 @@ public abstract class Pagination<T> {
         this.sortColumn = sortColumn;
     }
 
-    public int getMaxItems () {
+    public int getMaxItems() {
         return maxItems;
     }
-    public boolean isFirstPage(){
-        return currentPage ==1 ;
+
+    public boolean isFirstPage() {
+        return currentPage == 1;
     }
-    public boolean isLastPage(){
-        return currentPage ==totalNumOfPages ;
+
+    public boolean isLastPage() {
+        return currentPage == totalNumOfPages;
     }
+
+
 }

@@ -70,6 +70,13 @@ public class UserListBacking implements Serializable {
                     transaction.commit();
 
             }
+            @Override
+            public int getTotalNumOfPages() {
+                Transaction t = new Transaction();
+                int totalNumOfPages = (int) Math.ceil((double)(userDAO.getTotalUserNumber(null,null,null,t))
+                        / maxItems);
+                return totalNumOfPages;
+            }
         };
     }
 

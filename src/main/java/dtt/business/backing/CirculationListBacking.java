@@ -69,6 +69,13 @@ public class CirculationListBacking implements Serializable {
                     circulations = cir;
                     transaction.commit();
 
+            }   @Override
+            public int getTotalNumOfPages() {
+                Transaction t = new Transaction();
+                int totalNumOfPages = (int) Math.ceil((double)(circDAO.getTotalCirculationNumber(null, t))
+                        / maxItems);
+                t.commit();
+                return totalNumOfPages;
             }
         };
     }

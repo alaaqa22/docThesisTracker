@@ -60,17 +60,15 @@ public class UserListBacking implements Serializable {
 
                 Transaction transaction;
 
-                try {
+
                     transaction = new Transaction();
-                    Faculty faculty = null; // Update this with your filter criteria
-                    UserState auth = null; // Update this with your filter criteria
+                    Faculty faculty = null;
+                    UserState auth = null;
                     users = userDAO.getUsers(filter, faculty, auth, transaction, offset, count);
                     setEntries(users);
 
                     transaction.commit();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+
             }
         };
     }

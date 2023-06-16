@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="jakarta.faces.html"
-      xmlns:f="jakarta.faces.core">
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
+>
 
 <f:view>
     <h:head>
@@ -9,7 +11,9 @@
     </h:head>
 
     <h:body>
+        <ui:include src="/views/anonymous/header.xhtml" />
         <h:form>
+
             <h3>Profile</h3>
 
             <f:metadata>

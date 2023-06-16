@@ -20,6 +20,15 @@
         </navigation-case>
     </navigation-rule>
 
+    <navigation-rule>
+        <from-view-id>/views/deanery/userList.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>circulationslist</from-outcome>
+            <to-view-id>/views/deanery/circulationsList.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+
 
 
     <!--    <lifecycle>-->

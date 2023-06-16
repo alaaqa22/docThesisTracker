@@ -1,7 +1,6 @@
 package dtt.business.utilities;
 
-import jakarta.faces.application.FacesMessage;
-import jakarta.faces.application.NavigationHandler;
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -11,7 +10,7 @@ import jakarta.faces.event.PhaseListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Map;
+import java.io.IOException;
 
 /**
  * The TrespassListener class implements the PhaseListener interface to handle
@@ -20,7 +19,6 @@ import java.util.Map;
  */
 public class TrespassListener implements PhaseListener {
     private static final Logger LOGGER = LogManager.getLogger(TrespassListener.class);
-    private SessionInfo sessionInfo;
 
     /**
      * Invoked after the completion of the restore view phase.
@@ -35,29 +33,43 @@ public class TrespassListener implements PhaseListener {
 
         final FacesContext fctx = phaseEvent.getFacesContext();
         final ExternalContext ctx = fctx.getExternalContext();
-        final Map<String, Object> sessionMap = ctx.getSessionMap();
+        final SessionInfo sessionInfo = CDI.current().select(SessionInfo.class).get();
 
-        boolean publicArea = false;
         final UIViewRoot viewRoot = fctx.getViewRoot();
         if (viewRoot != null) {
             final String url = viewRoot.getViewId();
-            publicArea = url.endsWith("login.xhtml");
-        }
+            final boolean isAllowed = checkAccessControl(url, sessionInfo);
 
-        final boolean loggedIn = sessionMap.containsKey("logged in");
-
-        if (!publicArea && !loggedIn) {
-            FacesMessage fmsg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "You have to log in first.", null);
-            fctx.addMessage(null, fmsg);
-
-            ctx.getFlash().setKeepMessages(true);
-
-            NavigationHandler navigationHandler = fctx.getApplication().getNavigationHandler();
-            navigationHandler.handleNavigation(fctx, null, "login.xhtml?faces-redirect=true");
-
-            fctx.responseComplete();
+            if (!isAllowed) {
+                redirectTo404Page(ctx);
+                fctx.responseComplete();
+            }
         }
     }
+    private boolean checkAccessControl(String url, SessionInfo sessionInfo) {
+        if (url.startsWith("/views/anonymous/")) {
+            LOGGER.info("/anonymous/");
+            return true;
+        } else if (url.startsWith("/views/authenticated/") && (sessionInfo.isExaminer() ||
+                sessionInfo.isCommitteeMember() || sessionInfo.isDeanery()) || sessionInfo.isAdmin()) {
+            LOGGER.info("/authenticated/");
+            return true;
+        } else if (url.startsWith("/views/examineCommittee/") && (sessionInfo.isCommitteeMember() ||
+                sessionInfo.isDeanery()) || sessionInfo.isAdmin()) {
+            LOGGER.info("/examineCommittee/");
+            return true;
+        } else if (url.startsWith("/views/deanery/") && (sessionInfo.isDeanery() || sessionInfo.isAdmin()) ){
+            LOGGER.info("/deanery/");
+            return true;
+        } else if (url.startsWith("/views/help")) {
+            LOGGER.info("/help/");
+            return true;
+        }
+
+        // Deny access to all other pages
+        return false;
+    }
+
     /**
      * Invoked before the start of the restore view phase. This method does nothing in this implementation.
      *
@@ -75,5 +87,12 @@ public class TrespassListener implements PhaseListener {
     @Override
     public PhaseId getPhaseId() {
         return PhaseId.RESTORE_VIEW;
+    }
+    private void redirectTo404Page(ExternalContext ctx) {
+        try {
+            ctx.redirect("/errorPage.xhtml");
+        } catch (IOException e) {
+            LOGGER.error("Error redirecting to 404 page: {}", e.getMessage());
+        }
     }
 }

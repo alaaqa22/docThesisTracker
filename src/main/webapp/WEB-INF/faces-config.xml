@@ -19,10 +19,7 @@
             <to-view-id>/views/anonymous/impressum.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
-
-
-
-    <!--    <lifecycle>-->
-<!--        <phase-listener>dtt.business.utilities.TrespassListener</phase-listener>-->
-<!--    </lifecycle>-->
+        <lifecycle>
+            <phase-listener>dtt.business.utilities.TrespassListener</phase-listener>
+        </lifecycle>
 </faces-config>

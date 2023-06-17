@@ -65,8 +65,11 @@
             <h:message for="obligatory-bcb" styleClass="message" />
 
 		</h:panelGrid>
-		<h:commandButton id="create" value="Create the course"
-			action="#{circulationCreatingBacking.create()}" />
+		<h:panelGrid columns=2>
+		<h:commandButton id="create" value="Create the circulation"
+			action="#{circulationCreatingBacking.create}" />
+			<h:message for="create" styleClass="message"/>
+			</h:panelGrid>
 	</h:form>
 	<hr />
 </h:body>

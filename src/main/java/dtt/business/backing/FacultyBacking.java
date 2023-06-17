@@ -1,7 +1,7 @@
 package dtt.business.backing;
 
 import dtt.business.utilities.SessionInfo;
-import dtt.dataAccess.repository.Postgres.FacultyDAO;
+import dtt.dataAccess.repository.postgres.FacultyDAO;
 import dtt.global.tansport.Faculty;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;

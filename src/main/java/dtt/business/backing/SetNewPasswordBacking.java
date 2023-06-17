@@ -1,7 +1,7 @@
 package dtt.business.backing;
 
 import dtt.business.utilities.SessionInfo;
-import dtt.dataAccess.repository.Postgres.UserDAO;
+import dtt.dataAccess.repository.postgres.UserDAO;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;

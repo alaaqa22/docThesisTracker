@@ -1,7 +1,7 @@
 package dtt.business.utilities;
 
 
-import dtt.dataAccess.repository.Postgres.CirculationDAO;
+import dtt.dataAccess.repository.postgres.CirculationDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
 import dtt.global.utilities.ConfigReader;

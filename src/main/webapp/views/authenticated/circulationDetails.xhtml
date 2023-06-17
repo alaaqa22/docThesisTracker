@@ -14,7 +14,8 @@
         <f:view>
 
             <f:metadata>
-                <f:viewAction action="#{circulationDetailsBacking.loadCirculation}" />
+                <f:viewAction action="#{circulationDetailsBacking.loadCirculation()}" />
+                <f:viewAction action="#{circulationDetailsBacking.loadVotes()}" />
                 <f:viewParam name="id" value="#{circulationDetailsBacking.circulation.id}" />
             </f:metadata>
         </f:view>
@@ -32,8 +33,8 @@
             <h:outputLabel for="description-otxt" value="Description:" />
             <h:outputText id="description-otxt" value="#{circulationDetailsBacking.circulation.description}" />
 
-            <h:outputLabel for="start-deadlineotxt" value="Start Deadline:" />
-            <h:outputText id="start-deadlineotxt" value="#{circulationDetailsBacking.circulation.startDate}" />
+            <h:outputLabel for="start-dateotxt" value="Start Date:" />
+            <h:outputText id="start-dateotxt" value="#{circulationDetailsBacking.circulation.startDate}" />
 
             <h:outputLabel for="end-deadlineotxt" value="End Deadline:" />
             <h:outputText id="end-deadlineotxt" value="#{circulationDetailsBacking.circulation.endDate}" />
@@ -57,15 +58,15 @@
 
 
             <div>
-                <h:commandButton id="vote-btn" action="#{circulationDetailsBacking.submitVote}" value="Vote" />
+                <h:commandButton id="vote-btn" action="#{circulationDetailsBacking.submitVote()}" value="Vote" />
             </div>
 
             <div>
-                <h:commandButton id="modify-cbtn" action="#{circulationDetailsBacking.modify}" value="Modify" />
+                <h:commandButton id="modify-cbtn" action="#{circulationDetailsBacking.modify()}" value="Modify" />
             </div>
 
             <div>
-                <h:commandButton id="remove-cbtn" action="#{circulationDetailsBacking.remove}" value="Remove Circulation" />
+                <h:commandButton id="remove-cbtn" action="#{circulationDetailsBacking.remove()}" value="Remove Circulation" />
             </div>
     </h:form>
 </h:body>

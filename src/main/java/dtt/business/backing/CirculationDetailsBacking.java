@@ -29,6 +29,7 @@ import java.sql.SQLException;
 @ViewScoped
 @Named("circulationDetailsBacking")
 public class CirculationDetailsBacking implements Serializable {
+    Logger logger = LogManager.getLogger();
     private Options choice;
     @Inject
     private SessionInfo sessionInfo;
@@ -38,9 +39,7 @@ public class CirculationDetailsBacking implements Serializable {
     private VoteDAO voteDAO;
     private Circulation circulation;
     private Vote vote;
-
     private Options[] options;
-    Logger logger = LogManager.getLogger();
 
     /**
      * Initialize circulation und vote dto objects.
@@ -49,6 +48,7 @@ public class CirculationDetailsBacking implements Serializable {
     public void init() {
         circulation = new Circulation();
         vote = new Vote();
+        choice = Options.ENTHALTE_MICH;
     }
 
     /**
@@ -59,13 +59,15 @@ public class CirculationDetailsBacking implements Serializable {
      */
 
     public void loadCirculation() {
-        Transaction tr = new Transaction();
+        Transaction transaction = new Transaction();
         try {
-            circulationDAO.getCirculationById(circulation, tr);
+            circulationDAO.getCirculationById(circulation, transaction);
+            transaction.commit();
 
         } catch (DataNotFoundException e) {
             throw new IllegalStateException(e);
         }
+
 
     }
 
@@ -85,7 +87,7 @@ public class CirculationDetailsBacking implements Serializable {
      */
     public void remove() {
         Transaction transaction = new Transaction();
-
+        transaction.commit();
         try {
             circulationDAO.remove(circulation, transaction);
 
@@ -101,7 +103,9 @@ public class CirculationDetailsBacking implements Serializable {
     public void modify() {
         Transaction transaction = new Transaction();
         try {
-            circulationDAO.update(circulation,transaction);
+            circulationDAO.update(circulation, transaction);
+            transaction.commit();
+
         } catch (DataNotFoundException | InvalidInputException | KeyExistsException e) {
         }
     }
@@ -112,9 +116,10 @@ public class CirculationDetailsBacking implements Serializable {
     public void submitVote() {
         Transaction transaction = new Transaction();
         vote.setSelection(choice);
-        VoteDAO voteDAO = new VoteDAO();
+        vote.setCirculation(circulation.getId());
         try {
             voteDAO.add(vote, transaction);
+            transaction.commit();
         } catch (DataNotCompleteException | InvalidInputException e) {
             e.printStackTrace();
         }
@@ -126,8 +131,10 @@ public class CirculationDetailsBacking implements Serializable {
      * Load all the votes of the circulation.
      */
     public void loadVotes() {
-        Transaction tr = new Transaction();
-        voteDAO.getVotes(vote, tr);
+        Transaction transaction = new Transaction();
+        vote.setCirculation(circulation.getId());
+        voteDAO.getVotes(vote, transaction);
+        transaction.commit();
 
     }
 

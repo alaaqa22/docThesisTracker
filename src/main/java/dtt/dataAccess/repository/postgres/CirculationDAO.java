@@ -153,8 +153,8 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 					circulation.setDoctoralCandidateName(resultSet.getString(DOC_CANDIDATE));
 					circulation.setDoctoralSupervisor(resultSet.getString(DOC_SUPERVISOR));
 					circulation.setDescription(resultSet.getString(DESCRIPTION));
-					circulation.setStartDate((Timestamp) resultSet.getObject(START_DATE));
-					circulation.setEndDate((Timestamp) resultSet.getObject(END_DATE));
+					circulation.setStartDate(resultSet.getTimestamp(START_DATE));
+					circulation.setEndDate(resultSet.getTimestamp(END_DATE));
 					circulation.setObligatory(resultSet.getBoolean(IS_OBLIGATORY));
 					circulation.setCreatedBy(resultSet.getInt(CREATED_BY));
 					circulation.setFacultyId(resultSet.getInt(FACULTY_ID));

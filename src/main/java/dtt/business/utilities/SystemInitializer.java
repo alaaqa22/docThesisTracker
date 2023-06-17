@@ -34,9 +34,9 @@ public class SystemInitializer implements ServletContextListener {
 
         LOGGER.info("-----Logger initialized-----");
         ConfigReader.loadProperties();
-        LOGGER.info("Config read");
+        LOGGER.info("Config read.");
         ConnectionPool.getInstance().initialize(Integer.parseInt(ConfigReader.getProperty(ConfigReader.DATABASE_SIZE)));
-        LOGGER.info("Connection pool initialized");
+        LOGGER.info("Connection pool initialized.");
         //maintenanceThread.startMaintenance();
     }
 

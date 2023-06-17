@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
+>
 
 <h:head>
    <title>Registration</title>
@@ -18,6 +19,22 @@
          <label for="email-itxt">Email:</label>
          <h:inputText id="email-itxt" value="#{registrationBacking.user.email}" required="true" requiredMessage="Empty email!"/>
          <h:message for="email-itxt" style="color: red;"/>
+      </div>
+      <div>
+         <label for="firstname-itxt"> Vorname:</label>
+         <h:inputText id="firstname-itxt" value="#{registrationBacking.user.firstName}" required="true" requiredMessage="You have to put in your name!"/>
+         <h:message for="firstname-itxt" style="color: red;"/>
+      </div>
+      <div>
+         <label for="lastname-itxt">Name:</label>
+         <h:inputText id="lastname-itxt" value="#{registrationBacking.user.lastName}" required="true" requiredMessage="You have put in your last name!"/>
+         <h:message for="lastname-itxt" style="color : red;"/>
+      </div>
+      <div>
+         <label>Fakultät</label>
+         <h:selectOneMenu value="#{registrationBacking.faculty}" required="true" requiredMessage="You have to pick a faculty!">
+            <f:selectItems value="#{registrationBacking.listOfFaculties}" var="faculty" itemLabel="#{faculty.name}" itemValue="#{faculty}"/>
+         </h:selectOneMenu>
       </div>
 
       <div>

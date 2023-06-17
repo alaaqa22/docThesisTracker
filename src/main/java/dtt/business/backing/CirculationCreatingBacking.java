@@ -9,11 +9,16 @@ import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Backing bean for new circulation page.
@@ -26,19 +31,26 @@ import java.time.LocalDate;
 public class CirculationCreatingBacking implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /** The DAO used to access the Database.*/
+    /** The DAO used to access the Database. */
     @Inject
     private CirculationDAO circulationDAO;
-    /**Infirmation about current session.*/
+    /** Information about current session. */
     @Inject
     private SessionInfo session;
 
-    /**Corculation to fill for the facelet.*/
+    /** Inject faclet context. */
+    @Inject
+    private FacesContext fctx;
+
+    /** Corculation to fill for the facelet. */
     private Circulation circulation;
-    /**Item to store start date as LocalDate format.*/
+    /** Item to store start date as LocalDate format. */
     private LocalDate startDate;
-    /**Item to store end date as LocalDate format.*/
+    /** Item to store end date as LocalDate format. */
     private LocalDate endDate;
+
+    /** Initialize logger. */
+    private final Logger logger = LogManager.getLogger();
 
     /**
      * Initialize the dto object in bean.
@@ -64,16 +76,18 @@ public class CirculationCreatingBacking implements Serializable {
         try (Transaction transaction = new Transaction()) {
             circulationDAO.add(circulation, transaction);
             transaction.commit();
-            return "/views/examineCommittee/createCirculation.xhtml";
-        } catch (InvalidInputException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (DataNotCompleteException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (KeyExistsException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            final FacesMessage fmsg = new FacesMessage(
+                    "Circulation created successfully");
+            fmsg.setSeverity(FacesMessage.SEVERITY_INFO);
+            fctx.addMessage("createCirculation:create", fmsg);
+            return null;
+        } catch (InvalidInputException | DataNotCompleteException
+                | KeyExistsException e) {
+            logger.error("Error adding the Circulation.", e);
+            final FacesMessage fmsg = new FacesMessage(
+                    "There was an Error creating the Circulation.");
+            fmsg.setSeverity(FacesMessage.SEVERITY_ERROR);
+            fctx.addMessage("createCirculation:create", fmsg);
         }
         return null;
     }
@@ -88,8 +102,8 @@ public class CirculationCreatingBacking implements Serializable {
     }
 
     /**
-     * Getter for start date.
-     *.
+     * Getter for start date. .
+     *
      * @return the start date
      */
     public LocalDate getStartDate() {

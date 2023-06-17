@@ -30,8 +30,7 @@ import jakarta.inject.Named;
 
 @ApplicationScoped
 @Named
-public class UserDAO
-        implements dtt.dataAccess.repository.interfaces.UserDAO {
+public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 
     /**
      * Constructor for UserDAO.
@@ -69,8 +68,7 @@ public class UserDAO
             statement.setString(i++, user.getEmail());
             statement.setString(i++, user.getFirstName());
             statement.setString(i++, user.getLastName());
-            statement.setDate(i++,
-                    java.sql.Date.valueOf(user.getBirthDate()));
+            statement.setDate(i++, java.sql.Date.valueOf(user.getBirthDate()));
             statement.setString(i++, user.getPasswordHashed());
             statement.setString(i++, user.getPasswordSalt());
 
@@ -81,8 +79,7 @@ public class UserDAO
                         "Creating user failed, no rows affected.");
             }
 
-            try (ResultSet generatedKeys = statement
-                    .getGeneratedKeys()) {
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     user.setId(generatedKeys.getInt(1));
                 } else {
@@ -91,16 +88,14 @@ public class UserDAO
                 }
             }
             if (!user.getUserState().isEmpty()) {
-                try (PreparedStatement statement2 = transaction
-                        .getConnection().prepareStatement(query2)) {
+                try (PreparedStatement statement2 = transaction.getConnection()
+                        .prepareStatement(query2)) {
                     for (Map.Entry<Faculty, UserState> entry : user
                             .getUserState().entrySet()) {
                         int j = 1;
                         statement2.setInt(j++, user.getId());
-                        statement2.setInt(j++,
-                                entry.getKey().getId());
-                        statement2.setString(j++,
-                                entry.getValue().name());
+                        statement2.setInt(j++, entry.getKey().getId());
+                        statement2.setString(j++, entry.getValue().name());
                         statement2.executeUpdate();
                     }
                 }
@@ -109,8 +104,7 @@ public class UserDAO
         } catch (SQLException e) {
             switch (e.getSQLState()) {
             case "23502":
-                throw new DataNotCompleteException(
-                        e.getLocalizedMessage(), e);
+                throw new DataNotCompleteException(e.getLocalizedMessage(), e);
 
             case "23514":
                 throw new InvalidInputException("check_violation", e);
@@ -140,8 +134,8 @@ public class UserDAO
                         "User not found in the database.");
             }
         } catch (SQLException e) {
-            throw new DataNotFoundException(
-                    "User not found in the database.", e);
+            throw new DataNotFoundException("User not found in the database.",
+                    e);
         }
 
     }
@@ -150,8 +144,7 @@ public class UserDAO
     public void update(final User user, final Transaction transaction)
             throws DataNotFoundException, InvalidInputException,
             KeyExistsException {
-        StringBuilder queryBuilder = new StringBuilder(
-                "UPDATE \"user\" SET");
+        StringBuilder queryBuilder = new StringBuilder("UPDATE \"user\" SET");
         List<Object> params = new ArrayList<>();
 
         if (user.getEmail() != null) {
@@ -205,20 +198,18 @@ public class UserDAO
                 throw new DataNotFoundException(
                         "User not found in the database.");
             }
-            if (user.getUserState() != null
-                    || !user.getUserState().isEmpty()) {
+            if (user.getUserState() != null || !user.getUserState().isEmpty()) {
                 String query2 = "INSERT INTO authentication "
                         + "(user_id, faculty_id, user_level) "
                         + "VALUES (?, ?, ?) ON CONFLICT UPDATE";
-                try (PreparedStatement statement2 = transaction
-                        .getConnection().prepareStatement(query2)) {
+                try (PreparedStatement statement2 = transaction.getConnection()
+                        .prepareStatement(query2)) {
                     for (Map.Entry<Faculty, UserState> entry : user
                             .getUserState().entrySet()) {
                         int j = 1;
                         statement2.setInt(j++, user.getId());
                         statement2.setInt(j++, entry.getKey().getId());
-                        statement2.setString(j++,
-                                entry.getValue().name());
+                        statement2.setString(j++, entry.getValue().name());
                         statement2.executeUpdate();
                     }
                 }
@@ -238,8 +229,7 @@ public class UserDAO
     }
 
     @Override
-    public void getUserById(final User user,
-            final Transaction transaction)
+    public void getUserById(final User user, final Transaction transaction)
             throws DataNotFoundException {
         String query = "SELECT email_address, first_name, last_name,"
                 + " birth_date, password_hash, password_salt "
@@ -252,28 +242,23 @@ public class UserDAO
 
         try (PreparedStatement statement = transaction.getConnection()
                 .prepareStatement(query);
-                PreparedStatement statement2 = transaction
-                        .getConnection().prepareStatement(query2)) {
+                PreparedStatement statement2 = transaction.getConnection()
+                        .prepareStatement(query2)) {
             statement.setInt(1, user.getId());
             statement2.setInt(1, user.getId());
 
             try (ResultSet resultSet = statement.executeQuery();
-                    ResultSet resultSet2 = statement2
-                            .executeQuery();) {
+                    ResultSet resultSet2 = statement2.executeQuery();) {
                 if (resultSet.next()) {
                     // Retrieve the user data from the result set
-                    user.setEmail(
-                            resultSet.getString("email_address"));
-                    user.setFirstName(
-                            resultSet.getString("first_name"));
-                    user.setLastName(
-                            resultSet.getString("last_name"));
-                    user.setBirthDate(resultSet.getDate("birth_date")
-                            .toString());
+                    user.setEmail(resultSet.getString("email_address"));
+                    user.setFirstName(resultSet.getString("first_name"));
+                    user.setLastName(resultSet.getString("last_name"));
+                    user.setBirthDate(
+                            resultSet.getDate("birth_date").toString());
                     user.setPasswordHashed(
                             resultSet.getString("password_hash"));
-                    user.setPasswordSalt(
-                            resultSet.getString("password_salt"));
+                    user.setPasswordSalt(resultSet.getString("password_salt"));
                 } else {
                     throw new DataNotFoundException(
                             "User not found in the database.");
@@ -284,14 +269,13 @@ public class UserDAO
                     Faculty f = new Faculty();
                     f.setId(resultSet2.getInt("faculty_id"));
                     f.setName(resultSet2.getString("faculty_name"));
-                    stateMap.put(f, UserState.valueOf(
-                            resultSet2.getString("user_level")));
+                    stateMap.put(f, UserState
+                            .valueOf(resultSet2.getString("user_level")));
                 }
                 user.setUserState(stateMap);
             }
         } catch (SQLException e) {
-            throw new DataNotFoundException(
-                    "Failed to retrieve user data.", e);
+            throw new DataNotFoundException("Failed to retrieve user data.", e);
         }
     }
 
@@ -309,39 +293,32 @@ public class UserDAO
 
         try (PreparedStatement statement = transaction.getConnection()
                 .prepareStatement(query);
-                PreparedStatement statement2 = transaction
-                        .getConnection().prepareStatement(query2)) {
+                PreparedStatement statement2 = transaction.getConnection()
+                        .prepareStatement(query2)) {
             statement.setString(1, user.getEmail());
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     // Retrieve the user data from the result set
                     user.setId(resultSet.getInt("user_id"));
-                    user.setFirstName(
-                            resultSet.getString("first_name"));
-                    user.setLastName(
-                            resultSet.getString("last_name"));
-                    user.setBirthDate(resultSet.getDate("birth_date")
-                            .toString());
+                    user.setFirstName(resultSet.getString("first_name"));
+                    user.setLastName(resultSet.getString("last_name"));
+                    user.setBirthDate(
+                            resultSet.getDate("birth_date").toString());
                     user.setPasswordHashed(
                             resultSet.getString("password_hash"));
-                    user.setPasswordSalt(
-                            resultSet.getString("password_salt"));
+                    user.setPasswordSalt(resultSet.getString("password_salt"));
 
                     statement2.setInt(1, user.getId());
-                    try (ResultSet resultSet2 = statement2
-                            .executeQuery()) {
+                    try (ResultSet resultSet2 = statement2.executeQuery()) {
                         Map<Faculty, UserState> stateMap =
                                 new HashMap<Faculty, UserState>();
                         while (resultSet2.next()) {
                             Faculty f = new Faculty();
                             f.setId(resultSet2.getInt("faculty_id"));
-                            f.setName(resultSet2
-                                    .getString("faculty_name"));
-                            stateMap.put(f,
-                                    UserState.valueOf(
-                                            resultSet2.getString(
-                                                    "user_level")));
+                            f.setName(resultSet2.getString("faculty_name"));
+                            stateMap.put(f, UserState.valueOf(
+                                    resultSet2.getString("user_level")));
                         }
                         user.setUserState(stateMap);
                     }
@@ -360,14 +337,14 @@ public class UserDAO
 
     @Override
     public List<User> getUsers(final User user, final Faculty faculty,
-        final UserState auth, final Transaction transaction,
-        final int offset, final int count) {
-            List<User> userList = new ArrayList<>();
-            String query = "SELECT \"user\".user_id, \"user\".email_address, "
-                    + "\"user\".first_name, \"user\".last_name,"
-                    + " \"user\".birth_date, faculty.faculty_name, "
-                    + "authentication.user_Level FROM \"user\" "
-                    + "INNER JOIN authentication "
+            final UserState auth, final Transaction transaction,
+            final int offset, final int count) {
+        List<User> userList = new ArrayList<>();
+        String query = "SELECT \"user\".user_id, \"user\".email_address, "
+                + "\"user\".first_name, \"user\".last_name,"
+                + " \"user\".birth_date, faculty.faculty_name, "
+                + "authentication.user_Level FROM \"user\" "
+                + "INNER JOIN authentication "
                 + "ON \"user\".user_id=authentication.user_id "
                 + "INNER JOIN faculty "
                 + "ON authentication.faculty_id=faculty.faculty_id WHERE ";
@@ -425,31 +402,27 @@ public class UserDAO
                 while (resultSet.next()) {
                     User fetchedUser = new User();
                     fetchedUser.setId(resultSet.getInt("user_id"));
-                    fetchedUser.setEmail(
-                            resultSet.getString("email_address"));
-                    fetchedUser.setFirstName(
-                            resultSet.getString("first_name"));
-                    fetchedUser.setLastName(
-                            resultSet.getString("last_name"));
-                    fetchedUser.setBirthDate(resultSet
-                            .getDate("birth_date").toString());
+                    fetchedUser.setEmail(resultSet.getString("email_address"));
+                    fetchedUser.setFirstName(resultSet.getString("first_name"));
+                    fetchedUser.setLastName(resultSet.getString("last_name"));
+                    fetchedUser.setBirthDate(
+                            resultSet.getDate("birth_date").toString());
 
                     userList.add(fetchedUser);
                 }
             }
         } catch (SQLException e) {
             // Handle any specific exceptions or logging as needed
-            throw new DBConnectionFailedException(
-                    "Failed to retrieve users.", e);
+            throw new DBConnectionFailedException("Failed to retrieve users.",
+                    e);
         }
 
         return userList;
     }
 
     @Override
-    public List<User> getUsers(final User user,
-            final Transaction transaction, final int offset,
-            final int count) throws InvalidInputException {
+    public List<User> getUsers(final User user, final Transaction transaction,
+            final int offset, final int count) throws InvalidInputException {
         Faculty faculty = null;
         UserState auth = null;
         List<User> userList = new ArrayList<>();
@@ -466,8 +439,8 @@ public class UserDAO
 
         if (user.getUserState() != null) {
             if (user.getUserState().entrySet().size() == 1) {
-                Map.Entry<Faculty, UserState> entry = user
-                        .getUserState().entrySet().iterator().next();
+                Map.Entry<Faculty, UserState> entry = user.getUserState()
+                        .entrySet().iterator().next();
                 faculty = entry.getKey();
                 auth = entry.getValue();
             } else {
@@ -528,37 +501,32 @@ public class UserDAO
                 while (resultSet.next()) {
                     User fetchedUser = new User();
                     fetchedUser.setId(resultSet.getInt("user_id"));
-                    fetchedUser.setEmail(
-                            resultSet.getString("email_address"));
-                    fetchedUser.setFirstName(
-                            resultSet.getString("first_name"));
-                    fetchedUser.setLastName(
-                            resultSet.getString("last_name"));
-                    fetchedUser.setBirthDate(resultSet
-                            .getDate("birth_date").toString());
+                    fetchedUser.setEmail(resultSet.getString("email_address"));
+                    fetchedUser.setFirstName(resultSet.getString("first_name"));
+                    fetchedUser.setLastName(resultSet.getString("last_name"));
+                    fetchedUser.setBirthDate(
+                            resultSet.getDate("birth_date").toString());
 
                     userList.add(fetchedUser);
                 }
             }
         } catch (SQLException e) {
             // Handle any specific exceptions or logging as needed
-            throw new DBConnectionFailedException(
-                    "Failed to retrieve users.", e);
+            throw new DBConnectionFailedException("Failed to retrieve users.",
+                    e);
         }
 
         return userList;
     }
 
     @Override
-    public int getTotalUserNumber(final User user,
-            final Faculty faculty, final UserState auth,
-            final Transaction transaction) {
+    public int getTotalUserNumber(final User user, final Faculty faculty,
+            final UserState auth, final Transaction transaction) {
         String query = "SELECT COUNT(*) FROM \"user\" "
                 + "INNER JOIN authentication "
                 + "ON \"user\".user_id=authentication.user_id "
                 + "INNER JOIN faculty "
-                + "ON authentication.faculty_id=faculty.faculty_id "
-                + "WHERE ";
+                + "ON authentication.faculty_id=faculty.faculty_id " + "WHERE ";
         List<String> conditions = new ArrayList<>();
         List<Object> parameters = new ArrayList<>();
 
@@ -611,8 +579,8 @@ public class UserDAO
             }
         } catch (SQLException e) {
             // Handle any specific exceptions or logging as needed
-            throw new DBConnectionFailedException(
-                    "Failed to retrieve users.", e);
+            throw new DBConnectionFailedException("Failed to retrieve users.",
+                    e);
         }
         return -1;
     }
@@ -620,14 +588,13 @@ public class UserDAO
     @Override
     public void updateOrAddAuth(final User user, final Transaction transaction)
             throws DataNotCompleteException, InvalidInputException {
-        if (user.getUserState() != null
-                || !user.getUserState().isEmpty()) {
+        if (user.getUserState() != null || !user.getUserState().isEmpty()) {
             String query = "INSERT INTO authentication (user_id, faculty_id, "
                     + "user_level) VALUES (?, ?, ?) ON CONFLICT UPDATE";
-            try (PreparedStatement statement = transaction
-                    .getConnection().prepareStatement(query)) {
-                for (Map.Entry<Faculty, UserState> entry : user
-                        .getUserState().entrySet()) {
+            try (PreparedStatement statement = transaction.getConnection()
+                    .prepareStatement(query)) {
+                for (Map.Entry<Faculty, UserState> entry : user.getUserState()
+                        .entrySet()) {
                     int i = 1;
                     statement.setInt(i++, user.getId());
                     statement.setInt(i++, entry.getKey().getId());
@@ -637,8 +604,7 @@ public class UserDAO
             } catch (SQLException e) {
                 switch (e.getSQLState()) {
                 case "23503":
-                    throw new InvalidInputException(
-                            "foreign_key_violation", e);
+                    throw new InvalidInputException("foreign_key_violation", e);
 
                 default:
                     throw new DBConnectionFailedException();
@@ -653,21 +619,19 @@ public class UserDAO
     @Override
     public void removeAuth(final User user, final Transaction transaction)
             throws DataNotFoundException, DataNotCompleteException {
-        if (user.getUserState() != null
-                || !user.getUserState().isEmpty()) {
+        if (user.getUserState() != null || !user.getUserState().isEmpty()) {
             String query = "DELETE FROM authentication "
                     + "WHERE user_id = ? AND faculty_id = ?";
-            try (PreparedStatement statement = transaction
-                    .getConnection().prepareStatement(query)) {
-                for (Map.Entry<Faculty, UserState> entry : user
-                        .getUserState().entrySet()) {
+            try (PreparedStatement statement = transaction.getConnection()
+                    .prepareStatement(query)) {
+                for (Map.Entry<Faculty, UserState> entry : user.getUserState()
+                        .entrySet()) {
                     statement.setInt(1, user.getId());
                     statement.setInt(2, entry.getKey().getId());
                     int rowsAffected = statement.executeUpdate();
                     if (rowsAffected == 0) {
-                        throw new DataNotFoundException(
-                                "Admin with user ID " + user.getId()
-                                        + " not found.");
+                        throw new DataNotFoundException("Admin with user ID "
+                                + user.getId() + " not found.");
                     }
                 }
             } catch (SQLException e) {
@@ -692,8 +656,9 @@ public class UserDAO
         } catch (SQLException e) {
             switch (e.getSQLState()) {
             case "23503":
-                throw new InvalidInputException("User with user ID "
-                        + user.getId() + " doesn't exist.", e);
+                throw new InvalidInputException(
+                        "User with user ID " + user.getId() + " doesn't exist.",
+                        e);
 
             case "23505":
                 throw new KeyExistsException("Admin with user ID "
@@ -716,12 +681,11 @@ public class UserDAO
 
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected == 0) {
-                throw new DataNotFoundException("Admin with user ID "
-                        + user.getId() + " not found.");
+                throw new DataNotFoundException(
+                        "Admin with user ID " + user.getId() + " not found.");
             }
         } catch (SQLException e) {
-            throw new DBConnectionFailedException(
-                    "Failed to remove admin.", e);
+            throw new DBConnectionFailedException("Failed to remove admin.", e);
         }
     }
 
@@ -743,14 +707,13 @@ public class UserDAO
                 admin.setEmail(resultSet.getString("email_address"));
                 admin.setFirstName(resultSet.getString("firstname"));
                 admin.setLastName(resultSet.getString("lastname"));
-                admin.setBirthDate(
-                        resultSet.getDate("birthdate").toString());
+                admin.setBirthDate(resultSet.getDate("birthdate").toString());
 
                 adminList.add(admin);
             }
         } catch (SQLException e) {
-            throw new DBConnectionFailedException(
-                    "Failed to retrieve admins.", e);
+            throw new DBConnectionFailedException("Failed to retrieve admins.",
+                    e);
         }
 
         return adminList;

@@ -4,7 +4,7 @@ import dtt.business.utilities.SessionInfo;
 import dtt.dataAccess.exceptions.DataNotFoundException;
 import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.exceptions.KeyExistsException;
-import dtt.dataAccess.repository.Postgres.UserDAO;
+import dtt.dataAccess.repository.postgres.UserDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.User;
 import jakarta.annotation.PostConstruct;

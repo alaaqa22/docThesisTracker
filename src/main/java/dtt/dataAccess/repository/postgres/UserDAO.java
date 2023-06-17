@@ -1,4 +1,4 @@
-package dtt.dataAccess.repository.Postgres;
+package dtt.dataAccess.repository.postgres;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

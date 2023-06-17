@@ -2,8 +2,8 @@ package dtt.business.backing;
 
 import dtt.business.utilities.SessionInfo;
 import dtt.dataAccess.exceptions.*;
-import dtt.dataAccess.repository.Postgres.CirculationDAO;
-import dtt.dataAccess.repository.Postgres.VoteDAO;
+import dtt.dataAccess.repository.postgres.CirculationDAO;
+import dtt.dataAccess.repository.postgres.VoteDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
 import dtt.global.tansport.Options;

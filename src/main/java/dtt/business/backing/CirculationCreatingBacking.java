@@ -4,7 +4,7 @@ import dtt.business.utilities.SessionInfo;
 import dtt.dataAccess.exceptions.DataNotCompleteException;
 import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.exceptions.KeyExistsException;
-import dtt.dataAccess.repository.Postgres.CirculationDAO;
+import dtt.dataAccess.repository.postgres.CirculationDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
 import jakarta.annotation.PostConstruct;

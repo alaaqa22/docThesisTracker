@@ -4,7 +4,7 @@ import dtt.business.utilities.Hashing;
 import dtt.business.utilities.SessionInfo;
 import dtt.business.utilities.SystemInitializer;
 import dtt.dataAccess.exceptions.DataNotFoundException;
-import dtt.dataAccess.repository.Postgres.UserDAO;
+import dtt.dataAccess.repository.postgres.UserDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.User;
 import dtt.global.utilities.ConfigReader;

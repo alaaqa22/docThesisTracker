@@ -30,7 +30,6 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Alaa Qasem
  */
-@FacesConfig
 @RequestScoped
 @Named
 public class LoginBacking implements Serializable {
@@ -62,6 +61,7 @@ public class LoginBacking implements Serializable {
         User userDB = new User();
         userDB.setEmail(user.getEmail());
         boolean found = userDAO.findUserByEmail(userDB, transaction);
+
         if (found) {
             boolean verified;
             try {
@@ -74,7 +74,7 @@ public class LoginBacking implements Serializable {
             if (verified) {
                 user = userDB;
                 sessionInfo.setUser(user);
-
+                transaction.commit();
                 // Password matches, login successful
                 return "/views/authenticated/circulationslist?faces-redirect=true";
             } else {
@@ -113,8 +113,11 @@ public class LoginBacking implements Serializable {
         //return "/view/authenticated/forgetPass?faces-redirect=true";
     }
 
-
     public User getUser() {
         return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

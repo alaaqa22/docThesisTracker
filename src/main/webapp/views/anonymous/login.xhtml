@@ -29,14 +29,17 @@
         </div>
 
         <div>
-            <h:commandLink action="#{loginBacking.forgetPass()}" value="Forgotten password?" />
+            <h:commandLink value="Forgotten password?" action="#{loginBacking.forgetPass()}" immediate="true" />
         </div>
 
         <div>
             <h:commandButton value="Login" action="#{loginBacking.login()}"/>
-            <h:commandButton value="Register" action="#{loginBacking.register()}"/>
+        </div>
+        <div>
+            <h:commandButton value="Register" action="#{loginBacking.register()}" immediate="true" />
 
         </div>
+
     </h:form>
 </h:body>
 

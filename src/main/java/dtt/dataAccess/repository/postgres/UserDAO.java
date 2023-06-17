@@ -618,7 +618,7 @@ public class UserDAO
     }
 
     @Override
-    public void UpdateOrAddAuth(final User user, final Transaction transaction)
+    public void updateOrAddAuth(final User user, final Transaction transaction)
             throws DataNotCompleteException, InvalidInputException {
         if (user.getUserState() != null
                 || !user.getUserState().isEmpty()) {

@@ -23,8 +23,7 @@
 			<h:outputLabel value="Title:" for="title-itxt" />
 			<h:inputText id="title-itxt"
 				value="#{circulationCreatingBacking.circulation.title}"
-				required="true">
-				<f:validator validatorId="UniqueCirculationNameValidator" />
+				required="true" validator="UniqueCirculationNameValidator">
 			</h:inputText>
 			<h:message for="title-itxt" styleClass="message" />
 

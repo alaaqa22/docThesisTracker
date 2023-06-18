@@ -1,6 +1,6 @@
 package dtt.business.validation;
 
-import dtt.dataAccess.repository.interfaces.CirculationDAO;
+import dtt.dataAccess.repository.postgres.CirculationDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
 import jakarta.faces.application.FacesMessage;
@@ -18,11 +18,11 @@ import jakarta.inject.Inject;
  *
  * @author Hadi Abou Hassoun
  */
-@FacesValidator("UniqueCirculationNameValidator")
-public class UniqueCirculationNameValidator implements Validator {
+@FacesValidator(value = "UniqueCirculationNameValidator", managed = true)
+public class UniqueCirculationNameValidator implements Validator<String> {
 
     /** circulationDAO object for database access. */
-    @Inject
+    //@Inject
     private CirculationDAO circulationDAO;
 
     /**
@@ -34,13 +34,13 @@ public class UniqueCirculationNameValidator implements Validator {
      */
     @Override
     public void validate(final FacesContext context,
-            final UIComponent component, final Object value)
+            final UIComponent component, final String value)
             throws ValidatorException {
-        String circTitle = (String) value;
+        String circTitle = value;
         if (!isValueUnique(circTitle)) {
             FacesMessage msg = new FacesMessage(
                     "A circulation with the same title "
-                    + "already exists in the Database.");
+                            + "already exists in the Database.");
             msg.setSeverity(FacesMessage.SEVERITY_ERROR);
 
             throw new ValidatorException(msg);
@@ -57,9 +57,9 @@ public class UniqueCirculationNameValidator implements Validator {
     private boolean isValueUnique(final String circulationName) {
         Circulation circ = new Circulation();
         circ.setTitle(circulationName);
+        circulationDAO = new CirculationDAO();
         try (Transaction transaction = new Transaction()) {
             return !circulationDAO.findCirculationByTitle(circ, transaction);
         }
     }
-
 }

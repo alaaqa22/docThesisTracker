@@ -122,6 +122,9 @@ public class CirculationDetailsBacking implements Serializable {
                 vote.setSelection(choice);
                 voteDAO.update(vote, transaction);
             }
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "Ihre Stimme " + "(" + getChoice().getLabel() + ")"+" wurde erfolgreich gespeichert.", null);
+            FacesContext.getCurrentInstance().addMessage(null, message);
             transaction.commit();
 
         } catch (DataNotCompleteException | InvalidInputException | DataNotFoundException e) {

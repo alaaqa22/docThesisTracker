@@ -100,13 +100,13 @@
                     <ul class="pagination">
                         <h:panelGroup rendered="#{userListBacking.userPagination.totalNumOfPages>1}">
                             <h:panelGroup layout="block" styleClass="page-item">
-                                <h:commandLink value="First" action="#{userListBacking.userPagination.firstPage}"
+                                <h:commandLink id="firstpage-link" value="First" action="#{userListBacking.userPagination.firstPage}"
                                                styleClass="page-link"/>
                             </h:panelGroup>
 
                             <h:panelGroup layout="block" styleClass="page-item"
                                           rendered="#{!userListBacking.userPagination.isFirstPage()}">
-                                <h:commandLink value="Previous"
+                                <h:commandLink  id="previouspage-link" value="Previous"
                                                action="#{userListBacking.userPagination.previousPage()}"
                                                styleClass="page-link"/>
                             </h:panelGroup>
@@ -116,12 +116,12 @@
 
                             <h:panelGroup layout="block" styleClass="page-item"
                                           rendered="#{!userListBacking.userPagination.isLastPage()}">
-                                <h:commandLink value="Next" action="#{userListBacking.userPagination.nextPage()}"
+                                <h:commandLink id="nextpage-link" value="Next" action="#{userListBacking.userPagination.nextPage()}"
                                                rendered="#{!userListBacking.userPagination.lastPage()}"
                                                styleClass="page-link"/>
                             </h:panelGroup>
                             <h:panelGroup layout="block" styleClass="page-item">
-                                <h:commandLink value="Last" action="#{userListBacking.userPagination.lastPage()}"
+                                <h:commandLink id="lastpage-link" value="Last" action="#{userListBacking.userPagination.lastPage()}"
                                                styleClass="page-link"/>
                             </h:panelGroup>
                         </h:panelGroup>

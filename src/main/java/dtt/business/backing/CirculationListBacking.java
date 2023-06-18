@@ -60,13 +60,13 @@ public class CirculationListBacking implements Serializable {
                 int offset = (currentPage - 1) * maxItems;
                 int count = maxItems;
 
-                Transaction transaction;
+                try (Transaction transaction = new Transaction()) {
+                    List<Circulation> cir = circDAO.getCirculations(filter, transaction, offset, count);
+                    setEntries(cir);
+                    circulations = cir;
+                    transaction.commit();
+                }
 
-                transaction = new Transaction ();
-                List<Circulation> cir = circDAO.getCirculations (filter, transaction, offset, count);
-                setEntries (cir);
-                circulations = cir;
-                transaction.commit ();
 
             }
 

@@ -68,16 +68,14 @@ public class UserListBacking implements Serializable {
                 int offset = (currentPage - 1) * maxItems;
                 int count = maxItems;
 
-                Transaction transaction;
+                try (Transaction transaction = new Transaction()) {
+                    Faculty faculty = null;
+                    UserState auth = null;
+                    users = userDAO.getUsers(filter, faculty, auth, transaction, offset, count);
+                    setEntries(users);
+                    transaction.commit();  // Ensure that the transaction is committed.
+                }
 
-
-                transaction = new Transaction ();
-                Faculty faculty = null;
-                UserState auth = null;
-                users = userDAO.getUsers (filter, faculty, auth, transaction, offset, count);
-                setEntries (users);
-
-                transaction.commit ();
 
             }
 

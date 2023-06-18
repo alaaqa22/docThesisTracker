@@ -12,6 +12,8 @@ import dtt.global.tansport.Options;
 import dtt.global.tansport.Vote;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A Postgres implementation for a class handling database access related to votes.
@@ -28,6 +30,7 @@ public class VoteDAO implements dtt.dataAccess.repository.interfaces.VoteDAO {
 	private final String CIRCULATION_ID = "circulation_id";
 	private final String CHOICE = "choice";
 	private final String REASON = "reason";
+	private static final Logger LOGGER = LogManager.getLogger(CirculationDAO.class);
 
 	/**
 	 * Constructor for VotesDAO
@@ -45,6 +48,7 @@ public class VoteDAO implements dtt.dataAccess.repository.interfaces.VoteDAO {
 
 	@Override
 	public void add(Vote vote, Transaction transaction) throws DataNotCompleteException, InvalidInputException {
+		LOGGER.debug("add() called.");
 		String query = "INSERT INTO vote (user_id, circulation_id, choice, reason) VALUES (?, ?, ?, ?)";
 		try (PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
 			setVoteStatement(vote, statement);
@@ -66,6 +70,7 @@ public class VoteDAO implements dtt.dataAccess.repository.interfaces.VoteDAO {
 
 	@Override
 	public void remove(Vote vote, Transaction transaction) throws DataNotFoundException, InvalidInputException {
+		LOGGER.debug("remove() called.");
 		String query = "DELETE FROM vote WHERE vote_id = ?";
 		try (PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
 			statement.setInt(1, vote.getVoteId ());
@@ -83,6 +88,7 @@ public class VoteDAO implements dtt.dataAccess.repository.interfaces.VoteDAO {
 
 	@Override
 	public void update(Vote vote, Transaction transaction) throws DataNotFoundException, InvalidInputException {
+		LOGGER.debug("update() called.");
 		String query = "UPDATE vote SET user_id = ?, circulation_id = ?, choice = ?, reason = ? WHERE vote_id = ?";
 
 		try (PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
@@ -101,6 +107,7 @@ public class VoteDAO implements dtt.dataAccess.repository.interfaces.VoteDAO {
 
 	@Override
 	public List<Vote> getVotes(Vote vote, Transaction transaction) {
+		LOGGER.debug("getVotes() called.");
 		List<Vote> votes = new ArrayList<>();
 
 		String query = "SELECT * FROM vote WHERE circulation_id = ?";
@@ -128,16 +135,27 @@ public class VoteDAO implements dtt.dataAccess.repository.interfaces.VoteDAO {
 
 	@Override
 	public boolean findVote(Vote vote, Transaction transaction) {
-		String query = "SELECT * FROM vote WHERE circulation_id = ?";
+		LOGGER.debug("findVote() called.");
+		String query = "SELECT * FROM vote WHERE circulation_id = ? and user_id = ?";
 		try (PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
 			statement.setInt(1, vote.getCirculationId());
+			statement.setInt(2, vote.getUserId ());
 
 			try (ResultSet rs = statement.executeQuery()) {
-				return rs.next();
+				if(rs.next()){
+					vote.setVoteId(rs.getInt(VOTE_ID));
+					vote.setUser(rs.getInt(USER_ID));
+					vote.setCirculation(rs.getInt(CIRCULATION_ID));
+					vote.setSelection(Options.fromValue(rs.getInt(CHOICE)));
+					vote.setDescription(rs.getString(REASON));
+					return true;
+				}
+
 			}
 		} catch (SQLException e) {
 			throw new DBConnectionFailedException("Failed to find vote.", e);
 		}
+		return false;
 	}
 	}
 

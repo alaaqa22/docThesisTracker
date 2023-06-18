@@ -41,10 +41,20 @@ public class UserListBacking implements Serializable {
     private SessionInfo sessionInfo;
     private final Logger logger = LogManager.getLogger();
 
+    /**
+     * Constructs a new instance of UserListBacking.
+     * Initializes the userPagination object.
+     */
     public UserListBacking(){
         userPagination = createPagination();
     }
 
+    /**
+     * Creates a Pagination object for managing user list pagination.
+     * Defines how data is loaded and how the total number of pages is calculated.
+     *
+     * @return A new Pagination object
+     */
     private Pagination<User> createPagination() {
         return new Pagination<User>() {
             @Override
@@ -81,7 +91,7 @@ public class UserListBacking implements Serializable {
     }
 
 
-
+     // Creates a new User object to be used as a filter and loads the first page of users.
     @PostConstruct
     public void init(){
         filter = new User();

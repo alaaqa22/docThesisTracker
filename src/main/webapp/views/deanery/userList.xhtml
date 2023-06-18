@@ -14,71 +14,71 @@
     </h:head>
 
     <h:body>
-        <ui:include src="/views/anonymous/header.xhtml" />
+        <ui:include src="/views/anonymous/header.xhtml"/>
 
         <div class="container">
             <h:form>
                 <!-- dataTable for a User List -->
-                <h:dataTable value="#{userListBacking.users}" var="user" styleClass="my-table" border="2" >
+                <h:dataTable value="#{userListBacking.users}" var="user" styleClass="my-table" border="2">
 
                     <f:facet name="header">
-                        <h:outputText value="Users"  styleClass="text-center" />
+                        <h:outputText value="Users" styleClass="text-center"/>
                     </f:facet>
 
                     <!-- User ID -->
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="ID" />
+                            <h:outputText value="ID"/>
                         </f:facet>
-                        <h:outputText value="#{user.id}" />
+                        <h:outputText value="#{user.id}"/>
                     </h:column>
 
                     <!-- First Name -->
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="First Name" />
+                            <h:outputText value="First Name"/>
                         </f:facet>
-                        <h:outputText value="#{user.firstName}" />
+                        <h:outputText value="#{user.firstName}"/>
                     </h:column>
 
                     <!-- Last Name -->
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="Last Name" />
+                            <h:outputText value="Last Name"/>
                         </f:facet>
-                        <h:outputText value="#{user.lastName}" />
+                        <h:outputText value="#{user.lastName}"/>
                     </h:column>
 
                     <!-- Email -->
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="Email" />
+                            <h:outputText value="Email"/>
                         </f:facet>
-                        <h:outputText value="#{user.email}" />
+                        <h:outputText value="#{user.email}"/>
                     </h:column>
 
                     <!-- Account Status -->
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="Account Status" />
+                            <h:outputText value="Account Status"/>
                         </f:facet>
-                        <h:outputText value="#{user.accountState}" />
+                        <h:outputText value="#{user.accountState}"/>
                     </h:column>
 
                     <!-- Email -->
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="Faculty" />
+                            <h:outputText value="Faculty"/>
                         </f:facet>
-                        <h:outputText  />
+                        <h:outputText/>
                     </h:column>
 
                     <!-- Status -->
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="User State" />
+                            <h:outputText value="User State"/>
                         </f:facet>
-                        <h:outputText  />
+                        <h:outputText/>
                     </h:column>
 
 
@@ -87,32 +87,39 @@
                 <!-- Pagination Controls -->
                 <div class="d-flex justify-content-center">
 
-                    <h:panelGroup layout="block" styleClass="page-item" rendered="#{userListBacking.userPagination.isFirstPage()}" >
+                    <h:panelGroup layout="block" styleClass="page-item"
+                                  rendered="#{userListBacking.userPagination.isFirstPage()}">
                         <h:outputText styleClass="page-item" value="Page : #{userListBacking.userPagination.currentPage}
-                        of #{userListBacking.userPagination.getTotalNumOfPages() }" />
+                        of #{userListBacking.userPagination.getTotalNumOfPages() }"/>
                     </h:panelGroup>
 
 
-
-
-                    <ul class="pagination" >
-                        <h:panelGroup rendered="#{userListBacking.userPagination.totalNumOfPages>1}" >
+                    <ul class="pagination">
+                        <h:panelGroup rendered="#{userListBacking.userPagination.totalNumOfPages>1}">
                             <h:panelGroup layout="block" styleClass="page-item">
-                                <h:commandLink value="First" action="#{userListBacking.userPagination.firstPage}" styleClass="page-link"/>
+                                <h:commandLink value="First" action="#{userListBacking.userPagination.firstPage}"
+                                               styleClass="page-link"/>
                             </h:panelGroup>
 
-                            <h:panelGroup layout="block" styleClass="page-item" rendered="#{!userListBacking.userPagination.isFirstPage()}">
-                                <h:commandLink value="Previous" action="#{userListBacking.userPagination.previousPage()}" styleClass="page-link" />
+                            <h:panelGroup layout="block" styleClass="page-item"
+                                          rendered="#{!userListBacking.userPagination.isFirstPage()}">
+                                <h:commandLink value="Previous"
+                                               action="#{userListBacking.userPagination.previousPage()}"
+                                               styleClass="page-link"/>
                             </h:panelGroup>
 
-                            <h:outputText styleClass="page-item" value="Page : #{userListBacking.userPagination.currentPage} of #{userListBacking.userPagination.getTotalNumOfPages() }" />
+                            <h:outputText styleClass="page-item"
+                                          value="Page : #{userListBacking.userPagination.currentPage} of #{userListBacking.userPagination.getTotalNumOfPages() }"/>
 
-                            <h:panelGroup layout="block" styleClass="page-item" rendered="#{!userListBacking.userPagination.isLastPage()}">
+                            <h:panelGroup layout="block" styleClass="page-item"
+                                          rendered="#{!userListBacking.userPagination.isLastPage()}">
                                 <h:commandLink value="Next" action="#{userListBacking.userPagination.nextPage()}"
-                                               rendered="#{!userListBacking.userPagination.lastPage()}" styleClass="page-link"/>
+                                               rendered="#{!userListBacking.userPagination.lastPage()}"
+                                               styleClass="page-link"/>
                             </h:panelGroup>
                             <h:panelGroup layout="block" styleClass="page-item">
-                                <h:commandLink value="Last" action="#{userListBacking.userPagination.lastPage()}" styleClass="page-link"/>
+                                <h:commandLink value="Last" action="#{userListBacking.userPagination.lastPage()}"
+                                               styleClass="page-link"/>
                             </h:panelGroup>
                         </h:panelGroup>
                     </ul>

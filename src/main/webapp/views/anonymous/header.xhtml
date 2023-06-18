@@ -7,12 +7,12 @@
 <f:view>
     <h:head>
         <title>Header</title>
-        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"/>
     </h:head>
     <h:body>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a class="navbar-brand" href="#">
-                <h:graphicImage value="/logo/LogoSeite.png" style="max-width: 200px; max-height: 200px;" />
+                <h:graphicImage value="/logo/LogoSeite.png" style="max-width: 200px; max-height: 200px;"/>
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,10 +24,10 @@
                         <!--  für anonymous User -->
                         <h:panelGroup rendered="#{sessionInfo.anonymous}">
                             <li class="nav-item">
-                                <h:commandLink value="Impressum" action="impressum" styleClass="nav-link" />
+                                <h:commandLink value="Impressum" action="impressum" styleClass="nav-link"/>
                             </li>
                             <li class="nav-item">
-                                <h:link outcome="/views/help/help" value="Hilfeseite" styleClass="nav-link" />
+                                <h:link outcome="/views/help/help" value="Hilfeseite" styleClass="nav-link"/>
                             </li>
                         </h:panelGroup>
                         <!--  für authenticated -->
@@ -35,12 +35,12 @@
 
                             <li class="nav-item">
                                 <h:link outcome="/views/authenticated/circulationslist.xhtml" value="Hauptseite"
-                                        styleClass="nav-link" />
+                                        styleClass="nav-link"/>
                             </li>
 
                             <li class="nav-item">
                                 <h:link outcome="/views/authenticated/profile.xhtml" value="Profilseite"
-                                        styleClass="nav-link" />
+                                        styleClass="nav-link"/>
                             </li>
 
                         </h:panelGroup>
@@ -48,55 +48,55 @@
                         <h:panelGroup rendered="#{sessionInfo.examiner}">
 
                             <li class="nav-item">
-                                <h:link outcome="help/helpExaminer" value="Hilfeseite" styleClass="nav-link" />
+                                <h:link outcome="help/helpExaminer" value="Hilfeseite" styleClass="nav-link"/>
                             </li>
                         </h:panelGroup>
 
                         <!-- für committeeMember/ deanery/ admin -->
-                        <h:panelGroup rendered="#{sessionInfo.committeeMember or sessionInfo.deanery or sessionInfo.admin}">
+                        <h:panelGroup
+                                rendered="#{sessionInfo.committeeMember or sessionInfo.deanery or sessionInfo.admin}">
                             <li class="nav-item">
-                                <h:commandButton action="#{circulationCreatingBacking.create}" value="Create Circulation"
-                                                 styleClass="nav-link btn btn-primary" />
+                                <h:commandButton action="#{circulationCreatingBacking.create}"
+                                                 value="Create Circulation"
+                                                 styleClass="nav-link btn btn-primary"/>
                             </li>
                         </h:panelGroup>
                         <!-- deanery/ admin -->
                         <h:panelGroup rendered="#{sessionInfo.deanery or sessionInfo.admin}">
                             <li class="nav-item">
-                                <h:link outcome="/views/deanery/userList" value="BenutzerListe" styleClass="nav-link" />
+                                <h:link outcome="/views/deanery/userList" value="BenutzerListe" styleClass="nav-link"/>
                             </li>
                         </h:panelGroup>
 
                         <!-- für Prüfungskommissionsmitglieder -->
                         <h:panelGroup rendered="#{sessionInfo.committeeMember}">
                             <li class="nav-item">
-                                <h:link outcome="help/helpCommitteeMember" value="Hilfeseite" styleClass="nav-link" />
+                                <h:link outcome="help/helpCommitteeMember" value="Hilfeseite" styleClass="nav-link"/>
                             </li>
                         </h:panelGroup>
                         <!-- für Dekanate -->
                         <h:panelGroup rendered="#{sessionInfo.deanery}">
                             <li class="nav-item">
-                                <h:link outcome="/views/help/helpDeanery" value="Hilfeseite" styleClass="nav-link" />
+                                <h:link outcome="/views/help/helpDeanery" value="Hilfeseite" styleClass="nav-link"/>
                             </li>
                         </h:panelGroup>
                         <!-- für Administratoren -->
                         <h:panelGroup rendered="#{sessionInfo.admin}">
                             <li class="nav-item">
-                                <h:link outcome="/views/help/helpAdmin" value="Hilfeseite" styleClass="nav-link" />
+                                <h:link outcome="/views/help/helpAdmin" value="Hilfeseite" styleClass="nav-link"/>
                             </li>
                         </h:panelGroup>
-
 
 
                         <!-- Logout button -->
                         <h:panelGroup rendered="#{!sessionInfo.pending and !sessionInfo.anonymous}">
 
-                                <li class="nav-item">
-                                    <h:commandButton action="#{navigationBacking.logout}" value="Abmelden"
-                                                     styleClass="nav-link" />
-                                </li>
+                            <li class="nav-item">
+                                <h:commandButton action="#{navigationBacking.logout}" value="Abmelden"
+                                                 styleClass="nav-link"/>
+                            </li>
 
                         </h:panelGroup>
-
 
 
                     </ul>

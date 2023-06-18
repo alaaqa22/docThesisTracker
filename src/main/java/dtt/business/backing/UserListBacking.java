@@ -39,14 +39,14 @@ public class UserListBacking implements Serializable {
 
     @Inject
     private SessionInfo sessionInfo;
-    private final Logger logger = LogManager.getLogger();
+    private final Logger logger = LogManager.getLogger ();
 
     /**
      * Constructs a new instance of UserListBacking.
      * Initializes the userPagination object.
      */
-    public UserListBacking(){
-        userPagination = createPagination();
+    public UserListBacking () {
+        userPagination = createPagination ();
     }
 
     /**
@@ -55,14 +55,14 @@ public class UserListBacking implements Serializable {
      *
      * @return A new Pagination object
      */
-    private Pagination<User> createPagination() {
-        return new Pagination<User>() {
+    private Pagination<User> createPagination () {
+        return new Pagination<User> () {
             @Override
-            public void loadData() {
-                int currentPage = getCurrentPage();
-                int maxItems = getMaxItems();
+            public void loadData () {
+                int currentPage = getCurrentPage ();
+                int maxItems = getMaxItems ();
                 if (currentPage <= 0 || maxItems <= 0) {
-                    logger.error("Invalid currentPage or maxItems value.");
+                    logger.error ("Invalid currentPage or maxItems value.");
                 }
 
                 int offset = (currentPage - 1) * maxItems;
@@ -71,19 +71,20 @@ public class UserListBacking implements Serializable {
                 Transaction transaction;
 
 
-                    transaction = new Transaction();
-                    Faculty faculty = null;
-                    UserState auth = null;
-                    users = userDAO.getUsers(filter, faculty, auth, transaction, offset, count);
-                    setEntries(users);
+                transaction = new Transaction ();
+                Faculty faculty = null;
+                UserState auth = null;
+                users = userDAO.getUsers (filter, faculty, auth, transaction, offset, count);
+                setEntries (users);
 
-                    transaction.commit();
+                transaction.commit ();
 
             }
+
             @Override
-            public int getTotalNumOfPages() {
-                Transaction t = new Transaction();
-                int totalNumOfPages = (int) Math.ceil((double)(userDAO.getTotalUserNumber(null,null,null,t))
+            public int getTotalNumOfPages () {
+                Transaction t = new Transaction ();
+                int totalNumOfPages = (int) Math.ceil ((double) (userDAO.getTotalUserNumber (null, null, null, t))
                         / maxItems);
                 return totalNumOfPages;
             }
@@ -91,24 +92,23 @@ public class UserListBacking implements Serializable {
     }
 
 
-     // Creates a new User object to be used as a filter and loads the first page of users.
+    // Creates a new User object to be used as a filter and loads the first page of users.
     @PostConstruct
-    public void init(){
-        filter = new User();
-        loadUsers();
+    public void init () {
+        filter = new User ();
+        loadUsers ();
     }
 
-    public void loadUsers() {
-        userPagination.loadData();
-        users = userPagination.getEntries();
+    public void loadUsers () {
+        userPagination.loadData ();
     }
 
-    public Pagination<User> getUserPagination() {
+    public Pagination<User> getUserPagination () {
         return userPagination;
     }
 
 
-    public void setUserPagination(Pagination<User> userPagination) {
+    public void setUserPagination (Pagination<User> userPagination) {
         this.userPagination = userPagination;
     }
 

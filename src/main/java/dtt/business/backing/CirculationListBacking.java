@@ -19,7 +19,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 
-
 /**
  * Backing bean for the circulation list page.
  *
@@ -35,7 +34,7 @@ public class CirculationListBacking implements Serializable {
     private CirculationDAO circDAO;
     @Inject
     private SessionInfo sessionInfo;
-    private final Logger logger = LogManager.getLogger();
+    private final Logger logger = LogManager.getLogger ();
 
 
     /**
@@ -44,53 +43,53 @@ public class CirculationListBacking implements Serializable {
      * The loadData() method is overridden to load the circulations data using a transaction and commit the transaction.
      * Any SQLException that occurs during the transaction commit is caught and an error message is printed.
      */
-    public CirculationListBacking() {
-        this.circPagination = createPagination();
+    public CirculationListBacking () {
+        this.circPagination = createPagination ();
     }
 
-    private Pagination<Circulation> createPagination() {
-        return new Pagination<Circulation>() {
+    private Pagination<Circulation> createPagination () {
+        return new Pagination<Circulation> () {
             @Override
-            public void loadData() {
-                int currentPage = getCurrentPage();
+            public void loadData () {
+                int currentPage = getCurrentPage ();
                 int maxItems = getMaxItems ();
                 if (currentPage <= 0 || maxItems <= 0) {
-                    logger.error("Invalid currentPage or maxItems value.");
+                    logger.error ("Invalid currentPage or maxItems value.");
                 }
 
                 int offset = (currentPage - 1) * maxItems;
                 int count = maxItems;
 
-                Transaction transaction ;
+                Transaction transaction;
 
-                    transaction = new Transaction();
-                    List<Circulation> cir = circDAO.getCirculations(filter, transaction, offset, count);
-                    setEntries(cir);
-                    circulations = cir;
-                    transaction.commit();
+                transaction = new Transaction ();
+                List<Circulation> cir = circDAO.getCirculations (filter, transaction, offset, count);
+                setEntries (cir);
+                circulations = cir;
+                transaction.commit ();
 
-            }   @Override
-            public int getTotalNumOfPages() {
-                Transaction t = new Transaction();
-                int totalNumOfPages = (int) Math.ceil((double)(circDAO.getTotalCirculationNumber(null, t))
+            }
+
+            @Override
+            public int getTotalNumOfPages () {
+                Transaction t = new Transaction ();
+                int totalNumOfPages = (int) Math.ceil ((double) (circDAO.getTotalCirculationNumber (null, t))
                         / maxItems);
-                t.commit();
+                t.commit ();
                 return totalNumOfPages;
             }
         };
     }
 
 
-
     /**
      * Initialize dto object.
      */
     @PostConstruct
-    public void init(){
+    public void init () {
 
         filter = new Circulation ();
-        loadCirculations();
-
+        loadCirculations ();
 
     }
 
@@ -98,37 +97,34 @@ public class CirculationListBacking implements Serializable {
     /**
      * Loads the circulations data and updates the circulations list.
      */
-    public void loadCirculations() {
+    public void loadCirculations () {
         // Load data using the pagination object
-        circPagination.loadData();
+        circPagination.loadData ();
 
-        // Update the circulations list with the loaded entries
-        circulations = circPagination.getEntries();
     }
 
 
-
-    public Pagination<Circulation> getCircPagination() {
+    public Pagination<Circulation> getCircPagination () {
         return circPagination;
     }
 
-    public void setCircPagination(Pagination<Circulation> circPagination) {
+    public void setCircPagination (Pagination<Circulation> circPagination) {
         this.circPagination = circPagination;
     }
 
-    public List<Circulation> getCirculations() {
+    public List<Circulation> getCirculations () {
         return circulations;
     }
 
-    public void setCirculations(List<Circulation> circulations) {
+    public void setCirculations (List<Circulation> circulations) {
         this.circulations = circulations;
     }
 
-    public SessionInfo getSessionInfo() {
+    public SessionInfo getSessionInfo () {
         return sessionInfo;
     }
 
-    public void setSessionInfo(SessionInfo sessionInfo) {
+    public void setSessionInfo (SessionInfo sessionInfo) {
         this.sessionInfo = sessionInfo;
     }
 

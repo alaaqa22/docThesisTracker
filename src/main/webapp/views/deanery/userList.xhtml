@@ -17,9 +17,9 @@
         <ui:include src="/views/anonymous/header.xhtml"/>
 
         <div class="container">
-            <h:form>
+            <h:form >
                 <!-- dataTable for a User List -->
-                <h:dataTable id="dataTable" value="#{userListBacking.users}" var="user" styleClass="my-table"
+                <h:dataTable id="user-dt" value="#{userListBacking.users}" var="user" styleClass="my-table"
                              border="2">
 
                     <f:facet name="header">
@@ -32,7 +32,7 @@
                         <f:facet name="header">
                             <h:outputText value="First Name"/>
                             <h:inputText value="#{userListBacking.filter.firstName}">
-                                <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="dataTable"/>
+                                <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="user-dt"/>
                             </h:inputText>
                         </f:facet>
                         <h:outputText value="#{user.firstName}"/>
@@ -43,8 +43,9 @@
                         <f:facet name="header">
                             <h:outputText value="Last Name"/>
                             <h:inputText value="#{userListBacking.filter.lastName}">
-                                <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="dataTable"/>
-                            </h:inputText> </f:facet>
+                                <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="user-dt"/>
+                            </h:inputText>
+                        </f:facet>
                         <h:outputText value="#{user.lastName}"/>
                     </h:column>
 
@@ -53,7 +54,7 @@
                         <f:facet name="header">
                             <h:outputText value="Email"/>
                             <h:inputText value="#{userListBacking.filter.email}">
-                                <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="dataTable"/>
+                                <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="user-dt"/>
                             </h:inputText>
                         </f:facet>
                         <h:outputText value="#{user.email}"/>
@@ -64,7 +65,7 @@
                         <f:facet name="header">
                             <h:outputText value="User State"/>
                             <h:inputText value="#{userListBacking.filter.accountState}">
-                                <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="dataTable"/>
+                                <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="user-dt"/>
                             </h:inputText>
                         </f:facet>
 

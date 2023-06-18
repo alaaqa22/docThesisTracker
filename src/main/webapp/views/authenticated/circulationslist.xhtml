@@ -24,7 +24,7 @@
 
 
                 <!---  dataTable for a Circulation List -->
-                <h:dataTable id="dataTable" value="#{circulationListBacking.circulations}" var="circulation" styleClass="my-table"
+                <h:dataTable id="cir-dt" value="#{circulationListBacking.circulations}" var="circulation" styleClass="my-table"
                              border="2">
 
                     <f:facet name="header">
@@ -38,7 +38,7 @@
                             <h:outputText value="Fakultät"/>
                             <h:inputText value="#{circulationListBacking.filter.facultyId}">
                                 <f:ajax event="keyup" listener="#{circulationListBacking.loadCirculations}"
-                                        render="dataTable"/>
+                                        render="cir-dt"/>
                             </h:inputText>
                         </f:facet>
                         <h:outputText value="#{circulation.facultyId}"/>
@@ -50,7 +50,7 @@
                         <f:facet name="header">
                             <h:outputText value="Titel"/>
                             <h:inputText value="#{circulationListBacking.filter.title}">
-                                <f:ajax event="change" listener="#{circulationListBacking.loadCirculations}" render="dataTable"/>
+                                <f:ajax event="change" listener="#{circulationListBacking.loadCirculations}" render="cir-dt"/>
 
                             </h:inputText>
                         </f:facet>
@@ -67,7 +67,7 @@
                         <f:facet name="header">
                             <h:outputText value="Doktoranden"/>
                             <h:inputText value="#{circulationListBacking.filter.doctoralCandidateName}">
-                                <f:ajax event="change" listener="#{circulationListBacking.loadCirculations}" render="dataTable"/>
+                                <f:ajax event="change" listener="#{circulationListBacking.loadCirculations}" render="cir-dt"/>
                             </h:inputText>
                         </f:facet>
                         <h:outputText value="#{circulation.doctoralCandidateName}"/>
@@ -79,7 +79,7 @@
                         <f:facet name="header">
                             <h:outputText value="Doktorvater"/>
                             <h:inputText value="#{circulationListBacking.filter.doctoralSupervisor}">
-                                <f:ajax event="change" listener="#{circulationListBacking.loadCirculations}" render="dataTable"/>
+                                <f:ajax event="change" listener="#{circulationListBacking.loadCirculations}" render="cir-dt"/>
                             </h:inputText>
                         </f:facet>
                         <h:outputText value="#{circulation.doctoralSupervisor}"/>

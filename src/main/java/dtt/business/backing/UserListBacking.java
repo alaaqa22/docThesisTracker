@@ -119,5 +119,13 @@ public class UserListBacking implements Serializable {
     public List<User> getUsers () {
         return users;
     }
+
+    public void setFilter (User filter) {
+        this.filter = filter;
+    }
+
+    public User getFilter () {
+        return filter;
+    }
 }
 

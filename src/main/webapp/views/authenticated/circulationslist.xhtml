@@ -24,7 +24,7 @@
 
 
                 <!---  dataTable for a Circulation List -->
-                <h:dataTable value="#{circulationListBacking.circulations}" var="circulation" styleClass="my-table"
+                <h:dataTable id="dataTable" value="#{circulationListBacking.circulations}" var="circulation" styleClass="my-table"
                              border="2">
 
                     <f:facet name="header">
@@ -67,8 +67,7 @@
                         <f:facet name="header">
                             <h:outputText value="Doktoranden"/>
                             <h:inputText value="#{circulationListBacking.filter.doctoralCandidateName}">
-                                <f:ajax event="keyup" listener="#{circulationListBacking.loadCirculations}"
-                                        render="dataTable"/>
+                                <f:ajax event="change" listener="#{circulationListBacking.loadCirculations}" render="dataTable"/>
                             </h:inputText>
                         </f:facet>
                         <h:outputText value="#{circulation.doctoralCandidateName}"/>
@@ -80,8 +79,7 @@
                         <f:facet name="header">
                             <h:outputText value="Doktorvater"/>
                             <h:inputText value="#{circulationListBacking.filter.doctoralSupervisor}">
-                                <f:ajax event="keyup" listener="#{circulationListBacking.loadCirculations}"
-                                        render="dataTable"/>
+                                <f:ajax event="change" listener="#{circulationListBacking.loadCirculations}" render="dataTable"/>
                             </h:inputText>
                         </f:facet>
                         <h:outputText value="#{circulation.doctoralSupervisor}"/>

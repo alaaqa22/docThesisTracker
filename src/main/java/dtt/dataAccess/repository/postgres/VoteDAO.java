@@ -55,7 +55,7 @@ public class VoteDAO implements dtt.dataAccess.repository.interfaces.VoteDAO {
 			}
 		} catch (SQLException e) {
 			switch (e.getSQLState()) {
-				case "23502":
+				case "23502": // The specific SQL error code for a not-null constraint violation
 					throw new DataNotCompleteException(e.getLocalizedMessage(), e);
 				default:
 					throw new DBConnectionFailedException ();
@@ -128,10 +128,9 @@ public class VoteDAO implements dtt.dataAccess.repository.interfaces.VoteDAO {
 
 	@Override
 	public boolean findVote(Vote vote, Transaction transaction) {
-		String query = "SELECT * FROM vote WHERE user_id = ? AND circulation_id = ?";
+		String query = "SELECT * FROM vote WHERE circulation_id = ?";
 		try (PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
-			statement.setInt(1, vote.getUserId());
-			statement.setInt(2, vote.getCirculationId());
+			statement.setInt(1, vote.getCirculationId());
 
 			try (ResultSet rs = statement.executeQuery()) {
 				return rs.next();

@@ -2,13 +2,20 @@
 
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core">
+	xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core"
+	xmlns:ui="jakarta.faces.facelets">
 
 <h:head>
 	<title>Create a new course</title>
-	<!-- h:outputStylesheet name="css/style.css"/-->
+	<link href="${request.contextPath}/resources/css/style.css"
+		rel="stylesheet" type="text/css" />
+
+	<link
+		href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		rel="stylesheet" />
 </h:head>
 <h:body>
+	<ui:include src="/views/anonymous/header.xhtml" />
 	<h1>Create a new circulation</h1>
 	<hr />
 	<h:form id="createCirculation">
@@ -41,35 +48,32 @@
 				required="true" />
 			<h:message for="description-itxt" styleClass="message" />
 
-			<h:outputLabel value="Circulation Start Date:"
-				for="start-date-itxt" />
+			<h:outputLabel value="Circulation Start Date:" for="start-date-itxt" />
 			<h:inputText id="start-date-itxt"
-				value="#{circulationCreatingBacking.startDate}"
-				required="true">
+				value="#{circulationCreatingBacking.startDate}" required="true">
 				<f:convertDateTime type="localDate" />
 			</h:inputText>
 			<h:message for="start-date-itxt" styleClass="message" />
 
 			<h:outputLabel value="Circulation End Date:" for="end-date-itxt" />
 			<h:inputText id="end-date-itxt"
-				value="#{circulationCreatingBacking.endDate}"
-				required="true">
+				value="#{circulationCreatingBacking.endDate}" required="true">
 				<f:convertDateTime type="localDate" />
 			</h:inputText>
 			<h:message for="end-date-itxt" styleClass="message" />
 
-            <h:outputLabel value="Obligatory:" for="obligatory-bcb" />
-            <h:selectBooleanCheckbox id="obligatory-bcb"
-                value="#{circulationCreatingBacking.circulation.obligatory}">
-            </h:selectBooleanCheckbox>
-            <h:message for="obligatory-bcb" styleClass="message" />
+			<h:outputLabel value="Obligatory:" for="obligatory-bcb" />
+			<h:selectBooleanCheckbox id="obligatory-bcb"
+				value="#{circulationCreatingBacking.circulation.obligatory}">
+			</h:selectBooleanCheckbox>
+			<h:message for="obligatory-bcb" styleClass="message" />
 
 		</h:panelGrid>
-		<h:panelGrid columns=2>
-		<h:commandButton id="create" value="Create the circulation"
-			action="#{circulationCreatingBacking.create}" />
-			<h:message for="create" styleClass="message"/>
-			</h:panelGrid>
+		<h:panelGrid columns="2">
+			<h:commandButton id="create" value="Create the circulation"
+				action="#{circulationCreatingBacking.create}" />
+			<h:message for="create" styleClass="message" />
+		</h:panelGrid>
 	</h:form>
 	<hr />
 </h:body>

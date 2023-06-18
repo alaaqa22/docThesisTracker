@@ -51,7 +51,7 @@
                             <f:ajax event="keyup" listener="#{circulationListBacking.loadCirculations}" render="dataTable" />
                         </h:inputText>
                     </f:facet>
-                    <h:outputLink value="circulationDetails.xhtml?circulationId=#{circulation.id}">
+                    <h:outputLink value="circulationDetails.xhtml?id=#{circulation.id}">
                         <h:outputText value="#{circulation.title}" />
                     </h:outputLink>
 

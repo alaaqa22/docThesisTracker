@@ -24,22 +24,22 @@
                         <!--  für anonymous User -->
                         <h:panelGroup rendered="#{sessionInfo.anonymous}">
                             <li class="nav-item">
-                                <h:commandLink value="Impressum" action="impressum" styleClass="nav-link"/>
+                                <h:commandLink id="imprint-otxt" value="Impressum" action="impressum" styleClass="nav-link"/>
                             </li>
                             <li class="nav-item">
-                                <h:link outcome="/views/help/help" value="Hilfeseite" styleClass="nav-link"/>
+                                <h:link id="help-anonymous-link" outcome="/views/help/help" value="Hilfeseite" styleClass="nav-link"/>
                             </li>
                         </h:panelGroup>
                         <!--  für authenticated -->
                         <h:panelGroup rendered="#{!sessionInfo.pending and !sessionInfo.anonymous}">
 
                             <li class="nav-item">
-                                <h:link outcome="/views/authenticated/circulationslist.xhtml" value="Hauptseite"
+                                <h:link id="homepage-link" outcome="/views/authenticated/circulationslist.xhtml" value="Hauptseite"
                                         styleClass="nav-link"/>
                             </li>
 
                             <li class="nav-item">
-                                <h:link outcome="/views/authenticated/profile.xhtml" value="Profilseite"
+                                <h:link id="profil-link" outcome="/views/authenticated/profile.xhtml" value="Profilseite"
                                         styleClass="nav-link"/>
                             </li>
 
@@ -48,7 +48,7 @@
                         <h:panelGroup rendered="#{sessionInfo.examiner}">
 
                             <li class="nav-item">
-                                <h:link outcome="help/helpExaminer" value="Hilfeseite" styleClass="nav-link"/>
+                                <h:link id="help-Examiner-link" outcome="help/helpExaminer" value="Hilfeseite" styleClass="nav-link"/>
                             </li>
                         </h:panelGroup>
 
@@ -57,33 +57,33 @@
                                 rendered="#{sessionInfo.committeeMember or sessionInfo.deanery or sessionInfo.admin}">
 
                             <li class="nav-item">
-                                <h:link outcome="/views/examineCommittee/createCirculation" value="Umlauf erstellen" styleClass="nav-link"/>
+                                <h:link  id="create-circulation-link" outcome="/views/examineCommittee/createCirculation" value="Umlauf erstellen" styleClass="nav-link"/>
                             </li>
 
                         </h:panelGroup>
                         <!-- deanery/ admin -->
                         <h:panelGroup rendered="#{sessionInfo.deanery or sessionInfo.admin}">
                             <li class="nav-item">
-                                <h:link outcome="/views/deanery/userList" value="BenutzerListe" styleClass="nav-link"/>
+                                <h:link id="user-list-link" outcome="/views/deanery/userList" value="BenutzerListe" styleClass="nav-link"/>
                             </li>
                         </h:panelGroup>
 
                         <!-- für Prüfungskommissionsmitglieder -->
                         <h:panelGroup rendered="#{sessionInfo.committeeMember}">
                             <li class="nav-item">
-                                <h:link outcome="help/helpCommitteeMember" value="Hilfeseite" styleClass="nav-link"/>
+                                <h:link id="help-committee-link" outcome="help/helpCommitteeMember" value="Hilfeseite" styleClass="nav-link"/>
                             </li>
                         </h:panelGroup>
                         <!-- für Dekanate -->
                         <h:panelGroup rendered="#{sessionInfo.deanery}">
                             <li class="nav-item">
-                                <h:link outcome="/views/help/helpDeanery" value="Hilfeseite" styleClass="nav-link"/>
+                                <h:link id="help-deanery-link" outcome="/views/help/helpDeanery" value="Hilfeseite" styleClass="nav-link"/>
                             </li>
                         </h:panelGroup>
                         <!-- für Administratoren -->
                         <h:panelGroup rendered="#{sessionInfo.admin}">
                             <li class="nav-item">
-                                <h:link outcome="/views/help/helpAdmin" value="Hilfeseite" styleClass="nav-link"/>
+                                <h:link id="help-admin-link" outcome="/views/help/helpAdmin" value="Hilfeseite" styleClass="nav-link"/>
                             </li>
                         </h:panelGroup>
 
@@ -92,7 +92,7 @@
                         <h:panelGroup rendered="#{!sessionInfo.pending and !sessionInfo.anonymous}">
 
                             <li class="nav-item">
-                                <h:commandButton action="#{navigationBacking.logout}" value="Abmelden"
+                                <h:commandButton id="logout-cbtn" action="#{navigationBacking.logout}" value="Abmelden"
                                                  styleClass="nav-link btn btn-primary"/>
                             </li>
 

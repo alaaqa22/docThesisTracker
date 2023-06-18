@@ -120,13 +120,13 @@
                     <ul class="pagination">
                         <h:panelGroup rendered="#{circulationListBacking.circPagination.totalNumOfPages>1}">
                             <h:panelGroup layout="block" styleClass="page-item">
-                                <h:commandLink value="First" action="#{circulationListBacking.circPagination.firstPage}"
+                                <h:commandLink id="firstpage-link" value="First" action="#{circulationListBacking.circPagination.firstPage}"
                                                styleClass="page-link"/>
                             </h:panelGroup>
 
                             <h:panelGroup layout="block" styleClass="page-item"
                                           rendered="#{!circulationListBacking.circPagination.isFirstPage()}">
-                                <h:commandLink value="Previous"
+                                <h:commandLink  id="Previouspage-link" value="Previous"
                                                action="#{circulationListBacking.circPagination.previousPage}"
                                                styleClass="page-link"/>
                             </h:panelGroup>
@@ -138,13 +138,13 @@
 
                             <h:panelGroup layout="block" styleClass="page-item"
                                           rendered="#{!circulationListBacking.circPagination.isLastPage()}">
-                                <h:commandLink value="Next" action="#{circulationListBacking.circPagination.nextPage()}"
+                                <h:commandLink id="nextpage-link"  value="Next" action="#{circulationListBacking.circPagination.nextPage()}"
                                                styleClass="page-link"/>
                             </h:panelGroup>
 
                             <h:panelGroup layout="block" styleClass="page-item"
                                           rendered="#{!circulationListBacking.circPagination.isLastPage()}">
-                                <h:commandLink value="Last" action="#{circulationListBacking.circPagination.lastPage()}"
+                                <h:commandLink id="lastpage-link"  value="Last" action="#{circulationListBacking.circPagination.lastPage()}"
                                                styleClass="page-link"/>
                             </h:panelGroup>
 

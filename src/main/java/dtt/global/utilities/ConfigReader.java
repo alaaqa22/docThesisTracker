@@ -65,10 +65,23 @@ public final class ConfigReader {
         return properties.getProperty(key);
     }
 
+    /**
+     * Checks if properties are loaded.
+     *
+     * @return true if properties are loaded, i.e., the properties object is not null,
+     *         false otherwise.
+     */
     public static boolean arePropertiesLoaded() {
         return properties != null;
     }
 
+    /**
+     * Reads and returns the contents of the Impressum file (impressum.txt) as a string.
+     * The file is expected to be found at the path defined by IMPRINT_FILE_PATH.
+     * If an IOException occurs during reading of the file, it logs a fatal error.
+     *
+     * @return The contents of the impressum file as a String, or null if the file does not exist, is empty or an IOException occurs.
+     */
     public static String getImpressumContent(){
         String impressumContent = null;
         try (InputStream inputStream = ConfigReader.class.getResourceAsStream(IMPRINT_FILE_PATH)) {
@@ -77,7 +90,6 @@ public final class ConfigReader {
             }
         } catch (IOException e) {
             LOGGER.fatal("Failed to read impressum.txt file.", e);
-            throw new RuntimeException(e);
         }
         return impressumContent;
     }

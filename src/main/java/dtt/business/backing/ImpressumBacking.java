@@ -13,12 +13,11 @@ public class ImpressumBacking implements Serializable {
     private String impressumContent;
 
     public ImpressumBacking() {
-        System.out.println ("1");
+
         if(!ConfigReader.arePropertiesLoaded()){
             ConfigReader.loadProperties();
         }
         impressumContent = ConfigReader.getImpressumContent();
-        System.out.println ("2");
     }
 
 

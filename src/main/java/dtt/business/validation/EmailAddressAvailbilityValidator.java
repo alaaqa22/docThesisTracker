@@ -21,10 +21,6 @@ public class EmailAddressAvailbilityValidator implements Validator {
     @Inject
     private UserDAO userDAO; // UserDAO object for database access.
 
-    public static void main(String[] args) {
-
-
-    }
 
     /**
      * @param context   FacesContext for the request we are processing

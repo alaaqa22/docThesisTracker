@@ -44,8 +44,6 @@ public class ProfileBacking implements Serializable {
      */
     public void load() {
         Transaction tr = new Transaction();
-        System.out.println("ID received: " + sessionInfo.getUser().getUserState());
-
         try {
             userDAO.getUserById(sessionInfo.getUser(), tr);
             user = sessionInfo.getUser();
@@ -79,7 +77,6 @@ public class ProfileBacking implements Serializable {
             try {
                 userDAO.remove(user, transaction);
                 sessionInfo.setUser(null);
-
             } catch (DataNotFoundException e) {
             }
             return "/views/anonymous/login.xhtml?faces-redirect=true";
@@ -94,14 +91,6 @@ public class ProfileBacking implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public UserDAO getUserDAO() {
-        return userDAO;
-    }
-
-    public void setUserDAO(UserDAO userDAO) {
-        this.userDAO = userDAO;
     }
 
     public SessionInfo getSessionInfo() {

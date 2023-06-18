@@ -48,7 +48,6 @@ public class CirculationDetailsBacking implements Serializable {
     public void init() {
         circulation = new Circulation();
         vote = new Vote();
-        choice = Options.ENTHALTE_MICH;
     }
 
     /**
@@ -115,13 +114,17 @@ public class CirculationDetailsBacking implements Serializable {
      */
     public void submitVote() {
         Transaction transaction = new Transaction();
-        vote.setSelection(choice);
-        vote.setCirculation(circulation.getId());
         try {
-            voteDAO.add(vote, transaction);
+            if (!voteDAO.findVote(vote, transaction)) {
+                vote.setSelection(choice);
+                voteDAO.add(vote, transaction);
+            } else {
+                vote.setSelection(choice);
+                voteDAO.update(vote, transaction);
+            }
             transaction.commit();
-        } catch (DataNotCompleteException | InvalidInputException e) {
-            e.printStackTrace();
+
+        } catch (DataNotCompleteException | InvalidInputException | DataNotFoundException e) {
         }
 
 
@@ -133,7 +136,8 @@ public class CirculationDetailsBacking implements Serializable {
     public void loadVotes() {
         Transaction transaction = new Transaction();
         vote.setCirculation(circulation.getId());
-        voteDAO.getVotes(vote, transaction);
+        vote.setUser(sessionInfo.getUser().getId());
+        voteDAO.findVote(vote, transaction);
         transaction.commit();
 
     }

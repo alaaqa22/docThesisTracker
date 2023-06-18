@@ -38,7 +38,7 @@
 
             <div class="form-field">
                 <label for="password">Password:</label>
-                <h:inputSecret id="password" value="#{profileBacking.user.password}"/>
+                <h:inputSecret id="password" value="#{profileBacking.user.password}" validator="PasswordValidator"/>
             </div>
 
             <div class="form-field">

@@ -18,25 +18,28 @@
 
         <div>
             <label for="email-itxt">Email:</label>
-            <h:inputText id="email-itxt" value="#{loginBacking.user.email}" required="true" requiredMessage="Empty email!"/>
+            <h:inputText id="email-itxt" value="#{loginBacking.user.email}" required="true" requiredMessage="Bitte geben Sie Ihre E-Mail-Adresse ein."/>
             <h:message for="email-itxt" style="color: red;"/>
         </div>
 
         <div>
-            <label for="password-iscrt">Password:</label>
-            <h:inputSecret id="password-iscrt" value="#{loginBacking.user.password}" required="true" requiredMessage="Empty password!"/>
+            <label for="password-iscrt">Passwort:</label>
+            <h:inputSecret id="password-iscrt" value="#{loginBacking.user.password}" required="true" requiredMessage="Bitte geben Sie Ihr Passwort ein"/>
             <h:message for="password-iscrt" style="color: red;"/>
         </div>
 
         <div>
-            <h:commandLink value="Forgotten password?" action="#{loginBacking.forgetPass()}" immediate="true" />
+            <h:commandLink value="Passwort vergessen?" action="#{loginBacking.forgetPass()}" />
         </div>
 
         <div>
-            <h:commandButton value="Login" action="#{loginBacking.login()}"/>
+            <h:commandButton value="Anmelden" action="#{loginBacking.login()}"/>
         </div>
+    </h:form>
+
+    <h:form>
         <div>
-            <h:commandButton value="Register" action="#{loginBacking.register()}" immediate="true" />
+            <h:commandButton value="Registrieren" action="#{loginBacking.register()}" />
 
         </div>
 

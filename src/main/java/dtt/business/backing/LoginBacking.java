@@ -7,7 +7,6 @@ import dtt.dataAccess.exceptions.DataNotFoundException;
 import dtt.dataAccess.repository.postgres.UserDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.User;
-import dtt.global.utilities.ConfigReader;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.annotation.FacesConfig;

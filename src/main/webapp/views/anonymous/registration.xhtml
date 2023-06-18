@@ -2,9 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="jakarta.faces.html"
       xmlns:f="jakarta.faces.core"
-      xmlns:ui="jakarta.faces.facelets"
->
-
+      xmlns:ui="jakarta.faces.facelets">
 <h:head>
    <title>Registration</title>
 </h:head>
@@ -17,19 +15,29 @@
 
       <div>
          <label for="email-itxt">Email:</label>
-         <h:inputText id="email-itxt" value="#{registrationBacking.user.email}" required="true" requiredMessage="Empty email!"/>
+         <h:inputText id="email-itxt" value="#{registrationBacking.user.email}" required="true" requiredMessage="Empty email!"
+                      validator="EmailAddressSyntaxValidator" />
          <h:message for="email-itxt" style="color: red;"/>
       </div>
+
       <div>
          <label for="firstname-itxt"> Vorname:</label>
          <h:inputText id="firstname-itxt" value="#{registrationBacking.user.firstName}" required="true" requiredMessage="You have to put in your name!"/>
          <h:message for="firstname-itxt" style="color: red;"/>
       </div>
+
       <div>
          <label for="lastname-itxt">Name:</label>
          <h:inputText id="lastname-itxt" value="#{registrationBacking.user.lastName}" required="true" requiredMessage="You have put in your last name!"/>
          <h:message for="lastname-itxt" style="color : red;"/>
       </div>
+
+      <div>
+         <label for="birthdate-itxt">Geburtstag:</label>
+         <h:inputText id="birthdate-itxt" value="#{registrationBacking.user.birthDate}" required="true" requiredMessage="You have to put in your birthday!"/>
+         <h:message for="birthdate-itxt" style="color: red;"/>
+      </div>
+
       <div>
          <label>Fakultät</label>
          <h:selectOneMenu value="#{registrationBacking.faculty}" required="true" requiredMessage="You have to pick a faculty!">
@@ -38,7 +46,7 @@
       </div>
 
       <div>
-         <h:commandButton value="Register" action="#{registrationBacking.register()}" />
+         <h:commandButton value="Register" action="#{registrationBacking.register()}"/>
       </div>
    </h:form>
 </h:body>

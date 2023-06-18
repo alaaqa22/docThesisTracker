@@ -3,11 +3,16 @@ package dtt.business.backing;
 import dtt.business.utilities.EmailSender;
 import dtt.business.utilities.TokenManager;
 import dtt.dataAccess.exceptions.DBConnectionFailedException;
+import dtt.dataAccess.exceptions.DataNotCompleteException;
+import dtt.dataAccess.exceptions.InvalidInputException;
+import dtt.dataAccess.exceptions.KeyExistsException;
 import dtt.dataAccess.repository.postgres.FacultyDAO;
 import dtt.dataAccess.repository.postgres.UserDAO;
 import dtt.dataAccess.utilities.Transaction;
+import dtt.global.tansport.AccountState;
 import dtt.global.tansport.Faculty;
 import dtt.global.tansport.User;
+import dtt.global.tansport.UserState;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.model.SelectItem;
@@ -18,14 +23,16 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Backing bean for the registration page.
  * @author Alaa Qasem
  */
 @RequestScoped
-@Named
+@Named("registrationBacking")
 public class RegistrationBacking implements Serializable {
     private static final Logger LOGGER = LogManager.getLogger(RegistrationBacking.class);
     private User user;
@@ -45,6 +52,7 @@ public class RegistrationBacking implements Serializable {
     {
         LOGGER.debug("init() called.");
         user = new User();
+        listOfFaculties = getListOfFaculties();
     }
 
     /**
@@ -55,7 +63,35 @@ public class RegistrationBacking implements Serializable {
      */
     public String register(){
         LOGGER.debug("register() called.");
-        return "";
+        LOGGER.debug("User: " + user.getFirstName() + " " + user.getLastName());
+        LOGGER.debug(user.getEmail());
+        LOGGER.debug(user.getBirthDate());
+
+        user.setAccountState(AccountState.PENDING_ACTIVATION);
+        Map<Faculty, UserState> facultyMap = new HashMap<>();
+        facultyMap.put(faculty, UserState.PENDING);
+        user.setUserState(facultyMap);
+
+
+        try (Transaction transaction = new Transaction()){
+            userDAO.add(user, transaction);
+            TokenManager tokenManager = new TokenManager();
+            boolean success = userDAO.findUserByEmail(user, transaction);
+            transaction.commit();
+            if (success) {
+                tokenManager.generateToken(user);
+                return "/views/anonymous/login?faces-redirect=true";
+            } else {
+                return null;
+            }
+
+
+
+        } catch (DataNotCompleteException | KeyExistsException | InvalidInputException e) {
+            LOGGER.error("Exceptions thrown");
+            throw new RuntimeException(e);
+        }
+
     }
 
     public User getUser() {
@@ -63,18 +99,21 @@ public class RegistrationBacking implements Serializable {
         return user;
     }
 
-    public void setUser(User regUser) {
+    public void setUser(User user) {
         LOGGER.debug("setUser() called.");
-        this.user = regUser;
+        this.user = user;
     }
     public Faculty getFaculty() {
+        LOGGER.debug("getFaculty() called.");
         return faculty;
     }
     public void setFaculty(Faculty faculty) {
+        LOGGER.debug("setFaculty() called.");
         this.faculty = faculty;
     }
 
     public List<Faculty> getListOfFaculties() {
+        LOGGER.debug("getListOfFaculties() called.");
         try (Transaction transaction = new Transaction()) {
             return facultyDAO.getFaculties(transaction);
         } catch (DBConnectionFailedException e) {
@@ -83,12 +122,4 @@ public class RegistrationBacking implements Serializable {
 
         return new ArrayList<>(); // Return an empty list if an exception occurs
     }
-    public UserDAO getUserDAO() {
-        return userDAO;
-    }
-
-    public void setUserDAO(UserDAO userDAO) {
-        this.userDAO = userDAO;
-    }
-
 }

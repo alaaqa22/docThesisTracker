@@ -56,38 +56,39 @@ public class LoginBacking implements Serializable {
      * in the same page on failure.
      */
     public String login() {
-        Transaction transaction = new Transaction();
-        User userDB = new User();
-        userDB.setEmail(user.getEmail());
-        boolean found = userDAO.findUserByEmail(userDB, transaction);
+        try(Transaction transaction = new Transaction()) {
+            User userDB = new User();
+            userDB.setEmail(user.getEmail());
+            boolean found = userDAO.findUserByEmail(userDB, transaction);
 
-        if (found) {
-            boolean verified;
-            try {
-                verified = Hashing.verifyPassword(user.getPassword(), userDB.getPasswordSalt(), userDB.getPasswordHashed());
+            if (found) {
+                boolean verified;
+                try {
+                    verified = Hashing.verifyPassword(user.getPassword(), userDB.getPasswordSalt(), userDB.getPasswordHashed());
 
-            } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-                logger.error("Login attempt unsuccessful for user " + user.getId());
-                throw new IllegalStateException(e);
-            }
-            if (verified) {
-                user = userDB;
-                sessionInfo.setUser(user);
-                transaction.commit();
-                // Password matches, login successful
-                return "/views/authenticated/circulationslist?faces-redirect=true";
+                } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+                    logger.error("Login attempt unsuccessful for user " + user.getId());
+                    throw new IllegalStateException(e);
+                }
+                if (verified) {
+                    user = userDB;
+                    sessionInfo.setUser(user);
+                    transaction.commit();
+                    // Password matches, login successful
+                    return "/views/authenticated/circulationslist?faces-redirect=true";
+                } else {
+                    // Password does not match, show error message
+
+                    FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid credentials!", null);
+                    FacesContext.getCurrentInstance().addMessage(null, message);
+                    return null;
+                }
             } else {
-                // Password does not match, show error message
-
-                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid credentials!", null);
+                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "User not found!", null);
                 FacesContext.getCurrentInstance().addMessage(null, message);
+                logger.error("User not found");
                 return null;
             }
-        } else {
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "User not found!", null);
-            FacesContext.getCurrentInstance().addMessage(null, message);
-            logger.error("User not found");
-            return null;
         }
 
     }
@@ -109,7 +110,6 @@ public class LoginBacking implements Serializable {
      */
     public String forgetPass() {
         return null;
-        //return "/view/authenticated/forgetPass?faces-redirect=true";
     }
 
     public User getUser() {

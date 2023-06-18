@@ -43,9 +43,8 @@ public class ProfileBacking implements Serializable {
      * Load the user's information.
      */
     public void load() {
-        Transaction tr = new Transaction();
-        try {
-            userDAO.getUserById(sessionInfo.getUser(), tr);
+        try (Transaction transaction = new Transaction()) {
+            userDAO.getUserById(sessionInfo.getUser(), transaction);
             user = sessionInfo.getUser();
         } catch (DataNotFoundException e) {
 
@@ -57,8 +56,7 @@ public class ProfileBacking implements Serializable {
      * Save the updated data to the user profile.
      */
     public void save() {
-        Transaction transaction = new Transaction();
-        try {
+        try (Transaction transaction = new Transaction()) {
             userDAO.update(user, transaction);
         } catch (DataNotFoundException | InvalidInputException | KeyExistsException e) {
 
@@ -71,10 +69,9 @@ public class ProfileBacking implements Serializable {
      * Method to delete the profile.
      */
     public String deleteProfile() {
-        Transaction transaction = new Transaction();
         if (sessionInfo.getUser().equals(user)) {
 
-            try {
+            try (Transaction transaction = new Transaction()) {
                 userDAO.remove(user, transaction);
                 sessionInfo.setUser(null);
             } catch (DataNotFoundException e) {

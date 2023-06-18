@@ -58,8 +58,7 @@ public class CirculationDetailsBacking implements Serializable {
      */
 
     public void loadCirculation() {
-        Transaction transaction = new Transaction();
-        try {
+        try (Transaction transaction = new Transaction()) {
             circulationDAO.getCirculationById(circulation, transaction);
             transaction.commit();
 
@@ -85,10 +84,9 @@ public class CirculationDetailsBacking implements Serializable {
      * Delete a circulation.
      */
     public void remove() {
-        Transaction transaction = new Transaction();
-        transaction.commit();
-        try {
+        try(Transaction transaction = new Transaction()) {
             circulationDAO.remove(circulation, transaction);
+            transaction.commit();
 
         } catch (DataNotFoundException e) {
             throw new IllegalStateException();
@@ -100,12 +98,12 @@ public class CirculationDetailsBacking implements Serializable {
      * Modify the circulation details.
      */
     public void modify() {
-        Transaction transaction = new Transaction();
-        try {
+        try(Transaction transaction = new Transaction()) {
             circulationDAO.update(circulation, transaction);
             transaction.commit();
 
         } catch (DataNotFoundException | InvalidInputException | KeyExistsException e) {
+            throw new IllegalStateException();
         }
     }
 
@@ -113,8 +111,7 @@ public class CirculationDetailsBacking implements Serializable {
      * Casts or change a vote for a specific choice.
      */
     public void submitVote() {
-        Transaction transaction = new Transaction();
-        try {
+        try(Transaction transaction = new Transaction()){
             if (!voteDAO.findVote(vote, transaction)) {
                 vote.setSelection(choice);
                 voteDAO.add(vote, transaction);
@@ -123,7 +120,7 @@ public class CirculationDetailsBacking implements Serializable {
                 voteDAO.update(vote, transaction);
             }
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "Ihre Stimme " + "(" + getChoice().getLabel() + ")"+" wurde erfolgreich gespeichert.", null);
+                    "Ihre Stimme " + "(" + getChoice().getLabel() + ")" + " wurde erfolgreich gespeichert.", null);
             FacesContext.getCurrentInstance().addMessage(null, message);
             transaction.commit();
 
@@ -137,12 +134,12 @@ public class CirculationDetailsBacking implements Serializable {
      * Load all the votes of the circulation.
      */
     public void loadVotes() {
-        Transaction transaction = new Transaction();
-        vote.setCirculation(circulation.getId());
-        vote.setUser(sessionInfo.getUser().getId());
-        voteDAO.findVote(vote, transaction);
-        transaction.commit();
-
+        try(Transaction transaction = new Transaction()) {
+            vote.setCirculation(circulation.getId());
+            vote.setUser(sessionInfo.getUser().getId());
+            voteDAO.findVote(vote, transaction);
+            transaction.commit();
+        }
     }
 
 

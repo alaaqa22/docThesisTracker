@@ -55,11 +55,11 @@
                         <!-- für committeeMember/ deanery/ admin -->
                         <h:panelGroup
                                 rendered="#{sessionInfo.committeeMember or sessionInfo.deanery or sessionInfo.admin}">
+
                             <li class="nav-item">
-                                <h:commandButton action="#{circulationCreatingBacking.create}"
-                                                 value="Create Circulation"
-                                                 styleClass="nav-link btn btn-primary"/>
+                                <h:link outcome="/views/examineCommittee/createCirculation" value="Umlauf erstellen" styleClass="nav-link"/>
                             </li>
+
                         </h:panelGroup>
                         <!-- deanery/ admin -->
                         <h:panelGroup rendered="#{sessionInfo.deanery or sessionInfo.admin}">
@@ -93,7 +93,7 @@
 
                             <li class="nav-item">
                                 <h:commandButton action="#{navigationBacking.logout}" value="Abmelden"
-                                                 styleClass="nav-link"/>
+                                                 styleClass="nav-link btn btn-primary"/>
                             </li>
 
                         </h:panelGroup>

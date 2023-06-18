@@ -50,8 +50,8 @@
                         <f:facet name="header">
                             <h:outputText value="Titel"/>
                             <h:inputText value="#{circulationListBacking.filter.title}">
-                                <f:ajax event="keyup" listener="#{circulationListBacking.loadCirculations}"
-                                        render="dataTable"/>
+                                <f:ajax event="change" listener="#{circulationListBacking.loadCirculations}" render="dataTable"/>
+
                             </h:inputText>
                         </f:facet>
                         <h:outputLink value="circulationDetails.xhtml?id=#{circulation.id}">

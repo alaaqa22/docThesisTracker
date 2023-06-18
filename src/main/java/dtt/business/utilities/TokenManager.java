@@ -1,6 +1,8 @@
 package dtt.business.utilities;
 
 import dtt.global.tansport.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.security.SecureRandom;
 import java.time.Duration;
@@ -16,9 +18,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Johannes Silvennoinen
  */
 public class TokenManager {
+    private static final Logger LOGGER = LogManager.getLogger(TokenManager.class);
     private static final int TOKEN_LENGTH = 32;
-    private final Map<String, TokenData> tokenStore = new ConcurrentHashMap<>();
-    private final Duration tokenExpirationDuration = Duration.ofHours(1);
+    public final Map<String, TokenData> tokenStore = new ConcurrentHashMap<>();
+    public Duration tokenExpirationDuration = Duration.ofHours(1);
 
     /**
      * Generates a token for the specified user.
@@ -33,7 +36,7 @@ public class TokenManager {
         String token = generateUniqueToken();
         Instant expirationTime = Instant.now().plus(tokenExpirationDuration);
         tokenStore.put(token, new TokenData(user, expirationTime));
-        return "token";
+        return token;
     }
     /**
      * Checks if the given token exists and is not expired.
@@ -73,6 +76,11 @@ public class TokenManager {
 
         return expirationTime.isBefore(Instant.now());
     }
+
+    public void setTokenExpirationDuration(Duration ofMinutes) {
+        tokenExpirationDuration = ofMinutes;
+    }
+
     /**
      * Represents the token data associated with a user.
      */

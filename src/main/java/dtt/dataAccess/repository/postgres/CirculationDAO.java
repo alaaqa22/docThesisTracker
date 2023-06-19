@@ -295,7 +295,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 			}
 
 			if (circulation.getDoctoralSupervisor() != null) {
-				query += " AND doctoral_supervisor = ?";
+				query += " AND doctoral_supervisor_name = ?";
 				parameters.add(circulation.getDoctoralSupervisor());
 			}
 

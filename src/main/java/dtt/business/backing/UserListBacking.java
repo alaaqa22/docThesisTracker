@@ -40,12 +40,14 @@ public class UserListBacking implements Serializable {
     @Inject
     private SessionInfo sessionInfo;
     private final Logger logger = LogManager.getLogger ();
+    int totalNumberOfPages;
 
     /**
      * Constructs a new instance of UserListBacking.
      * Initializes the userPagination object.
      */
     public UserListBacking () {
+        logger.fatal ("constructur User LIst ");
         userPagination = createPagination ();
     }
 
@@ -59,32 +61,38 @@ public class UserListBacking implements Serializable {
         return new Pagination<User> () {
             @Override
             public void loadData () {
-                int currentPage = getCurrentPage ();
+                logger.fatal ("Start LoadData() in User List ");
+                int currentPage = this.getCurrentPage ();
                 int maxItems = getMaxItems ();
+                logger.fatal ("currentPage : "+currentPage);
+                logger.fatal ("maxItems : "+maxItems);
                 if (currentPage <= 0 || maxItems <= 0) {
                     logger.error ("Invalid currentPage or maxItems value.");
                 }
 
                 int offset = (currentPage - 1) * maxItems;
                 int count = maxItems;
+                logger.fatal ("offset : "+offset);
+                logger.fatal ("count : "+count);
 
                 try (Transaction transaction = new Transaction()) {
                     Faculty faculty = null;
                     UserState auth = null;
-                    users = userDAO.getUsers(filter, faculty, auth, transaction, offset, count);
-                    setEntries(users);
+                    users = userDAO.getUsers (filter,faculty,auth,transaction,offset,count);
                     transaction.commit();  // Ensure that the transaction is committed.
                 }
-
-
             }
 
             @Override
             public int getTotalNumOfPages () {
-                Transaction t = new Transaction ();
-                int totalNumOfPages = (int) Math.ceil ((double) (userDAO.getTotalUserNumber (null, null, null, t))
-                        / maxItems);
-                return totalNumOfPages;
+
+                try(Transaction t = new Transaction ()) {
+                    int totalNumOfPages = (int) Math.ceil ((double) (userDAO.getTotalUserNumber (filter, null, null, t))
+                            / maxItems);
+                    logger.fatal ("totalNumOfPages : " + totalNumOfPages);
+                    this.totalNumOfPages = totalNumOfPages;
+                    return totalNumOfPages;
+                }
             }
         };
     }
@@ -98,6 +106,7 @@ public class UserListBacking implements Serializable {
     }
 
     public void loadUsers () {
+        logger.fatal ("Start loadUsers()");
         userPagination.loadData ();
     }
 
@@ -116,6 +125,14 @@ public class UserListBacking implements Serializable {
 
     public List<User> getUsers () {
         return users;
+    }
+
+    public int getTotalNumberOfPages () {
+        return totalNumberOfPages;
+    }
+
+    public void setTotalNumberOfPages (int totalNumberOfPages) {
+        this.totalNumberOfPages = totalNumberOfPages;
     }
 
     public void setFilter (User filter) {

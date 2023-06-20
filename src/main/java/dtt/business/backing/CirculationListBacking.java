@@ -51,6 +51,7 @@ public class CirculationListBacking implements Serializable {
         return new Pagination<Circulation> () {
             @Override
             public void loadData () {
+                logger.fatal ("loadData");
                 int currentPage = getCurrentPage ();
                 int maxItems = getMaxItems ();
                 if (currentPage <= 0 || maxItems <= 0) {
@@ -72,12 +73,16 @@ public class CirculationListBacking implements Serializable {
 
             @Override
             public int getTotalNumOfPages () {
-                Transaction t = new Transaction ();
-                int totalNumOfPages = (int) Math.ceil ((double) (circDAO.getTotalCirculationNumber (null, t))
-                        / maxItems);
-                t.commit ();
-                return totalNumOfPages;
+                logger.fatal ("getTotalNumOfPages");
+                try(Transaction t = new Transaction ()) {
+                    int totalNumOfPages = (int) Math.ceil ((double) (circDAO.getTotalCirculationNumber (filter, t))
+                            / maxItems);
+                    t.commit ();
+                    this.totalNumOfPages= totalNumOfPages;
+                    return totalNumOfPages;
+                }
             }
+
         };
     }
 
@@ -87,7 +92,7 @@ public class CirculationListBacking implements Serializable {
      */
     @PostConstruct
     public void init () {
-
+        logger.fatal ("start init");
         filter = new Circulation ();
         loadCirculations ();
 
@@ -98,6 +103,7 @@ public class CirculationListBacking implements Serializable {
      * Loads the circulations data and updates the circulations list.
      */
     public void loadCirculations () {
+        logger.fatal ("start loadCirculations");
         // Load data using the pagination object
         circPagination.loadData ();
 
@@ -143,4 +149,5 @@ public class CirculationListBacking implements Serializable {
     public CirculationDAO getCircDAO () {
         return circDAO;
     }
+
 }

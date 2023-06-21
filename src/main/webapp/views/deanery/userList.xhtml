@@ -32,7 +32,7 @@
                         <f:facet name="header">
                             <h:outputText value="First Name"/>
                             <h:inputText value="#{userListBacking.filter.firstName}">
-                                <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="user-dt"/>
+                                <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="@form"/>
                             </h:inputText>
                         </f:facet>
                         <h:outputText value="#{user.firstName}"/>
@@ -43,7 +43,7 @@
                         <f:facet name="header">
                             <h:outputText value="Last Name"/>
                             <h:inputText value="#{userListBacking.filter.lastName}">
-                                <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="user-dt"/>
+                                <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="@form"/>
                             </h:inputText>
                         </f:facet>
                         <h:outputText value="#{user.lastName}"/>
@@ -54,7 +54,7 @@
                         <f:facet name="header">
                             <h:outputText value="Email"/>
                             <h:inputText value="#{userListBacking.filter.email}">
-                                <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="user-dt"/>
+                                <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="@form"/>
                             </h:inputText>
                         </f:facet>
                         <h:outputText value="#{user.email}"/>
@@ -65,7 +65,7 @@
                         <f:facet name="header">
                             <h:outputText value="User State"/>
                             <h:inputText value="#{userListBacking.filter.accountState}">
-                                <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="user-dt"/>
+                                <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="@form"/>
                             </h:inputText>
                         </f:facet>
 
@@ -86,12 +86,19 @@
 
                 </h:dataTable>
 
+                <ui:fragment rendered="#{empty userListBacking.users}">
+                    <div class="alert alert-warning alert-dismissible fade show" style="max-width: 1000px;">
+                        <h4 class="alert-heading">Keine Ergebnisse gefunden.</h4>
+                        <p>Bitte ändern Sie Ihre Filtereinstellungen und versuchen Sie es erneut.</p>
+                    </div>
+                </ui:fragment>
+
                 <!-- Pagination Controls -->
 
                 <div class="d-flex justify-content-center">
 
                     <ul class="pagination">
-                        <h:panelGroup rendered="#{userListBacking.userPagination.totalNumOfPages > 1}">
+                        <h:panelGroup rendered="#{!empty userListBacking.users}">
 
                             <h:panelGroup layout="block" styleClass="page-item" rendered="#{!userListBacking.userPagination.isFirstPage()}">
                                 <h:commandLink id="firstpage-link" value="First" action="#{userListBacking.userPagination.firstPage}"

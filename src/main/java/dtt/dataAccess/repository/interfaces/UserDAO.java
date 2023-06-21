@@ -178,6 +178,18 @@ public interface UserDAO {
             Transaction transaction);
 
     /**
+     * Get the Total Number of Users matching a given filter.
+     *
+     * @param user        The user DTO used as a filter for retrieving users.
+     * @param transaction The transaction associated with this operation.
+     * @return the total number of Users found matching the filter.
+     * @throws InvalidInputException if {@code user.userState} contains more
+     *                               than one element
+     */
+    int getTotalUserNumber(User user, Transaction transaction)
+            throws InvalidInputException;
+
+    /**
      * Adds entries in the authorization table or updates entries if already
      * there.
      *

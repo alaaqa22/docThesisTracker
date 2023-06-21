@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import dtt.dataAccess.exceptions.DBConnectionFailedException;
 import dtt.dataAccess.exceptions.DataNotCompleteException;
 import dtt.dataAccess.exceptions.DataNotFoundException;
@@ -30,7 +33,39 @@ import jakarta.inject.Named;
 
 @ApplicationScoped
 @Named
-public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
+public final class UserDAO
+        implements dtt.dataAccess.repository.interfaces.UserDAO {
+
+    /** Initialize Logger. */
+    private static final Logger LOGGER = LogManager
+            .getLogger(CirculationDAO.class);
+    // Column names
+    /** Column name of user_id of the user table. */
+    private static final String U_USER_ID = "\"user\".user_id";
+    /** Column name of email_address of the user table. */
+    private static final String U_EMAIL_ADDRESS = "\"user\".email_address";
+    /** Column name of first_name of the user table. */
+    private static final String U_FIRST_NAME = "\"user\".first_name";
+    /** Column name of last_name of the user table. */
+    private static final String U_LAST_NAME = "\"user\".last_name";
+    /** Column name of birth_date of the user table. */
+    private static final String U_BIRTH_DATE = "\"user\".birth_date";
+    /** Column name of password_hash of the user table. */
+    private static final String U_PASSWORD_HASH = "\"user\".password_hash";
+    /** Column name of password_salt of the user table. */
+    private static final String U_PASSWORD_SALT = "\"user\".password_salt";
+    /** Column name of user_id of the authentication table. */
+    private static final String A_USER_ID = "authentication.user_id";
+    /** Column name of faculty_id of the authentication table. */
+    private static final String A_FACULTY_ID = "authentication.faculty_id";
+    /** Column name of user_level of the authentication table. */
+    private static final String A_USER_LEVEL = "authentication.user_level";
+    /** Column name of faculty_id of the faculty table. */
+    private static final String F_FACULTY_ID = "faculty.faculty_id";
+    /** Column name of faculty_name of the faculty table. */
+    private static final String F_FACULTY_NAME = "faculty.faculty_name";
+    /** Column name of user_id of the admin table. */
+    private static final String ADMIN_USER_ID = "\"admin\".user_id";
 
     /**
      * Constructor for UserDAO.
@@ -199,19 +234,12 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
                         "User not found in the database.");
             }
             if (user.getUserState() != null || !user.getUserState().isEmpty()) {
-                String query2 = "INSERT INTO authentication "
-                        + "(user_id, faculty_id, user_level) "
-                        + "VALUES (?, ?, ?) ON CONFLICT UPDATE";
-                try (PreparedStatement statement2 = transaction.getConnection()
-                        .prepareStatement(query2)) {
-                    for (Map.Entry<Faculty, UserState> entry : user
-                            .getUserState().entrySet()) {
-                        int j = 1;
-                        statement2.setInt(j++, user.getId());
-                        statement2.setInt(j++, entry.getKey().getId());
-                        statement2.setString(j++, entry.getValue().name());
-                        statement2.executeUpdate();
-                    }
+                try {
+                    updateOrAddAuth(user, transaction);
+                } catch (DataNotCompleteException e) {
+                    LOGGER.error(
+                            "Vanished User state. This should be impossible",
+                            e);
                 }
             }
         } catch (SQLException e) {
@@ -234,21 +262,12 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
         String query = "SELECT email_address, first_name, last_name,"
                 + " birth_date, password_hash, password_salt "
                 + "FROM \"user\" WHERE user_id = ?";
-        String query2 = "SELECT authentication.faculty_id, "
-                + "authentication.user_level, faculty.faculty_name "
-                + "FROM authentication INNER JOIN faculty "
-                + "ON authentication.faculty_id=faculty.faculty_id "
-                + "WHERE user_id = ?";
 
         try (PreparedStatement statement = transaction.getConnection()
-                .prepareStatement(query);
-                PreparedStatement statement2 = transaction.getConnection()
-                        .prepareStatement(query2)) {
+                .prepareStatement(query)) {
             statement.setInt(1, user.getId());
-            statement2.setInt(1, user.getId());
 
-            try (ResultSet resultSet = statement.executeQuery();
-                    ResultSet resultSet2 = statement2.executeQuery();) {
+            try (ResultSet resultSet = statement.executeQuery();) {
                 if (resultSet.next()) {
                     // Retrieve the user data from the result set
                     user.setEmail(resultSet.getString("email_address"));
@@ -263,16 +282,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
                     throw new DataNotFoundException(
                             "User not found in the database.");
                 }
-                Map<Faculty, UserState> stateMap =
-                        new HashMap<Faculty, UserState>();
-                while (resultSet2.next()) {
-                    Faculty f = new Faculty();
-                    f.setId(resultSet2.getInt("faculty_id"));
-                    f.setName(resultSet2.getString("faculty_name"));
-                    stateMap.put(f, UserState
-                            .valueOf(resultSet2.getString("user_level")));
-                }
-                user.setUserState(stateMap);
+                setAuthentications(user, transaction);
             }
         } catch (SQLException e) {
             throw new DataNotFoundException("Failed to retrieve user data.", e);
@@ -285,16 +295,9 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
         String query = "SELECT user_id, first_name, last_name, birth_date, "
                 + "password_hash, password_salt FROM \"user\" "
                 + "WHERE email_address = ?";
-        String query2 = "SELECT authentication.faculty_id, "
-                + "authentication.user_level, faculty.faculty_name "
-                + "FROM authentication INNER JOIN faculty "
-                + "ON authentication.faculty_id=faculty.faculty_id "
-                + "WHERE user_id = ?";
 
         try (PreparedStatement statement = transaction.getConnection()
-                .prepareStatement(query);
-                PreparedStatement statement2 = transaction.getConnection()
-                        .prepareStatement(query2)) {
+                .prepareStatement(query)) {
             statement.setString(1, user.getEmail());
 
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -309,19 +312,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
                             resultSet.getString("password_hash"));
                     user.setPasswordSalt(resultSet.getString("password_salt"));
 
-                    statement2.setInt(1, user.getId());
-                    try (ResultSet resultSet2 = statement2.executeQuery()) {
-                        Map<Faculty, UserState> stateMap =
-                                new HashMap<Faculty, UserState>();
-                        while (resultSet2.next()) {
-                            Faculty f = new Faculty();
-                            f.setId(resultSet2.getInt("faculty_id"));
-                            f.setName(resultSet2.getString("faculty_name"));
-                            stateMap.put(f, UserState.valueOf(
-                                    resultSet2.getString("user_level")));
-                        }
-                        user.setUserState(stateMap);
-                    }
+                    setAuthentications(user, transaction);
 
                     return true; // User with the specified email found
                 }
@@ -339,80 +330,90 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
     public List<User> getUsers(final User user, final Faculty faculty,
             final UserState auth, final Transaction transaction,
             final int offset, final int count) {
+        LOGGER.debug("getUsers() called.");
         List<User> userList = new ArrayList<>();
-        String query = "SELECT \"user\".user_id, \"user\".email_address, "
-                + "\"user\".first_name, \"user\".last_name,"
-                + " \"user\".birth_date, faculty.faculty_name, "
-                + "authentication.user_Level FROM \"user\" "
-                + "INNER JOIN authentication "
-                + "ON \"user\".user_id=authentication.user_id "
-                + "INNER JOIN faculty "
-                + "ON authentication.faculty_id=faculty.faculty_id WHERE ";
-        List<String> conditions = new ArrayList<>();
-        List<Object> parameters = new ArrayList<>();
 
+        // Building SQL
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT \"user\".id FROM \"user\" "
+                + "INNER JOIN authentication " + "ON " + U_USER_ID + "="
+                + A_USER_ID + " INNER JOIN faculty " + "ON " + A_FACULTY_ID
+                + "=" + F_FACULTY_ID + " WHERE 1=1");
+
+        // Add filter conditions based on provided properties
         if (user != null && user.getEmail() != null) {
-            conditions.add("\"user\".email_address = ?");
-            parameters.add(user.getEmail());
+            query.append(" AND " + U_EMAIL_ADDRESS + " LIKE ?");
         }
 
         if (user != null && user.getFirstName() != null) {
-            conditions.add("\"user\".first_name = ?");
-            parameters.add(user.getFirstName());
+            query.append(" AND " + U_FIRST_NAME + "LIKE ?");
         }
 
-        if (user != null && user.getEmail() != null) {
-            conditions.add("\"user\".email_address = ?");
-            parameters.add(user.getEmail());
+        if (user != null && user.getLastName() != null) {
+            query.append(" AND " + U_LAST_NAME + "LIKE ?");
         }
 
         if (user != null && user.getBirthDate() != null) {
-            conditions.add("\"user\".birth_date = ?");
-            parameters.add(user.getBirthDate());
+            query.append(" AND " + U_BIRTH_DATE + "LIKE ?");
         }
 
         if (faculty != null) {
-            conditions.add("faculty.faculty_id = ?");
-            parameters.add(faculty.getId());
+            query.append(" AND " + F_FACULTY_ID + "= ?");
         }
 
         if (auth != null) {
-            conditions.add("authentication.user_state = ?");
-            parameters.add(auth.name());
+            query.append(" AND " + A_USER_LEVEL + "LIKE ?");
         }
 
-        if (!conditions.isEmpty()) {
-            query += String.join(" AND ", conditions);
-        } else {
-            query += "TRUE"; // No conditions, include all users
-        }
-
-        query += " LIMIT ? OFFSET ?";
-
-        parameters.add(count);
-        parameters.add(offset);
+        query.append(" LIMIT ? OFFSET ?");
 
         try (PreparedStatement statement = transaction.getConnection()
-                .prepareStatement(query)) {
-            for (int i = 0; i < parameters.size(); i++) {
-                statement.setObject(i + 1, parameters.get(i));
+                .prepareStatement(query.toString())) {
+            int paramIndex = 1;
+
+            // Set filter condition values
+            if (user != null && user.getEmail() != null) {
+                statement.setString(paramIndex++, user.getEmail());
             }
+
+            if (user != null && user.getFirstName() != null) {
+                statement.setString(paramIndex++, user.getFirstName());
+            }
+
+            if (user != null && user.getLastName() != null) {
+                statement.setString(paramIndex++, user.getLastName());
+            }
+
+            if (user != null && user.getBirthDate() != null) {
+                statement.setString(paramIndex++, user.getBirthDate());
+            }
+
+            if (faculty != null) {
+                statement.setLong(paramIndex++, faculty.getId());
+            }
+
+            if (auth != null) {
+                statement.setString(paramIndex++, auth.name());
+            }
+
+            // Set pagination parameters
+            statement.setInt(paramIndex++, count);
+            statement.setInt(paramIndex, offset);
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     User fetchedUser = new User();
-                    fetchedUser.setId(resultSet.getInt("user_id"));
-                    fetchedUser.setEmail(resultSet.getString("email_address"));
-                    fetchedUser.setFirstName(resultSet.getString("first_name"));
-                    fetchedUser.setLastName(resultSet.getString("last_name"));
-                    fetchedUser.setBirthDate(
-                            resultSet.getDate("birth_date").toString());
-
-                    userList.add(fetchedUser);
+                    fetchedUser.setId(resultSet.getInt(U_USER_ID));
+                    try {
+                        getUserById(fetchedUser, transaction);
+                        userList.add(fetchedUser);
+                    } catch (DataNotFoundException e) {
+                        LOGGER.error("Fetched User disappeared, skipping.", e);
+                    }
                 }
             }
         } catch (SQLException e) {
-            // Handle any specific exceptions or logging as needed
+            LOGGER.error("Failed to retrieve users.", e);
             throw new DBConnectionFailedException("Failed to retrieve users.",
                     e);
         }
@@ -423,20 +424,14 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
     @Override
     public List<User> getUsers(final User user, final Transaction transaction,
             final int offset, final int count) throws InvalidInputException {
+        LOGGER.debug("getUsers() called.");
+
+        // initialize objects
         Faculty faculty = null;
         UserState auth = null;
         List<User> userList = new ArrayList<>();
-        String query = "SELECT \"user\".user_id, \"user\".email_address, "
-                + "\"user\".first_name, \"user\".last_name, "
-                + "\"user\".birth_date, faculty.faculty_name, "
-                + "authentication.user_Level FROM \"user\" "
-                + "INNER JOIN authentication "
-                + "ON \"user\".user_id=authentication.user_id "
-                + "INNER JOIN faculty "
-                + "ON authentication.faculty_id=faculty.faculty_id WHERE ";
-        List<String> conditions = new ArrayList<>();
-        List<Object> parameters = new ArrayList<>();
 
+        // set filter Values for faculty and authentication
         if (user.getUserState() != null) {
             if (user.getUserState().entrySet().size() == 1) {
                 Map.Entry<Faculty, UserState> entry = user.getUserState()
@@ -450,68 +445,87 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
             }
         }
 
+        // Building SQL
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT \"user\".id FROM \"user\" "
+                + "INNER JOIN authentication " + "ON " + U_USER_ID + "="
+                + A_USER_ID + " INNER JOIN faculty " + "ON " + A_FACULTY_ID
+                + "=" + F_FACULTY_ID + " WHERE 1=1");
+
+        // Add filter conditions based on provided properties
         if (user != null && user.getEmail() != null) {
-            conditions.add("\"user\".email_address = ?");
-            parameters.add(user.getEmail());
+            query.append(" AND " + U_EMAIL_ADDRESS + " LIKE ?");
         }
 
         if (user != null && user.getFirstName() != null) {
-            conditions.add("\"user\".first_name = ?");
-            parameters.add(user.getFirstName());
+            query.append(" AND " + U_FIRST_NAME + "LIKE ?");
         }
 
-        if (user != null && user.getEmail() != null) {
-            conditions.add("\"user\".email_address = ?");
-            parameters.add(user.getEmail());
+        if (user != null && user.getLastName() != null) {
+            query.append(" AND " + U_LAST_NAME + "LIKE ?");
         }
 
         if (user != null && user.getBirthDate() != null) {
-            conditions.add("\"user\".birth_date = ?");
-            parameters.add(user.getBirthDate());
+            query.append(" AND " + U_BIRTH_DATE + "LIKE ?");
         }
 
         if (faculty != null) {
-            conditions.add("faculty.faculty_id = ?");
-            parameters.add(faculty.getId());
+            query.append(" AND " + F_FACULTY_ID + "= ?");
         }
 
         if (auth != null) {
-            conditions.add("authentication.user_state = ?");
-            parameters.add(auth.name());
+            query.append(" AND " + A_USER_LEVEL + "LIKE ?");
         }
 
-        if (!conditions.isEmpty()) {
-            query += String.join(" AND ", conditions);
-        } else {
-            query += "TRUE"; // No conditions, include all users
-        }
-
-        query += " LIMIT ? OFFSET ?";
-
-        parameters.add(count);
-        parameters.add(offset);
+        query.append(" LIMIT ? OFFSET ?");
 
         try (PreparedStatement statement = transaction.getConnection()
-                .prepareStatement(query)) {
-            for (int i = 0; i < parameters.size(); i++) {
-                statement.setObject(i + 1, parameters.get(i));
+                .prepareStatement(query.toString())) {
+            int paramIndex = 1;
+
+            // Set filter condition values
+            if (user != null && user.getEmail() != null) {
+                statement.setString(paramIndex++, user.getEmail());
             }
+
+            if (user != null && user.getFirstName() != null) {
+                statement.setString(paramIndex++, user.getFirstName());
+            }
+
+            if (user != null && user.getLastName() != null) {
+                statement.setString(paramIndex++, user.getLastName());
+            }
+
+            if (user != null && user.getBirthDate() != null) {
+                statement.setString(paramIndex++, user.getBirthDate());
+            }
+
+            if (faculty != null) {
+                statement.setLong(paramIndex++, faculty.getId());
+            }
+
+            if (auth != null) {
+                statement.setString(paramIndex++, auth.name());
+            }
+
+            // Set pagination parameters
+            statement.setInt(paramIndex++, count);
+            statement.setInt(paramIndex, offset);
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     User fetchedUser = new User();
-                    fetchedUser.setId(resultSet.getInt("user_id"));
-                    fetchedUser.setEmail(resultSet.getString("email_address"));
-                    fetchedUser.setFirstName(resultSet.getString("first_name"));
-                    fetchedUser.setLastName(resultSet.getString("last_name"));
-                    fetchedUser.setBirthDate(
-                            resultSet.getDate("birth_date").toString());
-
-                    userList.add(fetchedUser);
+                    fetchedUser.setId(resultSet.getInt(U_USER_ID));
+                    try {
+                        getUserById(fetchedUser, transaction);
+                        userList.add(fetchedUser);
+                    } catch (DataNotFoundException e) {
+                        LOGGER.error("Fetched User disappeared, skipping.", e);
+                    }
                 }
             }
         } catch (SQLException e) {
-            // Handle any specific exceptions or logging as needed
+            LOGGER.error("Failed to retrieve users.", e);
             throw new DBConnectionFailedException("Failed to retrieve users.",
                     e);
         }
@@ -522,54 +536,164 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
     @Override
     public int getTotalUserNumber(final User user, final Faculty faculty,
             final UserState auth, final Transaction transaction) {
-        String query = "SELECT COUNT(*) FROM \"user\" "
-                + "INNER JOIN authentication "
-                + "ON \"user\".user_id=authentication.user_id "
-                + "INNER JOIN faculty "
-                + "ON authentication.faculty_id=faculty.faculty_id " + "WHERE ";
-        List<String> conditions = new ArrayList<>();
-        List<Object> parameters = new ArrayList<>();
+        LOGGER.debug("getTotalUserNumber() called.");
 
+        // Building SQL
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT COUNT(*) FROM \"user\" "
+                + "INNER JOIN authentication " + "ON " + U_USER_ID + "="
+                + A_USER_ID + " INNER JOIN faculty " + "ON " + A_FACULTY_ID
+                + "=" + F_FACULTY_ID + " WHERE 1=1");
+
+        // Add filter conditions based on provided properties
         if (user != null && user.getEmail() != null) {
-            conditions.add("\"user\".email_address = ?");
-            parameters.add(user.getEmail());
+            query.append(" AND " + U_EMAIL_ADDRESS + " LIKE ?");
         }
 
         if (user != null && user.getFirstName() != null) {
-            conditions.add("\"user\".first_name = ?");
-            parameters.add(user.getFirstName());
+            query.append(" AND " + U_FIRST_NAME + "LIKE ?");
         }
 
-        if (user != null && user.getEmail() != null) {
-            conditions.add("\"user\".email_address = ?");
-            parameters.add(user.getEmail());
+        if (user != null && user.getLastName() != null) {
+            query.append(" AND " + U_LAST_NAME + "LIKE ?");
         }
 
         if (user != null && user.getBirthDate() != null) {
-            conditions.add("\"user\".birth_date = ?");
-            parameters.add(user.getBirthDate());
+            query.append(" AND " + U_BIRTH_DATE + "LIKE ?");
         }
 
         if (faculty != null) {
-            conditions.add("faculty.faculty_id = ?");
-            parameters.add(faculty.getId());
+            query.append(" AND " + F_FACULTY_ID + "= ?");
         }
 
         if (auth != null) {
-            conditions.add("authentication.user_state = ?");
-            parameters.add(auth.name());
-        }
-
-        if (!conditions.isEmpty()) {
-            query += String.join(" AND ", conditions);
-        } else {
-            query += "TRUE"; // No conditions, include all users
+            query.append(" AND " + A_USER_LEVEL + "LIKE ?");
         }
 
         try (PreparedStatement statement = transaction.getConnection()
-                .prepareStatement(query)) {
-            for (int i = 0; i < parameters.size(); i++) {
-                statement.setObject(i + 1, parameters.get(i));
+                .prepareStatement(query.toString())) {
+            int paramIndex = 1;
+
+            // Set filter condition values
+            if (user != null && user.getEmail() != null) {
+                statement.setString(paramIndex++, user.getEmail());
+            }
+
+            if (user != null && user.getFirstName() != null) {
+                statement.setString(paramIndex++, user.getFirstName());
+            }
+
+            if (user != null && user.getLastName() != null) {
+                statement.setString(paramIndex++, user.getLastName());
+            }
+
+            if (user != null && user.getBirthDate() != null) {
+                statement.setString(paramIndex++, user.getBirthDate());
+            }
+
+            if (faculty != null) {
+                statement.setLong(paramIndex++, faculty.getId());
+            }
+
+            if (auth != null) {
+                statement.setString(paramIndex++, auth.name());
+            }
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            // Handle any specific exceptions or logging as needed
+            throw new DBConnectionFailedException("Failed to retrieve users.",
+                    e);
+        }
+        return -1;
+    }
+
+    @Override
+    public int getTotalUserNumber(final User user,
+            final Transaction transaction) throws InvalidInputException {
+        LOGGER.debug("getTotalUserNumber() called.");
+
+        // initialize objects
+        Faculty faculty = null;
+        UserState auth = null;
+
+        // set filter Values for faculty and authentication
+        if (user.getUserState() != null) {
+            if (user.getUserState().entrySet().size() == 1) {
+                Map.Entry<Faculty, UserState> entry = user.getUserState()
+                        .entrySet().iterator().next();
+                faculty = entry.getKey();
+                auth = entry.getValue();
+            } else {
+                throw new InvalidInputException(
+                        "more than one filter entry for userState"
+                                + " and faculty, could not resolve");
+            }
+        }
+
+        // Building SQL
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT \"user\".id FROM \"user\" "
+                + "INNER JOIN authentication " + "ON " + U_USER_ID + "="
+                + A_USER_ID + " INNER JOIN faculty " + "ON " + A_FACULTY_ID
+                + "=" + F_FACULTY_ID + " WHERE 1=1");
+
+        // Add filter conditions based on provided properties
+        if (user != null && user.getEmail() != null) {
+            query.append(" AND " + U_EMAIL_ADDRESS + " LIKE ?");
+        }
+
+        if (user != null && user.getFirstName() != null) {
+            query.append(" AND " + U_FIRST_NAME + "LIKE ?");
+        }
+
+        if (user != null && user.getLastName() != null) {
+            query.append(" AND " + U_LAST_NAME + "LIKE ?");
+        }
+
+        if (user != null && user.getBirthDate() != null) {
+            query.append(" AND " + U_BIRTH_DATE + "LIKE ?");
+        }
+
+        if (faculty != null) {
+            query.append(" AND " + F_FACULTY_ID + "= ?");
+        }
+
+        if (auth != null) {
+            query.append(" AND " + A_USER_LEVEL + "LIKE ?");
+        }
+
+        try (PreparedStatement statement = transaction.getConnection()
+                .prepareStatement(query.toString())) {
+            int paramIndex = 1;
+
+            // Set filter condition values
+            if (user != null && user.getEmail() != null) {
+                statement.setString(paramIndex++, user.getEmail());
+            }
+
+            if (user != null && user.getFirstName() != null) {
+                statement.setString(paramIndex++, user.getFirstName());
+            }
+
+            if (user != null && user.getLastName() != null) {
+                statement.setString(paramIndex++, user.getLastName());
+            }
+
+            if (user != null && user.getBirthDate() != null) {
+                statement.setString(paramIndex++, user.getBirthDate());
+            }
+
+            if (faculty != null) {
+                statement.setLong(paramIndex++, faculty.getId());
+            }
+
+            if (auth != null) {
+                statement.setString(paramIndex++, auth.name());
             }
 
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -715,8 +839,39 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
             throw new DBConnectionFailedException("Failed to retrieve admins.",
                     e);
         }
-
         return adminList;
     }
 
+    private void setAuthentications(final User user,
+            final Transaction transaction) {
+        LOGGER.debug("Loading authentications.");
+        String query = "SELECT authentication.faculty_id, "
+                + "authentication.user_level, faculty.faculty_name "
+                + "FROM authentication INNER JOIN faculty "
+                + "ON authentication.faculty_id=faculty.faculty_id "
+                + "WHERE user_id = ?";
+        try (PreparedStatement statement = transaction.getConnection()
+                .prepareStatement(query)) {
+            statement.setInt(1, user.getId());
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                Map<Faculty, UserState> stateMap =
+                        new HashMap<Faculty, UserState>();
+                while (resultSet.next()) {
+                    Faculty f = new Faculty();
+                    f.setId(resultSet.getInt(A_FACULTY_ID));
+                    f.setName(resultSet.getString(F_FACULTY_NAME));
+                    stateMap.put(f, UserState
+                            .valueOf(resultSet.getString(A_USER_LEVEL)));
+                }
+                user.setUserState(stateMap);
+            }
+
+        } catch (SQLException e) {
+            // Handle any specific exceptions or logging as needed
+            throw new DBConnectionFailedException(
+                    "Failed to load authentications.", e);
+        }
+
+    }
 }

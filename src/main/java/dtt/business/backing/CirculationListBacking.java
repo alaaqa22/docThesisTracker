@@ -51,7 +51,6 @@ public class CirculationListBacking implements Serializable {
         return new Pagination<Circulation> () {
             @Override
             public void loadData () {
-                logger.fatal ("loadData");
                 int currentPage = getCurrentPage ();
                 int maxItems = getMaxItems ();
                 if (currentPage <= 0 || maxItems <= 0) {
@@ -61,11 +60,11 @@ public class CirculationListBacking implements Serializable {
                 int offset = (currentPage - 1) * maxItems;
                 int count = maxItems;
 
-                try (Transaction transaction = new Transaction()) {
-                    List<Circulation> cir = circDAO.getCirculations(filter, transaction, offset, count);
-                    setEntries(cir);
+                try (Transaction transaction = new Transaction ()) {
+                    List<Circulation> cir = circDAO.getCirculations (filter, transaction, offset, count);
+                    setEntries (cir);
                     circulations = cir;
-                    transaction.commit();
+                    transaction.commit ();
                 }
 
 
@@ -73,12 +72,11 @@ public class CirculationListBacking implements Serializable {
 
             @Override
             public int getTotalNumOfPages () {
-                logger.fatal ("getTotalNumOfPages");
-                try(Transaction t = new Transaction ()) {
+                try (Transaction t = new Transaction ()) {
                     int totalNumOfPages = (int) Math.ceil ((double) (circDAO.getTotalCirculationNumber (filter, t))
                             / maxItems);
                     t.commit ();
-                    this.totalNumOfPages= totalNumOfPages;
+                    this.totalNumOfPages = totalNumOfPages;
                     return totalNumOfPages;
                 }
             }

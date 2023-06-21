@@ -47,7 +47,6 @@ public class UserListBacking implements Serializable {
      * Initializes the userPagination object.
      */
     public UserListBacking () {
-        logger.fatal ("constructur User LIst ");
         userPagination = createPagination ();
     }
 
@@ -61,35 +60,29 @@ public class UserListBacking implements Serializable {
         return new Pagination<User> () {
             @Override
             public void loadData () {
-                logger.fatal ("Start LoadData() in User List ");
                 int currentPage = this.getCurrentPage ();
                 int maxItems = getMaxItems ();
-                logger.fatal ("currentPage : "+currentPage);
-                logger.fatal ("maxItems : "+maxItems);
                 if (currentPage <= 0 || maxItems <= 0) {
                     logger.error ("Invalid currentPage or maxItems value.");
                 }
 
                 int offset = (currentPage - 1) * maxItems;
                 int count = maxItems;
-                logger.fatal ("offset : "+offset);
-                logger.fatal ("count : "+count);
 
-                try (Transaction transaction = new Transaction()) {
+                try (Transaction transaction = new Transaction ()) {
                     Faculty faculty = null;
                     UserState auth = null;
-                    users = userDAO.getUsers (filter,faculty,auth,transaction,offset,count);
-                    transaction.commit();  // Ensure that the transaction is committed.
+                    users = userDAO.getUsers (filter, faculty, auth, transaction, offset, count);
+                    transaction.commit ();  // Ensure that the transaction is committed.
                 }
             }
 
             @Override
             public int getTotalNumOfPages () {
 
-                try(Transaction t = new Transaction ()) {
+                try (Transaction t = new Transaction ()) {
                     int totalNumOfPages = (int) Math.ceil ((double) (userDAO.getTotalUserNumber (filter, null, null, t))
                             / maxItems);
-                    logger.fatal ("totalNumOfPages : " + totalNumOfPages);
                     this.totalNumOfPages = totalNumOfPages;
                     return totalNumOfPages;
                 }
@@ -106,7 +99,6 @@ public class UserListBacking implements Serializable {
     }
 
     public void loadUsers () {
-        logger.fatal ("Start loadUsers()");
         userPagination.loadData ();
     }
 

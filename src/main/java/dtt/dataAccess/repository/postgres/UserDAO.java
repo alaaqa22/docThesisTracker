@@ -33,39 +33,39 @@ import jakarta.inject.Named;
 
 @ApplicationScoped
 @Named
-public final class UserDAO
+public class UserDAO
         implements dtt.dataAccess.repository.interfaces.UserDAO {
 
     /** Initialize Logger. */
     private static final Logger LOGGER = LogManager
             .getLogger(CirculationDAO.class);
     // Column names
-    /** Column name of user_id of the user table. */
-    private static final String U_USER_ID = "\"user\".user_id";
-    /** Column name of email_address of the user table. */
-    private static final String U_EMAIL_ADDRESS = "\"user\".email_address";
-    /** Column name of first_name of the user table. */
-    private static final String U_FIRST_NAME = "\"user\".first_name";
-    /** Column name of last_name of the user table. */
-    private static final String U_LAST_NAME = "\"user\".last_name";
-    /** Column name of birth_date of the user table. */
-    private static final String U_BIRTH_DATE = "\"user\".birth_date";
-    /** Column name of password_hash of the user table. */
-    private static final String U_PASSWORD_HASH = "\"user\".password_hash";
-    /** Column name of password_salt of the user table. */
-    private static final String U_PASSWORD_SALT = "\"user\".password_salt";
-    /** Column name of user_id of the authentication table. */
-    private static final String A_USER_ID = "authentication.user_id";
-    /** Column name of faculty_id of the authentication table. */
-    private static final String A_FACULTY_ID = "authentication.faculty_id";
-    /** Column name of user_level of the authentication table. */
-    private static final String A_USER_LEVEL = "authentication.user_level";
-    /** Column name of faculty_id of the faculty table. */
-    private static final String F_FACULTY_ID = "faculty.faculty_id";
-    /** Column name of faculty_name of the faculty table. */
-    private static final String F_FACULTY_NAME = "faculty.faculty_name";
-    /** Column name of user_id of the admin table. */
-    private static final String ADMIN_USER_ID = "\"admin\".user_id";
+//    /** Column name of user_id of the user table. */
+//    private static final String U_USER_ID = "\"user\".user_id";
+//    /** Column name of email_address of the user table. */
+//    private static final String U_EMAIL_ADDRESS = "\"user\".email_address";
+//    /** Column name of first_name of the user table. */
+//    private static final String U_FIRST_NAME = "\"user\".first_name";
+//    /** Column name of last_name of the user table. */
+//    private static final String U_LAST_NAME = "\"user\".last_name";
+//    /** Column name of birth_date of the user table. */
+//    private static final String U_BIRTH_DATE = "\"user\".birth_date";
+//    /** Column name of password_hash of the user table. */
+//    private static final String U_PASSWORD_HASH = "\"user\".password_hash";
+//    /** Column name of password_salt of the user table. */
+//    private static final String U_PASSWORD_SALT = "\"user\".password_salt";
+//    /** Column name of user_id of the authentication table. */
+//    private static final String A_USER_ID = "authentication.user_id";
+//    /** Column name of faculty_id of the authentication table. */
+//    private static final String A_FACULTY_ID = "authentication.faculty_id";
+//    /** Column name of user_level of the authentication table. */
+//    private static final String A_USER_LEVEL = "authentication.user_level";
+//    /** Column name of faculty_id of the faculty table. */
+//    private static final String F_FACULTY_ID = "faculty.faculty_id";
+//    /** Column name of faculty_name of the faculty table. */
+//    private static final String F_FACULTY_NAME = "faculty.faculty_name";
+//    /** Column name of user_id of the admin table. */
+//    private static final String ADMIN_USER_ID = "\"admin\".user_id";
 
     /**
      * Constructor for UserDAO.
@@ -335,34 +335,35 @@ public final class UserDAO
 
         // Building SQL
         StringBuilder query = new StringBuilder();
-        query.append("SELECT \"user\".id FROM \"user\" "
-                + "INNER JOIN authentication " + "ON " + U_USER_ID + "="
-                + A_USER_ID + " INNER JOIN faculty " + "ON " + A_FACULTY_ID
-                + "=" + F_FACULTY_ID + " WHERE 1=1");
+        query.append("SELECT \"user\".user_id FROM \"user\" "
+                + "INNER JOIN authentication "
+                + "ON \"user\".user_id=authentication.user_id "
+                + "INNER JOIN faculty "
+                + "ON authentication.faculty_id=faculty.faculty_id WHERE 1=1");
 
         // Add filter conditions based on provided properties
         if (user != null && user.getEmail() != null) {
-            query.append(" AND " + U_EMAIL_ADDRESS + " LIKE ?");
+            query.append(" AND \"user\".email_address LIKE ?");
         }
 
         if (user != null && user.getFirstName() != null) {
-            query.append(" AND " + U_FIRST_NAME + "LIKE ?");
+            query.append(" AND \"user\".first_name LIKE ?");
         }
 
         if (user != null && user.getLastName() != null) {
-            query.append(" AND " + U_LAST_NAME + "LIKE ?");
+            query.append(" AND \"user\".last_name LIKE ?");
         }
 
         if (user != null && user.getBirthDate() != null) {
-            query.append(" AND " + U_BIRTH_DATE + "LIKE ?");
+            query.append(" AND  \"user\".birth_date LIKE ?");
         }
 
         if (faculty != null) {
-            query.append(" AND " + F_FACULTY_ID + "= ?");
+            query.append(" AND faculty.faculty_id = ?");
         }
 
         if (auth != null) {
-            query.append(" AND " + A_USER_LEVEL + "LIKE ?");
+            query.append(" AND authentication.user_level LIKE ?");
         }
 
         query.append(" LIMIT ? OFFSET ?");
@@ -403,7 +404,7 @@ public final class UserDAO
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     User fetchedUser = new User();
-                    fetchedUser.setId(resultSet.getInt(U_USER_ID));
+                    fetchedUser.setId(resultSet.getInt("user_id"));
                     try {
                         getUserById(fetchedUser, transaction);
                         userList.add(fetchedUser);
@@ -447,34 +448,35 @@ public final class UserDAO
 
         // Building SQL
         StringBuilder query = new StringBuilder();
-        query.append("SELECT \"user\".id FROM \"user\" "
-                + "INNER JOIN authentication " + "ON " + U_USER_ID + "="
-                + A_USER_ID + " INNER JOIN faculty " + "ON " + A_FACULTY_ID
-                + "=" + F_FACULTY_ID + " WHERE 1=1");
+        query.append("SELECT \"user\".user_id FROM \"user\" "
+                + "INNER JOIN authentication "
+                + "ON \"user\".user_id=authentication.user_id "
+                + "INNER JOIN faculty "
+                + "ON authentication.faculty_id=faculty.faculty_id WHERE 1=1");
 
         // Add filter conditions based on provided properties
         if (user != null && user.getEmail() != null) {
-            query.append(" AND " + U_EMAIL_ADDRESS + " LIKE ?");
+            query.append(" AND \"user\".email_address LIKE ?");
         }
 
         if (user != null && user.getFirstName() != null) {
-            query.append(" AND " + U_FIRST_NAME + "LIKE ?");
+            query.append(" AND \"user\".first_name LIKE ?");
         }
 
         if (user != null && user.getLastName() != null) {
-            query.append(" AND " + U_LAST_NAME + "LIKE ?");
+            query.append(" AND \"user\".last_name LIKE ?");
         }
 
         if (user != null && user.getBirthDate() != null) {
-            query.append(" AND " + U_BIRTH_DATE + "LIKE ?");
+            query.append(" AND  \"user\".birth_date LIKE ?");
         }
 
         if (faculty != null) {
-            query.append(" AND " + F_FACULTY_ID + "= ?");
+            query.append(" AND faculty.faculty_id = ?");
         }
 
         if (auth != null) {
-            query.append(" AND " + A_USER_LEVEL + "LIKE ?");
+            query.append(" AND authentication.user_level LIKE ?");
         }
 
         query.append(" LIMIT ? OFFSET ?");
@@ -515,7 +517,7 @@ public final class UserDAO
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     User fetchedUser = new User();
-                    fetchedUser.setId(resultSet.getInt(U_USER_ID));
+                    fetchedUser.setId(resultSet.getInt("user_id"));
                     try {
                         getUserById(fetchedUser, transaction);
                         userList.add(fetchedUser);
@@ -540,34 +542,35 @@ public final class UserDAO
 
         // Building SQL
         StringBuilder query = new StringBuilder();
-        query.append("SELECT COUNT(*) FROM \"user\" "
-                + "INNER JOIN authentication " + "ON " + U_USER_ID + "="
-                + A_USER_ID + " INNER JOIN faculty " + "ON " + A_FACULTY_ID
-                + "=" + F_FACULTY_ID + " WHERE 1=1");
+        query.append("SELECT Count(*) FROM \"user\" "
+                + "INNER JOIN authentication "
+                + "ON \"user\".user_id=authentication.user_id "
+                + "INNER JOIN faculty "
+                + "ON authentication.faculty_id=faculty.faculty_id WHERE 1=1");
 
         // Add filter conditions based on provided properties
         if (user != null && user.getEmail() != null) {
-            query.append(" AND " + U_EMAIL_ADDRESS + " LIKE ?");
+            query.append(" AND \"user\".email_address LIKE ?");
         }
 
         if (user != null && user.getFirstName() != null) {
-            query.append(" AND " + U_FIRST_NAME + "LIKE ?");
+            query.append(" AND \"user\".first_name LIKE ?");
         }
 
         if (user != null && user.getLastName() != null) {
-            query.append(" AND " + U_LAST_NAME + "LIKE ?");
+            query.append(" AND \"user\".last_name LIKE ?");
         }
 
         if (user != null && user.getBirthDate() != null) {
-            query.append(" AND " + U_BIRTH_DATE + "LIKE ?");
+            query.append(" AND  \"user\".birth_date LIKE ?");
         }
 
         if (faculty != null) {
-            query.append(" AND " + F_FACULTY_ID + "= ?");
+            query.append(" AND faculty.faculty_id = ?");
         }
 
         if (auth != null) {
-            query.append(" AND " + A_USER_LEVEL + "LIKE ?");
+            query.append(" AND authentication.user_level LIKE ?");
         }
 
         try (PreparedStatement statement = transaction.getConnection()
@@ -637,34 +640,35 @@ public final class UserDAO
 
         // Building SQL
         StringBuilder query = new StringBuilder();
-        query.append("SELECT \"user\".id FROM \"user\" "
-                + "INNER JOIN authentication " + "ON " + U_USER_ID + "="
-                + A_USER_ID + " INNER JOIN faculty " + "ON " + A_FACULTY_ID
-                + "=" + F_FACULTY_ID + " WHERE 1=1");
+        query.append("SELECT Count(*) FROM \"user\" "
+                + "INNER JOIN authentication "
+                + "ON \"user\".user_id=authentication.user_id "
+                + "INNER JOIN faculty "
+                + "ON authentication.faculty_id=faculty.faculty_id WHERE 1=1");
 
         // Add filter conditions based on provided properties
         if (user != null && user.getEmail() != null) {
-            query.append(" AND " + U_EMAIL_ADDRESS + " LIKE ?");
+            query.append(" AND \"user\".email_address LIKE ?");
         }
 
         if (user != null && user.getFirstName() != null) {
-            query.append(" AND " + U_FIRST_NAME + "LIKE ?");
+            query.append(" AND \"user\".first_name LIKE ?");
         }
 
         if (user != null && user.getLastName() != null) {
-            query.append(" AND " + U_LAST_NAME + "LIKE ?");
+            query.append(" AND \"user\".last_name LIKE ?");
         }
 
         if (user != null && user.getBirthDate() != null) {
-            query.append(" AND " + U_BIRTH_DATE + "LIKE ?");
+            query.append(" AND  \"user\".birth_date LIKE ?");
         }
 
         if (faculty != null) {
-            query.append(" AND " + F_FACULTY_ID + "= ?");
+            query.append(" AND faculty.faculty_id = ?");
         }
 
         if (auth != null) {
-            query.append(" AND " + A_USER_LEVEL + "LIKE ?");
+            query.append(" AND authentication.user_level LIKE ?");
         }
 
         try (PreparedStatement statement = transaction.getConnection()
@@ -859,10 +863,10 @@ public final class UserDAO
                         new HashMap<Faculty, UserState>();
                 while (resultSet.next()) {
                     Faculty f = new Faculty();
-                    f.setId(resultSet.getInt(A_FACULTY_ID));
-                    f.setName(resultSet.getString(F_FACULTY_NAME));
+                    f.setId(resultSet.getInt("faculty_id"));
+                    f.setName(resultSet.getString("faculty_name"));
                     stateMap.put(f, UserState
-                            .valueOf(resultSet.getString(A_USER_LEVEL)));
+                            .valueOf(resultSet.getString("user_level")));
                 }
                 user.setUserState(stateMap);
             }

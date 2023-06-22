@@ -9,6 +9,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,39 +27,40 @@ import java.util.Map;
  * User DTO for the logged-in user. It allows other components and pages
  * in the application to access the user's information without the need
  * for repetitive retrieval from a data source.
+ *
  * @author Johannes Silvennoinen
  */
 @Named("sessionInfo")
 @SessionScoped
 public class SessionInfo implements Serializable {
-    private static final Logger LOGGER = LogManager.getLogger(SessionInfo.class);
+    private static final Logger LOGGER = LogManager.getLogger (SessionInfo.class);
     private static final long serialVersionUID = 10;
     private User user = new User ();
 
-    public boolean isLoggedIn() {
-        LOGGER.debug("isLoggedIn() called.");
+    public boolean isLoggedIn () {
+        LOGGER.debug ("isLoggedIn() called.");
         return loggedIn;
     }
 
-    public void setLoggedIn(boolean loggedIn) {
-        LOGGER.debug("setLoggedIn() called.");
+    public void setLoggedIn (boolean loggedIn) {
+        LOGGER.debug ("setLoggedIn() called.");
         this.loggedIn = loggedIn;
     }
 
     private boolean loggedIn;
 
     public User getUser () {
-        LOGGER.debug("getUser() called.");
+        LOGGER.debug ("getUser() called.");
         return user;
     }
 
     public void setUser (User user) {
-        LOGGER.debug("setUser() called.");
+        LOGGER.debug ("setUser() called.");
         if (user == null) {
-            setLoggedIn(false);
+            setLoggedIn (false);
         }
         this.user = user;
-        setLoggedIn(true);
+        setLoggedIn (true);
     }
 
     /**
@@ -66,7 +69,7 @@ public class SessionInfo implements Serializable {
      * @return true if the user is an Admin.
      */
     public boolean isAdmin () {
-        LOGGER.debug("isAdmin() called.");
+        LOGGER.debug ("isAdmin() called.");
         Map<Faculty, UserState> map = user.getUserState ();
         for (UserState state : map.values ()) {
             if (state == UserState.ADMIN) {
@@ -76,8 +79,8 @@ public class SessionInfo implements Serializable {
         return false;
     }
 
-    public boolean isCommitteeMember() {
-        LOGGER.debug("isCommitteeMember() called.");
+    public boolean isCommitteeMember () {
+        LOGGER.debug ("isCommitteeMember() called.");
         Map<Faculty, UserState> map = user.getUserState ();
         for (UserState state : map.values ()) {
             if (state == UserState.EXAMINCOMMITTEEMEMBERS) {
@@ -87,8 +90,8 @@ public class SessionInfo implements Serializable {
         return false;
     }
 
-    public boolean isExaminer() {
-        LOGGER.debug("isExaminer() called.");
+    public boolean isExaminer () {
+        LOGGER.debug ("isExaminer() called.");
         Map<Faculty, UserState> map = user.getUserState ();
         for (UserState state : map.values ()) {
             if (state == UserState.EXAMINER) {
@@ -98,8 +101,8 @@ public class SessionInfo implements Serializable {
         return false;
     }
 
-    public boolean isDeanery() {
-        LOGGER.debug("isDeanery() called.");
+    public boolean isDeanery () {
+        LOGGER.debug ("isDeanery() called.");
         Map<Faculty, UserState> map = user.getUserState ();
         for (UserState state : map.values ()) {
             if (state == UserState.DEANERY) {
@@ -110,7 +113,7 @@ public class SessionInfo implements Serializable {
     }
 
     public boolean isPending () {
-        LOGGER.debug("isPending() called.");
+        LOGGER.debug ("isPending() called.");
         Map<Faculty, UserState> map = user.getUserState ();
         for (UserState state : map.values ()) {
             if (state == UserState.PENDING) {
@@ -120,14 +123,43 @@ public class SessionInfo implements Serializable {
         return false;
     }
 
-    // test
+
     public boolean isAnonymous () {
-        LOGGER.debug("isAnonymous() called.");
-        Map<Faculty, UserState> map = user.getUserState();
-        if (map == null || map.isEmpty()) {
+        LOGGER.debug ("isAnonymous() called.");
+        Map<Faculty, UserState> map = user.getUserState ();
+        if (map == null || map.isEmpty ()) {
             return true;
         }
         return false;
     }
+
+    public List<UserState> getUserStates () {
+        LOGGER.debug ("getUserStates() called.");
+        if (user != null && user.getUserState () != null) {
+            List<UserState> states = new ArrayList<> (user.getUserState ().values ());
+
+            return states;
+        } else {
+            return new ArrayList<> ();
+        }
+    }
+
+    public List<String> getUserFaculties () {
+        LOGGER.debug ("getUserFaculties() called.");
+        if (user != null && user.getUserState () != null) {
+            List<Faculty> faculties = new ArrayList<> (user.getUserState ().keySet ());
+            List<String> facultiesName = new ArrayList<> ();
+
+            for (Faculty faculty : faculties) {
+                facultiesName.add (faculty.getName ());
+
+            }
+
+            return facultiesName;
+        } else {
+            return new ArrayList<> ();
+        }
+    }
+
 
 }

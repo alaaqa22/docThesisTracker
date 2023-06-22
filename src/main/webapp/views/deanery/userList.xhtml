@@ -62,15 +62,14 @@
                         </f:facet>
                         <h:outputText value="#{user.email}"/>
                     </h:column>
-
                     <!-- Fakultät -->
                     <h:column>
                         <f:facet name="header">
                             <h:outputText value="Fakultät"/>
                         </f:facet>
-                        <c:forEach items="#{user.userState.entrySet().toArray()}" var="entry">
-                            <h:outputText value="#{entry.key.name}" styleClass="form-control" />
-                        </c:forEach>
+                        <ui:repeat value="#{sessionInfo.userFaculties}" var="entry">
+                            <h:outputText value="#{entry}" styleClass="form-control" />
+                        </ui:repeat>
                     </h:column>
 
                     <!-- UserState -->
@@ -78,10 +77,11 @@
                         <f:facet name="header">
                             <h:outputText value="UserState"/>
                         </f:facet>
-                        <c:forEach items="#{user.userState.entrySet().toArray()}" var="entry">
-                            <h:outputText value="#{entry.value}" styleClass="form-control" />
-                        </c:forEach>
+                        <ui:repeat value="#{sessionInfo.userStates}" var="entry">
+                            <h:outputText value="#{entry}" styleClass="form-control" />
+                        </ui:repeat>
                     </h:column>
+
                 </h:dataTable>
 
                 <ui:fragment rendered="#{empty userListBacking.users}">

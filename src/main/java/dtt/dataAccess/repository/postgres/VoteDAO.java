@@ -11,6 +11,7 @@ import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Options;
 import dtt.global.tansport.Vote;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Default;
 import jakarta.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,6 +24,7 @@ import org.apache.logging.log4j.Logger;
  */
 @Named
 @ApplicationScoped
+@Default
 public class VoteDAO implements dtt.dataAccess.repository.interfaces.VoteDAO {
 
 	private final String VOTE_ID = "vote_id";

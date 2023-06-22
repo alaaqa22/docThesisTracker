@@ -2,79 +2,121 @@
 
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core"
-	xmlns:ui="jakarta.faces.facelets">
+	  xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	  xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 <h:head>
 	<title>Create a new course</title>
 	<link href="${request.contextPath}/resources/css/style.css"
-		rel="stylesheet" type="text/css" />
+		  rel="stylesheet" type="text/css" />
 
 	<link
-		href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-		rel="stylesheet" />
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+			rel="stylesheet" />
 </h:head>
+
 <h:body>
 	<ui:include src="/views/anonymous/header.xhtml" />
-	<h1>Create a new circulation</h1>
-	<hr />
-	<h:form id="createCirculation">
-		<h:panelGrid columns="3">
-			<h:outputLabel value="Title:" for="title-itxt" />
-			<h:inputText id="title-itxt"
-				value="#{circulationCreatingBacking.circulation.title}"
-				required="true" validator="UniqueCirculationNameValidator">
-			</h:inputText>
-			<h:message for="title-itxt" styleClass="message" />
 
-			<h:outputLabel value="Doctoral Candidate:"
-				for="doctoral-candidate-name-itxt" />
-			<h:inputText id="doctoral-candidate-name-itxt"
-				value="#{circulationCreatingBacking.circulation.doctoralCandidateName}"
-				required="true" />
-			<h:message for="doctoral-candidate-name-itxt" styleClass="message" />
+	<div class="container">
+		<h1>Create a new circulation</h1>
+		<hr />
 
-			<h:outputLabel value="Doctoral Supervisor:"
-				for="doctoral-supervisor-itxt" />
-			<h:inputText id="doctoral-supervisor-itxt"
-				value="#{circulationCreatingBacking.circulation.doctoralSupervisor}"
-				required="true" />
-			<h:message for="doctoral-supervisor-itxt" styleClass="message" />
+		<h:form id="createCirculation" class="mt-4">
+			<div class="form-group row">
+				<label class="col-sm-2 col-form-label" for="title-itxt">Title:</label>
+				<div class="col-sm-10">
+					<h:inputText id="title-itxt"
+								 value="#{circulationCreatingBacking.circulation.title}"
+								 required="true" validator="UniqueCirculationNameValidator"
+								 class="form-control">
+					</h:inputText>
+					<h:message for="title-itxt" styleClass="message" />
+				</div>
+			</div>
 
-			<h:outputLabel value="Description:" for="description-itxt" />
-			<h:inputTextarea id="description-itxt"
-				value="#{circulationCreatingBacking.circulation.description}"
-				required="true" />
-			<h:message for="description-itxt" styleClass="message" />
+			<div class="form-group row">
+				<label class="col-sm-2 col-form-label"
+					   for="doctoral-candidate-name-itxt">Doctoral Candidate:</label>
+				<div class="col-sm-10">
+					<h:inputText id="doctoral-candidate-name-itxt"
+								 value="#{circulationCreatingBacking.circulation.doctoralCandidateName}"
+								 required="true" class="form-control" />
+					<h:message for="doctoral-candidate-name-itxt" styleClass="message" />
+				</div>
+			</div>
 
-			<h:outputLabel value="Circulation Start Date:" for="start-date-itxt" />
-			<h:inputText id="start-date-itxt"
-				value="#{circulationCreatingBacking.startDate}" required="true">
-				<f:convertDateTime type="localDate" />
-			</h:inputText>
-			<h:message for="start-date-itxt" styleClass="message" />
+			<div class="form-group row">
+				<label class="col-sm-2 col-form-label" for="doctoral-supervisor-itxt">Doctoral
+					Supervisor:</label>
+				<div class="col-sm-10">
+					<h:inputText id="doctoral-supervisor-itxt"
+								 value="#{circulationCreatingBacking.circulation.doctoralSupervisor}"
+								 required="true" class="form-control" />
+					<h:message for="doctoral-supervisor-itxt" styleClass="message" />
+				</div>
+			</div>
 
-			<h:outputLabel value="Circulation End Date:" for="end-date-itxt" />
-			<h:inputText id="end-date-itxt"
-				value="#{circulationCreatingBacking.endDate}" required="true">
-				<f:convertDateTime type="localDate" />
-			</h:inputText>
-			<h:message for="end-date-itxt" styleClass="message" />
+			<div class="form-group row">
+				<label class="col-sm-2 col-form-label" for="description-itxt">Description:</label>
+				<div class="col-sm-10">
+					<h:inputTextarea id="description-itxt"
+									 value="#{circulationCreatingBacking.circulation.description}"
+									 required="true" class="form-control" />
+					<h:message for="description-itxt" styleClass="message" />
+				</div>
+			</div>
 
-			<h:outputLabel value="Obligatory:" for="obligatory-bcb" />
-			<h:selectBooleanCheckbox id="obligatory-bcb"
-				value="#{circulationCreatingBacking.circulation.obligatory}">
-			</h:selectBooleanCheckbox>
-			<h:message for="obligatory-bcb" styleClass="message" />
+			<div class="form-group row">
+				<label class="col-sm-2 col-form-label" for="start-date-itxt">Circulation Start
+					Date:</label>
+				<div class="col-sm-10">
+					<h:inputText id="start-date-itxt"
+								 value="#{circulationCreatingBacking.startDate}" required="true"
+								 class="form-control">
+						<f:convertDateTime type="localDate" />
+					</h:inputText>
+					<h:message for="start-date-itxt" styleClass="message" />
+				</div>
+			</div>
 
-		</h:panelGrid>
-		<h:panelGrid columns="2">
-			<h:commandButton id="create" value="Create the circulation"
-				action="#{circulationCreatingBacking.create}" />
-			<h:message for="create" styleClass="message" />
-		</h:panelGrid>
-	</h:form>
-	<hr />
+			<div class="form-group row">
+				<label class="col-sm-2 col-form-label" for="end-date-itxt">Circulation End
+					Date:</label>
+				<div class="col-sm-10">
+					<h:inputText id="end-date-itxt"
+								 value="#{circulationCreatingBacking.endDate}" required="true"
+								 class="form-control">
+						<f:convertDateTime type="localDate" />
+					</h:inputText>
+					<h:message for="end-date-itxt" styleClass="message" />
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label class="col-sm-2 col-form-label" for="obligatory-bcb">Obligatory:</label>
+				<div class="col-sm-10">
+					<h:selectBooleanCheckbox id="obligatory-bcb"
+											 value="#{circulationCreatingBacking.circulation.obligatory}" class="form-control">
+					</h:selectBooleanCheckbox>
+					<h:message for="obligatory-bcb" styleClass="message" />
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<div class="offset-sm-2 col-sm-10">
+					<h:commandButton id="create" value="Create the circulation"
+									 action="#{circulationCreatingBacking.create}" class="btn btn-primary" />
+					<h:message for="create" styleClass="message" />
+				</div>
+			</div>
+		</h:form>
+
+		<hr />
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </h:body>
 
 </html>

@@ -1,54 +1,59 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="jakarta.faces.html"
-      xmlns:f="jakarta.faces.core"
-      xmlns:ui="jakarta.faces.facelets">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
 <h:head>
    <title>Registration</title>
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"/>
 </h:head>
 
 <h:body>
    <ui:include src="header.xhtml" />
 
-   <h:form id="registration-form">
+   <h:form id="registration-form" class="container">
       <h3>Registration</h3>
 
-      <div>
+      <div class="form-group">
          <label for="email-itxt">Email:</label>
          <h:inputText id="email-itxt" value="#{registrationBacking.user.email}" required="true" requiredMessage="Empty email!"
-                      validator="EmailAddressSyntaxValidator" />
-         <h:message for="email-itxt" style="color: red;"/>
+                      validator="EmailAddressSyntaxValidator" class="form-control" />
+         <h:message for="email-itxt" style="color: red;" class="error-message"/>
       </div>
 
-      <div>
-         <label for="firstname-itxt"> Vorname:</label>
-         <h:inputText id="firstname-itxt" value="#{registrationBacking.user.firstName}" required="true" requiredMessage="You have to put in your name!"/>
-         <h:message for="firstname-itxt" style="color: red;"/>
+      <div class="form-group">
+         <label for="firstname-itxt">Vorname:</label>
+         <h:inputText id="firstname-itxt" value="#{registrationBacking.user.firstName}" required="true" requiredMessage="You have to put in your name!" class="form-control"/>
+         <h:message for="firstname-itxt" style="color: red;" class="error-message"/>
       </div>
 
-      <div>
+      <div class="form-group">
          <label for="lastname-itxt">Name:</label>
-         <h:inputText id="lastname-itxt" value="#{registrationBacking.user.lastName}" required="true" requiredMessage="You have put in your last name!"/>
-         <h:message for="lastname-itxt" style="color : red;"/>
+         <h:inputText id="lastname-itxt" value="#{registrationBacking.user.lastName}" required="true" requiredMessage="You have put in your last name!" class="form-control"/>
+         <h:message for="lastname-itxt" style="color : red;" class="error-message"/>
       </div>
 
-      <div>
+      <div class="form-group">
          <label for="birthdate-itxt">Geburtstag:</label>
-         <h:inputText id="birthdate-itxt" value="#{registrationBacking.user.birthDate}" required="true" requiredMessage="You have to put in your birthday!"/>
-         <h:message for="birthdate-itxt" style="color: red;"/>
+         <h:inputText id="birthdate-itxt" value="#{registrationBacking.user.birthDate}" required="true" requiredMessage="You have to put in your birthday!" class="form-control"/>
+         <h:message for="birthdate-itxt" style="color: red;" class="error-message"/>
       </div>
 
-      <div>
+      <div class="form-group">
          <label>Fakultät</label>
-         <h:selectOneMenu value="#{registrationBacking.faculty}" required="true" requiredMessage="You have to pick a faculty!">
+         <h:selectOneMenu value="#{registrationBacking.faculty}" required="true" requiredMessage="You have to pick a faculty!" class="form-control">
             <f:selectItems value="#{registrationBacking.listOfFaculties}" var="faculty" itemLabel="#{faculty.name}" itemValue="#{faculty}"/>
          </h:selectOneMenu>
       </div>
 
       <div>
-         <h:commandButton value="Register" action="#{registrationBacking.register()}"/>
+         <h:commandButton value="Register" action="#{registrationBacking.register()}" class="btn btn-primary"/>
       </div>
    </h:form>
+
+   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 </h:body>
 
 </html>

@@ -4,7 +4,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:ui="jakarta.faces.facelets">
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:neme="http://java.sun.com/jsf/core">
 
 <f:view>
     <h:head>
@@ -17,32 +19,33 @@
         <ui:include src="/views/anonymous/header.xhtml"/>
 
         <div class="container">
-            <h:form >
-                <!-- dataTable for a User List -->
-                <h:dataTable id="user-dt" value="#{userListBacking.users}" var="user" styleClass="my-table"
+            <h:form>
+                <!-- DataTable for a User List -->
+                <h:dataTable id="user-dt" value="#{userListBacking.users}" var="user" styleClass="table table-bordered"
                              border="2">
 
                     <f:facet name="header">
                         <h:outputText value="Users" styleClass="text-center"/>
                     </f:facet>
 
-
                     <!-- First Name -->
                     <h:column>
                         <f:facet name="header">
                             <h:outputText value="First Name"/>
-                            <h:inputText value="#{userListBacking.filter.firstName}">
+                            <h:inputText value="#{userListBacking.filter.firstName}" styleClass="form-control">
                                 <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="@form"/>
                             </h:inputText>
                         </f:facet>
-                        <h:outputText value="#{user.firstName}"/>
+                        <h:outputLink value="../authenticated/profile.xhtml?id=#{user.id}">
+                            <h:outputText value="#{user.firstName}"/>
+                        </h:outputLink>
                     </h:column>
 
                     <!-- Last Name -->
                     <h:column>
                         <f:facet name="header">
                             <h:outputText value="Last Name"/>
-                            <h:inputText value="#{userListBacking.filter.lastName}">
+                            <h:inputText value="#{userListBacking.filter.lastName}" styleClass="form-control">
                                 <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="@form"/>
                             </h:inputText>
                         </f:facet>
@@ -53,37 +56,32 @@
                     <h:column>
                         <f:facet name="header">
                             <h:outputText value="Email"/>
-                            <h:inputText value="#{userListBacking.filter.email}">
+                            <h:inputText value="#{userListBacking.filter.email}" styleClass="form-control">
                                 <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="@form"/>
                             </h:inputText>
                         </f:facet>
                         <h:outputText value="#{user.email}"/>
                     </h:column>
 
-                    <!-- Status -->
+                    <!-- Fakultät -->
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="User State"/>
-                            <h:inputText value="#{userListBacking.filter.accountState}">
-                                <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="@form"/>
-                            </h:inputText>
+                            <h:outputText value="Fakultät"/>
                         </f:facet>
-
-                        <h:outputText value="#{user.accountState}"/>
+                        <c:forEach items="#{user.userState.entrySet().toArray()}" var="entry">
+                            <h:outputText value="#{entry.key.name}" styleClass="form-control" />
+                        </c:forEach>
                     </h:column>
 
-                    <!-- Faculty -->
-                    <h:column rendered="#{user.sessionInfo.admin}">
+                    <!-- UserState -->
+                    <h:column>
                         <f:facet name="header">
-                            <h:outputText value="Faculty"/>
-
+                            <h:outputText value="UserState"/>
                         </f:facet>
-                        <h:outputText/>
+                        <c:forEach items="#{user.userState.entrySet().toArray()}" var="entry">
+                            <h:outputText value="#{entry.value}" styleClass="form-control" />
+                        </c:forEach>
                     </h:column>
-
-
-
-
                 </h:dataTable>
 
                 <ui:fragment rendered="#{empty userListBacking.users}">
@@ -94,54 +92,43 @@
                 </ui:fragment>
 
                 <!-- Pagination Controls -->
-
                 <div class="d-flex justify-content-center">
-
                     <ul class="pagination">
                         <h:panelGroup rendered="#{!empty userListBacking.users}">
-
                             <h:panelGroup layout="block" styleClass="page-item" rendered="#{!userListBacking.userPagination.isFirstPage()}">
                                 <h:commandLink id="firstpage-link" value="First" action="#{userListBacking.userPagination.firstPage}"
                                                styleClass="page-link">
-                                    <f:ajax execute="@this" render="@form" />
+                                    <f:ajax execute="@this" render="@form"/>
                                 </h:commandLink>
                             </h:panelGroup>
-
                             <h:panelGroup layout="block" styleClass="page-item" rendered="#{!userListBacking.userPagination.isFirstPage()}">
                                 <h:commandLink id="previouspage-link" value="Previous"
                                                action="#{userListBacking.userPagination.previousPage}"
                                                styleClass="page-link">
-                                    <f:ajax execute="@this" render="@form" />
+                                    <f:ajax execute="@this" render="@form"/>
                                 </h:commandLink>
                             </h:panelGroup>
-
                             <h:panelGroup layout="block" styleClass="page-item disabled">
-                                <h:outputText value="Page : #{userListBacking.userPagination.currentPage} of #{userListBacking.userPagination.totalNumOfPages }"
-                                              />
+                                <h:outputText value="Page: #{userListBacking.userPagination.currentPage} of #{userListBacking.userPagination.totalNumOfPages}"
+                                              styleClass="page-link"/>
                             </h:panelGroup>
-
                             <h:panelGroup layout="block" styleClass="page-item" rendered="#{!userListBacking.userPagination.isLastPage()}">
                                 <h:commandLink id="nextpage-link" value="Next" action="#{userListBacking.userPagination.nextPage}"
                                                styleClass="page-link">
-                                    <f:ajax execute="@this" render="@form" />
+                                    <f:ajax execute="@this" render="@form"/>
                                 </h:commandLink>
                             </h:panelGroup>
-
                             <h:panelGroup layout="block" styleClass="page-item" rendered="#{!userListBacking.userPagination.isLastPage()}">
                                 <h:commandLink id="lastpage-link" value="Last" action="#{userListBacking.userPagination.lastPage}"
                                                styleClass="page-link">
-                                    <f:ajax execute="@this" render="@form" />
+                                    <f:ajax execute="@this" render="@form"/>
                                 </h:commandLink>
                             </h:panelGroup>
-
                         </h:panelGroup>
                     </ul>
-
-
                 </div>
             </h:form>
         </div>
     </h:body>
 </f:view>
-
 </html>

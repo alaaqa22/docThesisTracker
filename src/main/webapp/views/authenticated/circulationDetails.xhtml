@@ -3,75 +3,95 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:ui="jakarta.faces.facelets"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 >
 
 <h:head>
     <title>Circulation Details</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"/>
 </h:head>
 
 <h:body>
     <ui:include src="/views/anonymous/header.xhtml" />
-    <h:form>
+
+    <div class="container">
         <h2>Circulation Details</h2>
-        <f:view>
+        <h:form>
+            <f:view>
 
-            <f:metadata>
-                <f:viewAction action="#{circulationDetailsBacking.loadCirculation()}" />
-                <f:viewAction action="#{circulationDetailsBacking.loadVotes()}" />
-                <f:viewParam name="id" value="#{circulationDetailsBacking.circulation.id}" />
-            </f:metadata>
-        </f:view>
+                <f:metadata>
+                    <f:viewAction action="#{circulationDetailsBacking.loadCirculation()}" />
+                    <f:viewAction action="#{circulationDetailsBacking.loadVotes()}" />
+                    <f:viewParam name="id" value="#{circulationDetailsBacking.circulation.id}" />
+                </f:metadata>
+            </f:view>
 
-        <h:panelGrid columns="2">
-            <h:outputLabel for="title-otxt" value="Title:" />
-            <h:outputText id="title-otxt" value="#{circulationDetailsBacking.circulation.title}" />
-
-            <h:outputLabel for="doctoralcandidatename-otxt" value="Doctoral Candidate Name:" />
-            <h:outputText id="doctoralcandidatename-otxt" value="#{circulationDetailsBacking.circulation.doctoralCandidateName}" />
-
-            <h:outputLabel for="doctoralsupervisororotxt" value="Doctoral Supervisoror:" />
-            <h:outputText id="doctoralsupervisororotxt" value="#{circulationDetailsBacking.circulation.doctoralSupervisor}" />
-
-            <h:outputLabel for="description-otxt" value="Description:" />
-            <h:outputText id="description-otxt" value="#{circulationDetailsBacking.circulation.description}" />
-
-            <h:outputLabel for="start-dateotxt" value="Start Date:" />
-            <h:outputText id="start-dateotxt" value="#{circulationDetailsBacking.circulation.startDate}" />
-
-            <h:outputLabel for="end-deadlineotxt" value="End Deadline:" />
-            <h:outputText id="end-deadlineotxt" value="#{circulationDetailsBacking.circulation.endDate}" />
-
-
-            <h:outputLabel for="created-byotxt" value="Created By:" />
-            <h:outputText id="created-byotxt" value="#{circulationDetailsBacking.circulation.createdBy}" />
-
-            <h:outputLabel for="faculty-idotxt" value="Faculty ID:" />
-            <h:outputText id="faculty-idotxt" value="#{circulationDetailsBacking.circulation.facultyId}" />
-        </h:panelGrid>
-
-        <div>
-            <h:outputLabel for="vote-optionsslcom" value="Select vote:" />
-            <h:selectOneMenu id="vote-optionsslcom" value="#{circulationDetailsBacking.choice}">
-                <f:selectItems value="#{circulationDetailsBacking.options}" var="option"
-                               itemValue="#{option}"
-                               itemLabel="#{option.label}"/>
-            </h:selectOneMenu>
-        </div>
-
-
-            <div>
-                <h:commandButton id="vote-btn" action="#{circulationDetailsBacking.submitVote()}" value="Vote" />
+            <div class="form-group">
+                <label for="title-otxt">Title:</label>
+                <h:outputText id="title-otxt" value="#{circulationDetailsBacking.circulation.title}" class="form-control"/>
             </div>
 
-            <div>
-                <h:commandButton id="modify-cbtn" action="#{circulationDetailsBacking.modify()}" value="Modify" />
+            <div class="form-group">
+                <label for="doctoralcandidatename-otxt">Doctoral Candidate Name:</label>
+                <h:outputText id="doctoralcandidatename-otxt" value="#{circulationDetailsBacking.circulation.doctoralCandidateName}" class="form-control"/>
             </div>
 
-            <div>
-                <h:commandButton id="remove-cbtn" action="#{circulationDetailsBacking.remove()}" value="Remove Circulation" />
+            <div class="form-group">
+                <label for="doctoralsupervisororotxt">Doctoral Supervisoror:</label>
+                <h:outputText id="doctoralsupervisororotxt" value="#{circulationDetailsBacking.circulation.doctoralSupervisor}" class="form-control"/>
             </div>
-    </h:form>
+
+            <div class="form-group">
+                <label for="description-otxt">Description:</label>
+                <h:outputText id="description-otxt" value="#{circulationDetailsBacking.circulation.description}" class="form-control"/>
+            </div>
+
+            <div class="form-group">
+                <label for="start-dateotxt">Start Date:</label>
+                <h:outputText id="start-dateotxt" value="#{circulationDetailsBacking.circulation.startDate}" class="form-control"/>
+            </div>
+
+            <div class="form-group">
+                <label for="end-deadlineotxt">End Deadline:</label>
+                <h:outputText id="end-deadlineotxt" value="#{circulationDetailsBacking.circulation.endDate}" class="form-control"/>
+            </div>
+
+
+            <div class="form-group">
+                <label for="created-byotxt">Created By:</label>
+                <h:outputText id="created-byotxt" value="#{circulationDetailsBacking.circulation.createdBy}" class="form-control"/>
+            </div>
+
+            <div class="form-group">
+                <label for="faculty-idotxt">Faculty ID:</label>
+                <h:outputText id="faculty-idotxt" value="#{circulationDetailsBacking.circulation.facultyId}" class="form-control"/>
+            </div>
+
+            <div class="form-group">
+                <label for="vote-optionsslcom">Select vote:</label>
+                <h:selectOneMenu id="vote-optionsslcom" value="#{circulationDetailsBacking.choice}" class="form-control">
+                    <f:selectItems value="#{circulationDetailsBacking.options}" var="option"
+                                   itemValue="#{option}"
+                                   itemLabel="#{option.label}"/>
+                </h:selectOneMenu>
+            </div>
+
+            <div class="form-group">
+                <h:commandButton id="vote-btn" action="#{circulationDetailsBacking.submitVote()}" value="Vote" class="btn btn-primary" />
+            </div>
+
+            <div class="form-group">
+                <h:commandButton id="modify-cbtn" action="#{circulationDetailsBacking.modify()}" value="Modify" class="btn btn-primary" />
+            </div>
+
+            <div class="form-group">
+                <h:commandButton id="remove-cbtn" action="#{circulationDetailsBacking.remove()}" value="Remove Circulation" class="btn btn-danger" />
+            </div>
+        </h:form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 </h:body>
 
 </html>

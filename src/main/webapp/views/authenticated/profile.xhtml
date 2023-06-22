@@ -1,55 +1,58 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="jakarta.faces.html"
-      xmlns:f="jakarta.faces.core"
-      xmlns:ui="jakarta.faces.facelets"
->
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 <f:view>
     <h:head>
         <title>Profile</title>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"/>
     </h:head>
 
     <h:body>
         <ui:include src="/views/anonymous/header.xhtml" />
-        <h:form>
+        <div class="container">
+            <h:form>
 
-            <h3>Profile</h3>
+                <h3>Profile</h3>
 
-            <f:metadata>
-                <f:viewAction action="#{profileBacking.load()}"/>
-                <f:viewParam name="id" value="#{profileBacking.user.id}" />
-            </f:metadata>
+                <f:metadata>
+                    <f:viewAction action="#{profileBacking.load()}"/>
+                    <f:viewParam name="id" value="#{profileBacking.user.id}" />
+                </f:metadata>
 
-            <div class="form-field">
-                <label for="firstName">First Name:</label>
-                <h:inputText id="firstName" value="#{profileBacking.user.firstName}" />
-            </div>
+                <div class="form-group">
+                    <label for="firstName">First Name:</label>
+                    <h:inputText id="firstName" value="#{profileBacking.user.firstName}" class="form-control" />
+                </div>
 
-            <div class="form-field">
-                <label for="lastName">Last Name:</label>
-                <h:inputText id="lastName" value="#{profileBacking.user.lastName}" />
-            </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name:</label>
+                    <h:inputText id="lastName" value="#{profileBacking.user.lastName}" class="form-control" />
+                </div>
 
-            <div class="form-field">
-                <label for="email">Email:</label>
-                <h:inputText id="email" value="#{profileBacking.user.email}"/>
-            </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <h:inputText id="email" value="#{profileBacking.user.email}" class="form-control" />
+                </div>
 
-            <div class="form-field">
-                <label for="password">Password:</label>
-                <h:inputSecret id="password" value="#{profileBacking.user.password}" validator="PasswordValidator"/>
-            </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <h:inputSecret id="password" value="#{profileBacking.user.password}" validator="PasswordValidator" class="form-control" />
+                </div>
 
-            <div class="form-field">
-                <label for="birthDate">Birth Date:</label>
-                <h:inputText id="birthDate" value="#{profileBacking.user.birthDate}"/>
-            </div>
+                <div class="form-group">
+                    <label for="birthDate">Birth Date:</label>
+                    <h:inputText id="birthDate" value="#{profileBacking.user.birthDate}" class="form-control" />
+                </div>
 
-            <h:commandButton value="delete" action="#{profileBacking.deleteProfile()}" />
-            <h:commandButton value="Save" action="#{profileBacking.save()}" />
+                <h:commandButton value="Save" action="#{profileBacking.save()}" class="btn btn-primary" />
+                <h:commandButton value="Delete" action="#{profileBacking.deleteProfile()}" class="btn btn-danger" />
 
-        </h:form>
+
+            </h:form>
+        </div>
     </h:body>
 </f:view>
 

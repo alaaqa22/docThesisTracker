@@ -1,77 +1,124 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:ui="jakarta.faces.facelets"
->
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+<f:view>
+    <h:head>
+        <title>Circulation Details</title>
+        <link href="${request.contextPath}/resources/css/style.css" rel="stylesheet" type="text/css"/>
 
-<h:head>
-    <title>Circulation Details</title>
-</h:head>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"/>
+    </h:head>
 
-<h:body>
-    <ui:include src="/views/anonymous/header.xhtml" />
-    <h:form>
-        <h2>Circulation Details</h2>
-        <f:view>
+    <h:body>
+        <ui:include src="/views/anonymous/header.xhtml"/>
+        <h:form>
+            <h2>Circulation Details</h2>
 
             <f:metadata>
-                <f:viewAction action="#{circulationDetailsBacking.loadCirculation()}" />
-                <f:viewAction action="#{circulationDetailsBacking.loadVotes()}" />
-                <f:viewParam name="id" value="#{circulationDetailsBacking.circulation.id}" />
+                <f:viewAction action="#{circulationDetailsBacking.loadCirculation()}"/>
+                <f:viewParam name="id" value="#{circulationDetailsBacking.circulation.id}"/>
+                <f:viewAction action="#{circulationDetailsBacking.loadVotes()}"/>
+                <f:viewParam name="voteId" value="#{circulationDetailsBacking.vote.voteId}"/>
+
+
             </f:metadata>
-        </f:view>
 
-        <h:panelGrid columns="2">
-            <h:outputLabel for="title-otxt" value="Title:" />
-            <h:outputText id="title-otxt" value="#{circulationDetailsBacking.circulation.title}" />
+            <h:panelGrid columns="2">
+                <h:outputLabel for="title-otxt" value="Title:"/>
+                <h:inputText id="title-otxt" value="#{circulationDetailsBacking.circulation.title}"
+                             readonly="#{!sessionInfo.deanery}"/>
 
-            <h:outputLabel for="doctoralcandidatename-otxt" value="Doctoral Candidate Name:" />
-            <h:outputText id="doctoralcandidatename-otxt" value="#{circulationDetailsBacking.circulation.doctoralCandidateName}" />
+                <h:outputLabel for="doctoralcandidatename-otxt" value="Doctoral Candidate Name:"/>
+                <h:inputText id="doctoralcandidatename-otxt"
+                             value="#{circulationDetailsBacking.circulation.doctoralCandidateName}"
+                             readonly="#{!sessionInfo.deanery}"/>
 
-            <h:outputLabel for="doctoralsupervisororotxt" value="Doctoral Supervisoror:" />
-            <h:outputText id="doctoralsupervisororotxt" value="#{circulationDetailsBacking.circulation.doctoralSupervisor}" />
+                <h:outputLabel for="doctoralsupervisororotxt" value="Doctoral Supervisor:"/>
+                <h:inputText id="doctoralsupervisororotxt"
+                             value="#{circulationDetailsBacking.circulation.doctoralSupervisor}"
+                             readonly="#{!sessionInfo.deanery}"/>
 
-            <h:outputLabel for="description-otxt" value="Description:" />
-            <h:outputText id="description-otxt" value="#{circulationDetailsBacking.circulation.description}" />
+                <h:outputLabel for="description-otxt" value="Description:"/>
+                <h:inputText id="description-otxt" value="#{circulationDetailsBacking.circulation.description}"
+                             readonly="#{!sessionInfo.deanery}"/>
 
-            <h:outputLabel for="start-dateotxt" value="Start Date:" />
-            <h:outputText id="start-dateotxt" value="#{circulationDetailsBacking.circulation.startDate}" />
+                <h:outputLabel for="start-dateotxt" value="Start Date:"/>
+                <h:inputText id="start-dateotxt" value="#{circulationDetailsBacking.startDate}"
+                             readonly="#{!sessionInfo.deanery}">
+                    <f:convertDateTime type="localDate"/>
+                </h:inputText>
 
-            <h:outputLabel for="end-deadlineotxt" value="End Deadline:" />
-            <h:outputText id="end-deadlineotxt" value="#{circulationDetailsBacking.circulation.endDate}" />
+
+                <h:outputLabel for="end-date-itxt" value="End Date:"/>
+                <h:inputText id="end-date-itxt" value="#{circulationDetailsBacking.endDate}" required="true"
+                             readonly="#{!sessionInfo.deanery}">
+                    <f:convertDateTime type="localDate"/>
+                </h:inputText>
+
+                <h:outputLabel for="created-byotxt" value="Created By:"/>
+                <h:outputText id="created-byotxt" value="#{circulationDetailsBacking.circulation.createdBy}"/>
+
+                <h:outputLabel for="faculty-idotxt" value="Faculty ID:"/>
+                <h:outputText id="faculty-idotxt" value="#{circulationDetailsBacking.circulation.facultyId}"/>
+
+                <h:outputLabel for="vote-optionsslcom" value="Select vote:"/>
+                <h:selectOneMenu id="vote-optionsslcom" value="#{circulationDetailsBacking.choice}">
+                    <f:selectItems value="#{circulationDetailsBacking.options}" var="option"
+                                   itemValue="#{option}"
+                                   itemLabel="#{option.label}"/>
+                </h:selectOneMenu>
 
 
-            <h:outputLabel for="created-byotxt" value="Created By:" />
-            <h:outputText id="created-byotxt" value="#{circulationDetailsBacking.circulation.createdBy}" />
+                <h:outputLabel for="reason-itxt" value="Erklärung:"/>
+                <h:inputText id="reason-itxt" value="#{circulationDetailsBacking.reason}"/>
 
-            <h:outputLabel for="faculty-idotxt" value="Faculty ID:" />
-            <h:outputText id="faculty-idotxt" value="#{circulationDetailsBacking.circulation.facultyId}" />
-        </h:panelGrid>
 
-        <div>
-            <h:outputLabel for="vote-optionsslcom" value="Select vote:" />
-            <h:selectOneMenu id="vote-optionsslcom" value="#{circulationDetailsBacking.choice}">
-                <f:selectItems value="#{circulationDetailsBacking.options}" var="option"
-                               itemValue="#{option}"
-                               itemLabel="#{option.label}"/>
-            </h:selectOneMenu>
-        </div>
-
+            </h:panelGrid>
 
             <div>
-                <h:commandButton id="vote-btn" action="#{circulationDetailsBacking.submitVote()}" value="Vote" />
+                <h:commandButton id="vote-btn" action="#{circulationDetailsBacking.submitVote()}" value="Vote"/>
+            </div>
+            <div>
+
+                <h:commandButton id="modify-cbtn" action="#{circulationDetailsBacking.modify()}" value="Modify"
+                                 update="circulationDetailsPanel" rendered="#{!sessionInfo.examiner}"/>
             </div>
 
             <div>
-                <h:commandButton id="modify-cbtn" action="#{circulationDetailsBacking.modify()}" value="Modify" />
+                <h:commandButton id="remove-cbtn" action="#{circulationDetailsBacking.remove()}"
+                                 value="Remove Circulation" rendered="#{!sessionInfo.examiner}"/>
             </div>
 
+            <div><h:outputText id="votes-otxt"
+                               value="Total votes to this circulation: #{circulationDetailsBacking.totalVotes.size()}"/>
+            </div>
             <div>
-                <h:commandButton id="remove-cbtn" action="#{circulationDetailsBacking.remove()}" value="Remove Circulation" />
-            </div>
-    </h:form>
-</h:body>
 
+
+                <h:dataTable value="#{circulationDetailsBacking.totalVotes}" var="vote"
+                             rendered="#{!sessionInfo.examiner}"
+                             styleClass="my-table" border="2">
+                    <h:column>
+                        <f:facet name="header">Voted by</f:facet>
+                        #{vote.userId}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Vote selection</f:facet>
+                        #{vote.selection}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Vote reason</f:facet>
+                        #{vote.description}
+                    </h:column>
+
+                </h:dataTable>
+            </div>
+
+
+        </h:form>
+    </h:body>
+</f:view>
 </html>

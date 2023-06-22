@@ -21,6 +21,7 @@ import dtt.global.tansport.Faculty;
 import dtt.global.tansport.User;
 import dtt.global.tansport.UserState;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Default;
 import jakarta.inject.Named;
 
 /**
@@ -30,7 +31,7 @@ import jakarta.inject.Named;
  * @author Stefan Witka
  *
  */
-
+@Default
 @ApplicationScoped
 @Named
 public class UserDAO

@@ -50,8 +50,16 @@
                 <h:commandButton value="Save" action="#{profileBacking.save()}" class="btn btn-primary" />
                 <h:commandButton value="Delete" action="#{profileBacking.deleteProfile()}" class="btn btn-danger" />
 
+                <div>
+                    <h:outputLabel for="user-statesslcom" value="Set account state:" rendered="#{sessionInfo.deanery}"/>
+                    <h:selectOneMenu id="user-statesslcom" value="#{profileBacking.currentState}" rendered="#{sessionInfo.deanery or sessionInfo.admin}">
+                        <f:selectItems value="#{profileBacking.accountStates}" var="state"
+                                       itemValue="#{state}"/>
+                    </h:selectOneMenu>
+                </div>
 
             </h:form>
+
         </div>
     </h:body>
 </f:view>

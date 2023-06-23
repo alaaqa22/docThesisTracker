@@ -362,4 +362,243 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 		}
 		return false;
 	}
+	@Override
+	public List<Circulation> getAllCompletedCirculations(Circulation circulation, Transaction transaction, int offset, int count) {
+		LOGGER.debug("getAllCompletedCirculations() called.");
+		List<Circulation> completedCirculations = new ArrayList<>();
+
+		// Build the SQL query string
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT * FROM circulation WHERE 1=1");
+
+		// Add filter conditions based on the provided properties
+		if (circulation.getTitle() != null) {
+			query.append(" AND title = ?");
+		}
+
+		if (circulation.getDescription() != null) {
+			query.append(" AND description = ?");
+		}
+
+		if (circulation.getDoctoralCandidateName() != null) {
+			query.append(" AND doctoral_candidate_name = ?");
+		}
+
+		if (circulation.getDoctoralSupervisor() != null) {
+			query.append(" AND doctoral_supervisor_name = ?");
+		}
+
+		if (circulation.getStartDate() != null) {
+			query.append(" AND start_deadline = ?");
+		}
+
+		if (circulation.getEndDate() != null) {
+			query.append(" AND end_deadline = ?");
+		}
+
+		// Add the filter condition for completed Circulations (end_date < currentTimestamp)
+		query.append(" AND end_date < ?");
+
+		query.append(" LIMIT ? OFFSET ?");
+
+		try (PreparedStatement statement = transaction.getConnection().prepareStatement(query.toString())) {
+			int paramIndex = 1;
+
+			// Set filter condition values
+			if (circulation.getTitle() != null) {
+				statement.setString(paramIndex++, circulation.getTitle());
+			}
+
+			if (circulation.getDescription() != null) {
+				statement.setString(paramIndex++, circulation.getDescription());
+			}
+
+			if (circulation.getDoctoralCandidateName() != null) {
+				statement.setString(paramIndex++, circulation.getDoctoralCandidateName());
+			}
+
+			if (circulation.getDoctoralSupervisor() != null) {
+				statement.setString(paramIndex++, circulation.getDoctoralSupervisor());
+			}
+
+			if (circulation.isObligatory()) {
+				statement.setBoolean(paramIndex++, circulation.isObligatory());
+			}
+
+			if (circulation.getStartDate() != null) {
+				statement.setObject(paramIndex++, circulation.getStartDate());
+			}
+
+			if (circulation.getEndDate() != null) {
+				statement.setObject(paramIndex++, circulation.getEndDate());
+			}
+
+			// Set the current timestamp for the filter condition (end_date < currentTimestamp)
+			Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+			statement.setTimestamp(paramIndex++, currentTimestamp);
+
+			// Set pagination parameters
+			statement.setInt(paramIndex++, count);
+			statement.setInt(paramIndex, offset);
+
+			try (ResultSet resultSet = statement.executeQuery()) {
+				// Iterate over the result set and populate the list of completed circulations
+				while (resultSet.next()) {
+					Circulation resultCirculation = new Circulation();
+					// Populate the circulation with data from the result set
+					resultCirculation.setId(resultSet.getInt(CIRCULATION_ID));
+					resultCirculation.setTitle(resultSet.getString(TITLE));
+					resultCirculation.setDescription(resultSet.getString(DESCRIPTION));
+					resultCirculation.setDoctoralCandidateName(resultSet.getString(DOC_CANDIDATE));
+					resultCirculation.setDoctoralSupervisor(resultSet.getString(DOC_SUPERVISOR));
+					resultCirculation.setObligatory(resultSet.getBoolean(IS_OBLIGATORY));
+					resultCirculation.setStartDate(resultSet.getTimestamp(START_DATE));
+					resultCirculation.setEndDate(resultSet.getTimestamp(END_DATE));
+					resultCirculation.setFacultyId(resultSet.getInt(FACULTY_ID));
+
+					completedCirculations.add(resultCirculation);
+				}
+			}
+		} catch (SQLException e) {
+			// Handle any exceptions that occur during the database operation
+			e.printStackTrace();
+		}
+
+		return completedCirculations;
+	}
+	@Override
+public List<Circulation> getAllCurrentCirculations (Circulation circulation, Transaction transaction, int offset, int count) {
+	LOGGER.debug("getAllAktulleCirculations() called.");
+	List<Circulation> aktulleCirculations = new ArrayList<>();
+
+	// Build the SQL query string
+	StringBuilder query = new StringBuilder();
+	query.append("SELECT * FROM circulation WHERE 1=1");
+
+	// Add filter conditions based on the provided properties
+	if (circulation.getTitle() != null) {
+		query.append(" AND title = ?");
+	}
+
+	if (circulation.getDescription() != null) {
+		query.append(" AND description = ?");
+	}
+
+	if (circulation.getDoctoralCandidateName() != null) {
+		query.append(" AND doctoral_candidate_name = ?");
+	}
+
+	if (circulation.getDoctoralSupervisor() != null) {
+		query.append(" AND doctoral_supervisor_name = ?");
+	}
+
+	if (circulation.getStartDate() != null) {
+		query.append(" AND start_deadline = ?");
+	}
+
+	if (circulation.getEndDate() != null) {
+		query.append(" AND end_deadline = ?");
+	}
+
+	// Add the filter condition for aktulle Circulations (end_date > currentTimestamp)
+	query.append(" AND end_date > ?");
+
+	query.append(" LIMIT ? OFFSET ?");
+
+	try (PreparedStatement statement = transaction.getConnection().prepareStatement(query.toString())) {
+		int paramIndex = 1;
+
+		// Set filter condition values
+		if (circulation.getTitle() != null) {
+			statement.setString(paramIndex++, circulation.getTitle());
+		}
+
+		if (circulation.getDescription() != null) {
+			statement.setString(paramIndex++, circulation.getDescription());
+		}
+
+		if (circulation.getDoctoralCandidateName() != null) {
+			statement.setString(paramIndex++, circulation.getDoctoralCandidateName());
+		}
+
+		if (circulation.getDoctoralSupervisor() != null) {
+			statement.setString(paramIndex++, circulation.getDoctoralSupervisor());
+		}
+
+		if (circulation.isObligatory()) {
+			statement.setBoolean(paramIndex++, circulation.isObligatory());
+		}
+
+		if (circulation.getStartDate() != null) {
+			statement.setObject(paramIndex++, circulation.getStartDate());
+		}
+
+		if (circulation.getEndDate() != null) {
+			statement.setObject(paramIndex++, circulation.getEndDate());
+		}
+
+		// Set the current timestamp for the filter condition (end_date > currentTimestamp)
+		Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+		statement.setTimestamp(paramIndex++, currentTimestamp);
+
+		// Set pagination parameters
+		statement.setInt(paramIndex++, count);
+		statement.setInt(paramIndex, offset);
+
+		try (ResultSet resultSet = statement.executeQuery()) {
+			// Iterate over the result set and populate the list of aktulle circulations
+			while (resultSet.next()) {
+				Circulation resultCirculation = new Circulation();
+				// Populate the circulation with data from the result set
+				resultCirculation.setId(resultSet.getInt(CIRCULATION_ID));
+				resultCirculation.setTitle(resultSet.getString(TITLE));
+				resultCirculation.setDescription(resultSet.getString(DESCRIPTION));
+				resultCirculation.setDoctoralCandidateName(resultSet.getString(DOC_CANDIDATE));
+				resultCirculation.setDoctoralSupervisor(resultSet.getString(DOC_SUPERVISOR));
+				resultCirculation.setObligatory(resultSet.getBoolean(IS_OBLIGATORY));
+				resultCirculation.setStartDate(resultSet.getTimestamp(START_DATE));
+				resultCirculation.setEndDate(resultSet.getTimestamp(END_DATE));
+				resultCirculation.setFacultyId(resultSet.getInt(FACULTY_ID));
+
+				aktulleCirculations.add(resultCirculation);
+			}
+		}
+	} catch (SQLException e) {
+		e.printStackTrace();
+	}
+
+	return aktulleCirculations;
+}
+
+
+	@Override
+	public int getTotalCurrentCirculationNumber(Transaction transaction) {
+		String query = "SELECT COUNT(*) FROM circulation WHERE end_date > NOW()";
+		try (PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
+			try (ResultSet resultSet = statement.executeQuery()) {
+				if (resultSet.next()) {
+					return resultSet.getInt(1);
+				}
+			}
+		} catch (SQLException e) {
+			throw new DBConnectionFailedException("Failed to retrieve total number of current circulations.", e);
+		}
+		return 0;
+	}
+	@Override
+	public int getTotalCompletedCirculationNumber(Transaction transaction) {
+		String query = "SELECT COUNT(*) FROM circulation WHERE end_date < NOW()";
+		try (PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
+			try (ResultSet resultSet = statement.executeQuery()) {
+				if (resultSet.next()) {
+					return resultSet.getInt(1);
+				}
+			}
+		} catch (SQLException e) {
+			throw new DBConnectionFailedException("Failed to retrieve total number of completed circulations.", e);
+		}
+		return 0;
+	}
+
+
 }

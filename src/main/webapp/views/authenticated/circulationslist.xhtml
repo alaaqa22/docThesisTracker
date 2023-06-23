@@ -22,7 +22,16 @@
 
 
         <div class="container">
-            <h:form>
+            <h:form>            <h:commandButton value="Aktulle Circulations" action="#{circulationListBacking.showCurrentCirculations}" styleClass="btn btn-primary">
+                <f:ajax render="dataForm" />
+            </h:commandButton>
+            <h:commandButton value="Abgeschlossene Circulations" action="#{circulationListBacking.showCompletedCirculations}" styleClass="btn btn-secondary">
+                <f:ajax render="dataForm" />
+            </h:commandButton>
+            </h:form>
+
+            <h:form id="dataForm">
+
 
                 <!---  dataTable for a Circulation List -->
                 <h:dataTable id="cir-dt" value="#{circulationListBacking.circulations}" var="circulation" styleClass="my-table table table-bordered"
@@ -34,14 +43,14 @@
                     </f:facet>
 
                     <!-- Fakultät -->
-                    <h:column rendered="#{circulationListBacking.sessionInfo.admin}">
+                    <h:column rendered="#{sessionInfo.admin}">
                         <f:facet name="header">
                             <h:outputText value="Fakultät"/>
-                            <h:inputText value="#{circulationListBacking.filter.facultyId}" styleClass="form-control">
-                                <f:ajax event="keyup" listener="#{circulationListBacking.loadCirculations}" render="@form"/>
+                            <h:inputText value="#{circulationListBacking.filter.facultyId == 0 ? '' : circulationListBacking.filter.facultyId}" styleClass="form-control">
+                                <f:ajax event="change" listener="#{circulationListBacking.loadCirculations}" render="@form"/>
                             </h:inputText>
                         </f:facet>
-                        <h:outputText value="#{circulation.facultyId}"/>
+                        <h:outputText value="#{circulationListBacking.getFacultyName(circulation.facultyId)}"/>
 
                     </h:column>
 
@@ -87,19 +96,20 @@
                     </h:column>
 
                     <!---  Startzeit-->
+                    <!-- Startzeit -->
                     <h:column>
                         <f:facet name="header">
                             <h:outputText value="Startzeit"/>
+
                         </f:facet>
                         <h:outputText value="#{circulation.startDate}"/>
-
                     </h:column>
 
-
-                    <!---  Endzeit -->
+                    <!-- Endzeit -->
                     <h:column>
                         <f:facet name="header">
                             <h:outputText value="Endzeit"/>
+
                         </f:facet>
                         <h:outputText value="#{circulation.endDate}"/>
                     </h:column>
@@ -160,6 +170,7 @@
                     </ul>
 
                 </div>
+
             </h:form>
         </div>
         </ui:define>

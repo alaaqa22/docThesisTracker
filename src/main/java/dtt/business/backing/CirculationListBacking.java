@@ -4,18 +4,18 @@ package dtt.business.backing;
 import dtt.business.utilities.Pagination;
 import dtt.business.utilities.SessionInfo;
 import dtt.dataAccess.repository.postgres.CirculationDAO;
+import dtt.dataAccess.repository.postgres.FacultyDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
+import dtt.global.tansport.Faculty;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.util.JsonUtils;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.List;
 
 
@@ -35,6 +35,11 @@ public class CirculationListBacking implements Serializable {
     @Inject
     private SessionInfo sessionInfo;
     private final Logger logger = LogManager.getLogger ();
+    @Inject
+    private FacultyDAO facultyDAO;
+    private static final Logger LOGGER = LogManager.getLogger(CirculationListBacking.class);
+    boolean timeButton =false;
+    boolean currentCirculation =false;
 
 
     /**
@@ -45,6 +50,7 @@ public class CirculationListBacking implements Serializable {
      */
     public CirculationListBacking () {
         this.circPagination = createPagination ();
+
     }
 
     private Pagination<Circulation> createPagination () {
@@ -57,32 +63,65 @@ public class CirculationListBacking implements Serializable {
                     logger.error ("Invalid currentPage or maxItems value.");
                 }
 
+
                 int offset = (currentPage - 1) * maxItems;
                 int count = maxItems;
+                if(!timeButton) {
 
-                try (Transaction transaction = new Transaction ()) {
-                    List<Circulation> cir = circDAO.getCirculations (filter, transaction, offset, count);
-                    setEntries (cir);
-                    circulations = cir;
-                    transaction.commit ();
+                    try (Transaction transaction = new Transaction ()) {
+                        List<Circulation> cir = circDAO.getCirculations (filter, transaction, offset, count);
+                        setEntries (cir);
+                        circulations = cir;
+                        transaction.commit ();
+                    }
                 }
+                else{
+                    if(currentCirculation){
+                        try (Transaction transaction = new Transaction ()) {
+                            List<Circulation> cir = circDAO.getAllCurrentCirculations (filter,transaction, offset, count);
+                            setEntries (cir);
+                            circulations = cir;
+                            transaction.commit ();
+                        }
+                    }else{
+                        try (Transaction transaction = new Transaction ()) {
+                            List<Circulation> cir = circDAO.getAllCompletedCirculations (filter,transaction, offset, count);
+                            setEntries (cir);
+                            circulations = cir;
+                            transaction.commit ();
+                        }
+                    }
 
+
+
+                }
 
             }
 
             @Override
             public int getTotalNumOfPages () {
                 try (Transaction t = new Transaction ()) {
-                    int totalNumOfPages = (int) Math.ceil ((double) (circDAO.getTotalCirculationNumber (filter, t))
-                            / maxItems);
+                    int totalNumOfPages;
+
+                    if (!timeButton) {
+                        totalNumOfPages = (int) Math.ceil((double) (circDAO.getTotalCirculationNumber(filter, t)) / maxItems);
+                    } else {
+                        if (currentCirculation) {
+                            totalNumOfPages = (int) Math.ceil((double) (circDAO.getTotalCurrentCirculationNumber (t)) / maxItems);
+                        } else {
+                            totalNumOfPages = (int) Math.ceil((double) (circDAO.getTotalCompletedCirculationNumber(t)) / maxItems);
+                        }
+                    }
+
                     t.commit ();
                     this.totalNumOfPages = totalNumOfPages;
                     return totalNumOfPages;
                 }
             }
+    };}
 
-        };
-    }
+
+
 
 
     /**
@@ -104,7 +143,6 @@ public class CirculationListBacking implements Serializable {
         logger.fatal ("start loadCirculations");
         // Load data using the pagination object
         circPagination.loadData ();
-
     }
 
 
@@ -148,4 +186,36 @@ public class CirculationListBacking implements Serializable {
         return circDAO;
     }
 
+    public String getFacultyName(int facultyId) {
+
+        try(Transaction transaction = new Transaction ()) {
+
+            Faculty faculty = facultyDAO.getFacultyById (facultyId, transaction);
+
+            return faculty != null ? faculty.getName () : "N/A";
+        }
+
+    }
+
+
+    public void showCompletedCirculations() {
+        timeButton = true ;
+        currentCirculation = false;
+        circPagination.setCurrentPage(1);
+        loadCirculations ();
+
+
+    }
+    public void showCurrentCirculations() {
+        timeButton = true ;
+        currentCirculation=true;
+        circPagination.setCurrentPage(1);
+        loadCirculations ();
+
+    }
+
 }
+
+
+
+

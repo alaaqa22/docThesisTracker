@@ -16,7 +16,8 @@
     </h:head>
 
     <h:body>
-        <ui:include src="/views/anonymous/header.xhtml"/>
+        <ui:composition template="../anonymous/template.xhtml">
+        <ui:define name="mainContent">
 
         <div class="container">
             <h:form>
@@ -129,6 +130,8 @@
                 </div>
             </h:form>
         </div>
+        </ui:define>
+        </ui:composition>
     </h:body>
 </f:view>
 </html>

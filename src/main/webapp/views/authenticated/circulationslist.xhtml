@@ -17,11 +17,12 @@
     </h:head>
 
     <h:body>
-        <ui:include src="/views/anonymous/header.xhtml"/>
+        <ui:composition template="../anonymous/template.xhtml">
+        <ui:define name="mainContent">
+
 
         <div class="container">
             <h:form>
-
 
                 <!---  dataTable for a Circulation List -->
                 <h:dataTable id="cir-dt" value="#{circulationListBacking.circulations}" var="circulation" styleClass="my-table table table-bordered"
@@ -158,10 +159,11 @@
                         </h:panelGroup>
                     </ul>
 
-
                 </div>
             </h:form>
         </div>
+        </ui:define>
+        </ui:composition>
     </h:body>
 </f:view>
 

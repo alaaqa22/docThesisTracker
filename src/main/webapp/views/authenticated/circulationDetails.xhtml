@@ -14,7 +14,8 @@
     </h:head>
 
     <h:body>
-        <ui:include src="/views/anonymous/header.xhtml"/>
+        <ui:composition template="../anonymous/template.xhtml">
+        <ui:define name="mainContent">
         <h:form>
             <div class="container">
                 <h2>Circulation Details</h2>
@@ -125,6 +126,8 @@
                 </h:dataTable>
             </div>
         </h:form>
+        </ui:define>
+        </ui:composition>
     </h:body>
 </f:view>
 

@@ -5,7 +5,15 @@
                                   https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_4_0.xsd">
 
     <navigation-rule>
-        <from-view-id>/views/anonymous/login.xhtml</from-view-id>
+        <from-view-id>/views/deanery/userList.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>circulationslist</from-outcome>
+            <to-view-id>/views/deanery/circulationsList.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <from-view-id>/views/examineCommittee/createCirculation.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>impressum</from-outcome>
             <to-view-id>/views/anonymous/Impressum.xhtml</to-view-id>
@@ -13,23 +21,47 @@
     </navigation-rule>
 
     <navigation-rule>
-        <from-view-id>/views/anonymous/Impressum.xhtml</from-view-id>
+        <from-view-id>/views/authenticated/circulationslist.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>impressum</from-outcome>
-            <to-view-id>/views/anonymous/impressum.xhtml</to-view-id>
+            <to-view-id>/views/anonymous/Impressum.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
 
+    <navigation-rule>
+        <from-view-id>/views/authenticated/circulationDetails.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>impressum</from-outcome>
+            <to-view-id>/views/anonymous/Impressum.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <from-view-id>/views/authenticated/profile.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>impressum</from-outcome>
+            <to-view-id>/views/anonymous/Impressum.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
 
     <navigation-rule>
         <from-view-id>/views/deanery/userList.xhtml</from-view-id>
         <navigation-case>
-            <from-outcome>circulationslist</from-outcome>
-            <to-view-id>/views/deanery/circulationsList.xhtml</to-view-id>
+            <from-outcome>impressum</from-outcome>
+            <to-view-id>/views/anonymous/Impressum.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
-        <lifecycle>
-            <phase-listener>dtt.business.utilities.TrespassListener</phase-listener>
-        </lifecycle>
+
+    <navigation-rule>
+        <from-view-id>/views/anonymous/login.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>impressum</from-outcome>
+            <to-view-id>/views/anonymous/Impressum.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <lifecycle>
+        <phase-listener>dtt.business.utilities.TrespassListener</phase-listener>
+    </lifecycle>
 
 </faces-config>

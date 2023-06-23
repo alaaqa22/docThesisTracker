@@ -10,7 +10,8 @@
 </h:head>
 
 <h:body>
-   <ui:include src="header.xhtml" />
+   <ui:composition template="../anonymous/template.xhtml">
+   <ui:define name="mainContent">
 
    <h:form id="registration-form" class="container">
       <h3>Registration</h3>
@@ -54,6 +55,8 @@
 
    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+   </ui:define>
+   </ui:composition>
 </h:body>
 
 </html>

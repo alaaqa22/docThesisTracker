@@ -16,7 +16,8 @@
 </h:head>
 
 <h:body>
-	<ui:include src="/views/anonymous/header.xhtml" />
+	<ui:composition template="../anonymous/template.xhtml">
+	<ui:define name="mainContent">
 
 	<div class="container">
 		<h1>Create a new circulation</h1>
@@ -117,6 +118,8 @@
 
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	</ui:define>
+	</ui:composition>
 </h:body>
 
 </html>

@@ -141,5 +141,23 @@ public class FacultyDAO implements dtt.dataAccess.repository.interfaces.FacultyD
 
         return false;
     }
+    public Faculty getFacultyById(int id, Transaction transaction) {
+        Faculty faculty = null;
+        String query = "SELECT * FROM faculty WHERE faculty_id = ?";
+        try (PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
+            statement.setInt(1, id);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    faculty = new Faculty();
+                    faculty.setId(rs.getInt("faculty_id"));
+                    faculty.setName(rs.getString("faculty_name"));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DBConnectionFailedException("Failed to retrieve faculty.", e);
+        }
+        return faculty;
+    }
+
 
 }

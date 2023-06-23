@@ -111,4 +111,45 @@ public interface CirculationDAO {
 	 * @return the total number of Users found matching the filter.
 	 */
     int getTotalCirculationNumber(Circulation circulation, Transaction transaction);
+	/**
+	 * Retrieves a list of completed circulations based on the provided filter criteria.
+	 *
+	 * @param circulation  The circulation object containing the filter criteria.
+	 * @param transaction  The database transaction.
+	 * @param offset       The offset value for pagination.
+	 * @param count        The maximum number of circulations to retrieve.
+	 * @return             A list of completed circulations matching the filter criteria.
+	 */
+	public List<Circulation> getAllCompletedCirculations(Circulation circulation, Transaction transaction, int offset, int count);
+
+	/**
+	 * Retrieves a list of current circulations based on the provided filter criteria.
+	 *
+	 * @param circulation  The circulation object containing the filter criteria.
+	 * @param transaction  The database transaction.
+	 * @param offset       The offset value for pagination.
+	 * @param count        The maximum number of circulations to retrieve.
+	 * @return             A list of current circulations matching the filter criteria.
+	 */
+	public List<Circulation> getAllCurrentCirculations (Circulation circulation, Transaction transaction,
+														int offset, int count) ;
+
+
+
+	/**
+	 * Retrieves the total number of completed circulations.
+	 *
+	 * @param transaction  The database transaction.
+	 * @return             The total number of completed circulations.
+	 */
+	public int getTotalCompletedCirculationNumber(Transaction transaction);
+
+
+	/**
+	 * Retrieves the total number of aktulle (ongoing) circulations.
+	 *
+	 * @param transaction  The database transaction.
+	 * @return             The total number of aktulle circulations.
+	 */
+	public int getTotalCurrentCirculationNumber(Transaction transaction);
 }

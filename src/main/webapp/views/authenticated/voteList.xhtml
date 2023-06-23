@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="jakarta.faces.core" xmlns:ui="jakarta.faces.facelets"
+
+>
+
+<f:view>
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{circulationDetailsBacking.circulation.id}"/>
+        <f:viewAction action="#{circulationDetailsBacking.loadVotes()}"/>
+    </f:metadata>
+
+    <h:head>
+        <title>Votes list</title>
+        <link href="${request.contextPath}/resources/css/style.css" rel="stylesheet" type="text/css"/>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"/>
+    </h:head>
+
+
+    <h:body>
+        <ui:include src="/views/anonymous/header.xhtml"/>
+        <h:form>
+            <div class="container">
+
+                <!--Table of the votes -->
+
+                <h:dataTable value="#{circulationDetailsBacking.totalVotes}" var="vote"
+                             rendered="#{!sessionInfo.examiner}" class="table table-bordered">
+                    <h:column>
+                        <f:facet name="header">Voted by</f:facet>
+                        #{vote.userId}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Vote selection</f:facet>
+                        #{vote.selection}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Vote reason</f:facet>
+                        #{vote.description}
+                    </h:column>
+                </h:dataTable>
+
+                <!--Go back to circulation button -->
+
+                <h:link id="profil-link"
+                        outcome="/views/authenticated/circulationDetails.xhtml?id=#{circulationDetailsBacking.circulation.id}"
+                        rendered="#{!sessionInfo.examiner}" value="Return to circulation" class="btn btn-primary"/>
+            </div>
+
+        </h:form>
+    </h:body>
+</f:view>
+
+</html>

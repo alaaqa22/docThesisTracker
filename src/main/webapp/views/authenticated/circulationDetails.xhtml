@@ -7,6 +7,12 @@
 >
 
 <f:view>
+    <f:metadata>
+        <f:viewAction action="#{circulationDetailsBacking.loadCirculation()}"/>
+        <f:viewParam name="id" value="#{circulationDetailsBacking.circulation.id}"/>
+        <f:viewAction action="#{circulationDetailsBacking.loadVotes()}"/>
+        <f:viewParam name="voteId" value="#{circulationDetailsBacking.vote.voteId}"/>
+    </f:metadata>
     <h:head>
         <title>Circulation Details</title>
         <link href="${request.contextPath}/resources/css/style.css" rel="stylesheet" type="text/css"/>
@@ -19,14 +25,6 @@
         <h:form>
             <div class="container">
                 <h2>Circulation Details</h2>
-
-                <f:metadata>
-                    <f:viewAction action="#{circulationDetailsBacking.loadCirculation()}"/>
-                    <f:viewParam name="id" value="#{circulationDetailsBacking.circulation.id}"/>
-                    <f:viewAction action="#{circulationDetailsBacking.loadVotes()}"/>
-                    <f:viewParam name="voteId" value="#{circulationDetailsBacking.vote.voteId}"/>
-                </f:metadata>
-
                 <div class="form-group">
                     <label for="title-otxt">Title:</label>
                     <h:inputText id="title-otxt" value="#{circulationDetailsBacking.circulation.title}"
@@ -98,32 +96,23 @@
                 <h:commandButton id="vote-btn" action="#{circulationDetailsBacking.submitVote()}" value="Vote"
                                  class="btn btn-primary"/>
 
-                <h:commandButton id="modify-cbtn" action="#{circulationDetailsBacking.modify()}" value="Modify"
+                <h:commandButton id="modify-cbtn" action="#{circulationDetailsBacking.modify()}"
+                                 value="Modify circulation"
                                  update="circulationDetailsPanel" rendered="#{!sessionInfo.examiner}"
                                  class="btn btn-primary"/>
+
+                <h:link id="voteList-link"
+                        outcome="/views/authenticated/voteList.xhtml?id=#{circulationDetailsBacking.circulation.id}"
+                        rendered="#{!sessionInfo.examiner}" value="Display votes" class="btn btn-success"/>
 
                 <h:commandButton id="remove-cbtn" action="#{circulationDetailsBacking.remove()}"
                                  value="Remove Circulation" rendered="#{!sessionInfo.examiner}"
                                  class="btn btn-danger"/>
-
-                <h:outputText id="votes-otxt"
-                              value="Total votes to this circulation: #{circulationDetailsBacking.totalVotes.size()}"/>
-
-                <h:dataTable value="#{circulationDetailsBacking.totalVotes}" var="vote"
-                             rendered="#{!sessionInfo.examiner}" class="table table-bordered">
-                    <h:column>
-                        <f:facet name="header">Voted by</f:facet>
-                        #{vote.userId}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Vote selection</f:facet>
-                        #{vote.selection}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Vote reason</f:facet>
-                        #{vote.description}
-                    </h:column>
-                </h:dataTable>
+                <div>
+                    <h:outputText id="votes-otxt"
+                                  value="Total votes: #{circulationDetailsBacking.totalVotes.size()}"
+                                  rendered="#{!sessionInfo.examiner}"/>
+                </div>
             </div>
         </h:form>
         </ui:define>

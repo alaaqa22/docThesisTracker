@@ -2,8 +2,8 @@ package dtt.business.backing;
 
 import dtt.business.utilities.SessionInfo;
 import dtt.dataAccess.exceptions.*;
-import dtt.dataAccess.repository.postgres.CirculationDAO;
-import dtt.dataAccess.repository.postgres.VoteDAO;
+import dtt.dataAccess.repository.interfaces.CirculationDAO;
+import dtt.dataAccess.repository.interfaces.VoteDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
 import dtt.global.tansport.Options;
@@ -30,7 +30,7 @@ import java.util.List;
 @ViewScoped
 @Named("circulationDetailsBacking")
 public class CirculationDetailsBacking implements Serializable {
-    private Logger logger = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger(CirculationDetailsBacking.class);
     private Options choice;
     @Inject
     private SessionInfo sessionInfo;
@@ -66,14 +66,12 @@ public class CirculationDetailsBacking implements Serializable {
     public void loadCirculation() {
         try (Transaction transaction = new Transaction()) {
             circulationDAO.getCirculationById(circulation, transaction);
-            logger.info(circulation.getEndDate());
             transaction.commit();
 
         } catch (DataNotFoundException e) {
-            logger.error("Failed to load the circulation " + circulation.getId());
+            LOGGER.error("Failed to load the circulation " + circulation.getId());
             throw new IllegalStateException(e);
         }
-
 
     }
 
@@ -95,11 +93,11 @@ public class CirculationDetailsBacking implements Serializable {
         try (Transaction transaction = new Transaction()) {
             circulationDAO.remove(circulation, transaction);
             transaction.commit();
-            logger.info("Circulation with id = " + circulation.getId() + " was removed");
+            LOGGER.info("Circulation with id = " + circulation.getId() + " was removed");
             return "/views/authenticated/circulationslist.xhtml?faces-redirect=true";
 
         } catch (DataNotFoundException e) {
-            logger.error("Circulation" + circulation.getId() + " could not be removed");
+            LOGGER.error("Circulation" + circulation.getId() + " could not be removed");
             throw new IllegalStateException();
         }
     }
@@ -109,18 +107,16 @@ public class CirculationDetailsBacking implements Serializable {
      * Modify the circulation details.
      */
     public void modify() {
-        circulation.setEndDate(java.sql.Timestamp.valueOf(getEndDate().atStartOfDay()));
-        circulation.setStartDate(java.sql.Timestamp.valueOf(getStartDate().atStartOfDay()));
         try (Transaction transaction = new Transaction()) {
             circulationDAO.update(circulation, transaction);
             transaction.commit();
-            logger.info("circulation with id: " + circulation.getId() + " was modified");
+            LOGGER.info("circulation with id: " + circulation.getId() + " was modified");
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "Umlauf mit der ID: " + circulation.getId() + " wurde geändert.", null);
             FacesContext.getCurrentInstance().addMessage(null, message);
 
         } catch (DataNotFoundException | InvalidInputException | KeyExistsException e) {
-            logger.error("circulation" + circulation.getId() + " could not be modified");
+            LOGGER.error("circulation" + circulation.getId() + " could not be modified");
             throw new IllegalStateException(e);
         }
     }
@@ -134,7 +130,7 @@ public class CirculationDetailsBacking implements Serializable {
                 vote.setSelection(choice);
                 vote.setDescription(reason);
                 voteDAO.add(vote, transaction);
-                logger.info("New vote was added to circulation id" + circulation.getId() + " by " + getSessionInfo().getUser().getId());
+                LOGGER.info("New vote was added to circulation id" + circulation.getId() + " by " + getSessionInfo().getUser().getId());
                 FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
                         "Ihre Stimme " + "(" + vote.getSelection().getLabel() + ")" + " wurde erfolgreich gespeichert.", null);
                 FacesContext.getCurrentInstance().addMessage(null, message);
@@ -142,17 +138,16 @@ public class CirculationDetailsBacking implements Serializable {
                 vote.setSelection(choice);
                 vote.setDescription(reason);
                 voteDAO.update(vote, transaction);
-                logger.info("Updated vote to circulation id " + circulation.getId() + " by user id: " + getSessionInfo().getUser().getId());
+                LOGGER.info("Updated vote to circulation id " + circulation.getId() + " by user id: " + getSessionInfo().getUser().getId());
                 FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
                         "Ihre neue Stimme " + "(" + vote.getSelection().getLabel() + ")" + " wurde erfolgreich aktualisiert.", null);
                 FacesContext.getCurrentInstance().addMessage(null, message);
 
             }
-
             transaction.commit();
 
         } catch (DataNotCompleteException | InvalidInputException | DataNotFoundException e) {
-            logger.error("Failed to cast the vote.");
+            LOGGER.error("Failed to cast the vote.");
             throw new IllegalStateException(e);
         }
 
@@ -171,6 +166,11 @@ public class CirculationDetailsBacking implements Serializable {
         }
     }
 
+    /**
+     * Get all the votes for a circulation.
+     *
+     * @return List of votes.
+     */
     public List<Vote> getTotalVotes() {
         try (Transaction transaction = new Transaction()) {
             totalVotes = voteDAO.getVotes(vote, transaction);

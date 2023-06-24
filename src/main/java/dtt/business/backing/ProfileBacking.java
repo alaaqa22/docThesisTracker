@@ -59,7 +59,6 @@ public class ProfileBacking implements Serializable {
         try (Transaction transaction = new Transaction()) {
             userDAO.getUserById(user, transaction);
             transaction.commit();
-            LOGGER.info("userState" + user.getUserState().get(0));
         } catch (DataNotFoundException e) {
             LOGGER.info("Failed to load user information.");
             throw new IllegalStateException("Failed to load user information.", e);

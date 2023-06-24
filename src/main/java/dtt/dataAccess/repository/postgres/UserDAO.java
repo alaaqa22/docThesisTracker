@@ -42,33 +42,6 @@ public class UserDAO
     /** Initialize Logger. */
     private static final Logger LOGGER = LogManager
             .getLogger(CirculationDAO.class);
-    // Column names
-//    /** Column name of user_id of the user table. */
-//    private static final String U_USER_ID = "\"user\".user_id";
-//    /** Column name of email_address of the user table. */
-//    private static final String U_EMAIL_ADDRESS = "\"user\".email_address";
-//    /** Column name of first_name of the user table. */
-//    private static final String U_FIRST_NAME = "\"user\".first_name";
-//    /** Column name of last_name of the user table. */
-//    private static final String U_LAST_NAME = "\"user\".last_name";
-//    /** Column name of birth_date of the user table. */
-//    private static final String U_BIRTH_DATE = "\"user\".birth_date";
-//    /** Column name of password_hash of the user table. */
-//    private static final String U_PASSWORD_HASH = "\"user\".password_hash";
-//    /** Column name of password_salt of the user table. */
-//    private static final String U_PASSWORD_SALT = "\"user\".password_salt";
-//    /** Column name of user_id of the authentication table. */
-//    private static final String A_USER_ID = "authentication.user_id";
-//    /** Column name of faculty_id of the authentication table. */
-//    private static final String A_FACULTY_ID = "authentication.faculty_id";
-//    /** Column name of user_level of the authentication table. */
-//    private static final String A_USER_LEVEL = "authentication.user_level";
-//    /** Column name of faculty_id of the faculty table. */
-//    private static final String F_FACULTY_ID = "faculty.faculty_id";
-//    /** Column name of faculty_name of the faculty table. */
-//    private static final String F_FACULTY_NAME = "faculty.faculty_name";
-//    /** Column name of user_id of the admin table. */
-//    private static final String ADMIN_USER_ID = "\"admin\".user_id";
 
     /**
      * Constructor for UserDAO.
@@ -91,7 +64,8 @@ public class UserDAO
                 || user.getEmail().trim().isEmpty()
                 || user.getFirstName().trim().isEmpty()
                 || user.getLastName().trim().isEmpty()) {
-            LOGGER.error("Data not complete exception! An input was null or empty.");
+            LOGGER.error(
+                    "Data not complete exception! An input was null or empty.");
             throw new DataNotCompleteException();
         }
 
@@ -115,7 +89,8 @@ public class UserDAO
             int affectedRows = statement.executeUpdate();
 
             if (affectedRows == 0) {
-                LOGGER.error("Invalid input exception! Zero rows were affected.");
+                LOGGER.error(
+                        "Invalid input exception! Zero rows were affected.");
                 throw new InvalidInputException(
                         "Creating user failed, no rows affected.");
             }
@@ -124,13 +99,15 @@ public class UserDAO
                 if (generatedKeys.next()) {
                     user.setId(generatedKeys.getInt(1));
                 } else {
-                    LOGGER.error("Invalid input exception! Creating user failed, no ID obtained.");
+                    LOGGER.error("Invalid input exception! "
+                            + "Creating user failed, no ID obtained.");
                     throw new InvalidInputException(
                             "Creating user failed, no ID obtained.");
                 }
             }
             if (!user.getUserState().isEmpty()) {
-                LOGGER.debug("User state is not empty trying to write into authentication.");
+                LOGGER.debug("User state is not empty "
+                        + "trying to write into authentication.");
                 try (PreparedStatement statement2 = transaction.getConnection()
                         .prepareStatement(query2)) {
                     for (Map.Entry<Faculty, UserState> entry : user
@@ -145,7 +122,8 @@ public class UserDAO
             }
 
         } catch (SQLException e) {
-            LOGGER.error("Prepared statement failed! SQL exception thrown: " + e.getMessage());
+            LOGGER.error("Prepared statement failed! SQL exception thrown: "
+                    + e.getMessage());
             switch (e.getSQLState()) {
             case "23502":
                 throw new DataNotCompleteException(e.getLocalizedMessage(), e);
@@ -303,7 +281,7 @@ public class UserDAO
             final Transaction transaction) {
         String query = "SELECT user_id, first_name, last_name, birth_date, "
                 + "password_hash, password_salt FROM \"user\" "
-                + "WHERE email_address = ?";
+                + "WHERE LOWER(email_address) = LOWER(?)";
 
         try (PreparedStatement statement = transaction.getConnection()
                 .prepareStatement(query)) {
@@ -352,19 +330,19 @@ public class UserDAO
 
         // Add filter conditions based on provided properties
         if (user != null && user.getEmail() != null) {
-            query.append(" AND \"user\".email_address LIKE ?");
+            query.append(" AND \"user\".email_address ILIKE '%' || ? || '%'");
         }
 
         if (user != null && user.getFirstName() != null) {
-            query.append(" AND \"user\".first_name LIKE ?");
+            query.append(" AND \"user\".first_name ILIKE '%' || ? || '%'");
         }
 
         if (user != null && user.getLastName() != null) {
-            query.append(" AND \"user\".last_name LIKE ?");
+            query.append(" AND \"user\".last_name ILIKE '%' || ? || '%'");
         }
 
         if (user != null && user.getBirthDate() != null) {
-            query.append(" AND  \"user\".birth_date LIKE ?");
+            query.append(" AND  \"user\".birth_date ILIKE '%' || ? || '%'");
         }
 
         if (faculty != null) {
@@ -372,7 +350,8 @@ public class UserDAO
         }
 
         if (auth != null) {
-            query.append(" AND authentication.user_level LIKE ?");
+            query.append(
+                    " AND authentication.user_level ILIKE '%' || ? || '%'");
         }
 
         query.append(" LIMIT ? OFFSET ?");
@@ -395,7 +374,8 @@ public class UserDAO
             }
 
             if (user != null && user.getBirthDate() != null) {
-                statement.setDate(paramIndex++, Date.valueOf(user.getBirthDate()));
+                statement.setDate(paramIndex++,
+                        Date.valueOf(user.getBirthDate()));
             }
 
             if (faculty != null) {
@@ -465,19 +445,19 @@ public class UserDAO
 
         // Add filter conditions based on provided properties
         if (user != null && user.getEmail() != null) {
-            query.append(" AND \"user\".email_address LIKE ?");
+            query.append(" AND \"user\".email_address ILIKE '%' || ? || '%'");
         }
 
         if (user != null && user.getFirstName() != null) {
-            query.append(" AND \"user\".first_name LIKE ?");
+            query.append(" AND \"user\".first_name ILIKE '%' || ? || '%'");
         }
 
         if (user != null && user.getLastName() != null) {
-            query.append(" AND \"user\".last_name LIKE ?");
+            query.append(" AND \"user\".last_name ILIKE '%' || ? || '%'");
         }
 
         if (user != null && user.getBirthDate() != null) {
-            query.append(" AND  \"user\".birth_date LIKE ?");
+            query.append(" AND  \"user\".birth_date ILIKE '%' || ? || '%'");
         }
 
         if (faculty != null) {
@@ -485,7 +465,8 @@ public class UserDAO
         }
 
         if (auth != null) {
-            query.append(" AND authentication.user_level LIKE ?");
+            query.append(
+                    " AND authentication.user_level ILIKE '%' || ? || '%'");
         }
 
         query.append(" LIMIT ? OFFSET ?");
@@ -508,7 +489,8 @@ public class UserDAO
             }
 
             if (user != null && user.getBirthDate() != null) {
-                statement.setDate(paramIndex++, Date.valueOf(user.getBirthDate()));
+                statement.setDate(paramIndex++,
+                        Date.valueOf(user.getBirthDate()));
             }
 
             if (faculty != null) {
@@ -559,19 +541,19 @@ public class UserDAO
 
         // Add filter conditions based on provided properties
         if (user != null && user.getEmail() != null) {
-            query.append(" AND \"user\".email_address LIKE ?");
+            query.append(" AND \"user\".email_address ILIKE '%' || ? || '%'");
         }
 
         if (user != null && user.getFirstName() != null) {
-            query.append(" AND \"user\".first_name LIKE ?");
+            query.append(" AND \"user\".first_name ILIKE '%' || ? || '%'");
         }
 
         if (user != null && user.getLastName() != null) {
-            query.append(" AND \"user\".last_name LIKE ?");
+            query.append(" AND \"user\".last_name ILIKE '%' || ? || '%'");
         }
 
         if (user != null && user.getBirthDate() != null) {
-            query.append(" AND  \"user\".birth_date LIKE ?");
+            query.append(" AND  \"user\".birth_date ILIKE '%' || ? || '%'");
         }
 
         if (faculty != null) {
@@ -579,7 +561,8 @@ public class UserDAO
         }
 
         if (auth != null) {
-            query.append(" AND authentication.user_level LIKE ?");
+            query.append(
+                    " AND authentication.user_level ILIKE '%' || ? || '%'");
         }
 
         try (PreparedStatement statement = transaction.getConnection()
@@ -600,7 +583,8 @@ public class UserDAO
             }
 
             if (user != null && user.getBirthDate() != null) {
-                statement.setDate(paramIndex++, Date.valueOf(user.getBirthDate()));
+                statement.setDate(paramIndex++,
+                        Date.valueOf(user.getBirthDate()));
             }
 
             if (faculty != null) {
@@ -657,19 +641,19 @@ public class UserDAO
 
         // Add filter conditions based on provided properties
         if (user != null && user.getEmail() != null) {
-            query.append(" AND \"user\".email_address LIKE ?");
+            query.append(" AND \"user\".email_address ILIKE '%' || ? || '%'");
         }
 
         if (user != null && user.getFirstName() != null) {
-            query.append(" AND \"user\".first_name LIKE ?");
+            query.append(" AND \"user\".first_name ILIKE '%' || ? || '%'");
         }
 
         if (user != null && user.getLastName() != null) {
-            query.append(" AND \"user\".last_name LIKE ?");
+            query.append(" AND \"user\".last_name ILIKE '%' || ? || '%'");
         }
 
         if (user != null && user.getBirthDate() != null) {
-            query.append(" AND  \"user\".birth_date LIKE ?");
+            query.append(" AND  \"user\".birth_date ILIKE '%' || ? || '%'");
         }
 
         if (faculty != null) {
@@ -677,7 +661,8 @@ public class UserDAO
         }
 
         if (auth != null) {
-            query.append(" AND authentication.user_level LIKE ?");
+            query.append(
+                    " AND authentication.user_level ILIKE '%' || ? || '%'");
         }
 
         try (PreparedStatement statement = transaction.getConnection()
@@ -698,7 +683,8 @@ public class UserDAO
             }
 
             if (user != null && user.getBirthDate() != null) {
-                statement.setDate(paramIndex++, Date.valueOf(user.getBirthDate()));
+                statement.setDate(paramIndex++,
+                        Date.valueOf(user.getBirthDate()));
             }
 
             if (faculty != null) {
@@ -726,7 +712,8 @@ public class UserDAO
     public void updateOrAddAuth(final User user, final Transaction transaction)
             throws DataNotCompleteException, InvalidInputException {
         if (user.getUserState() != null || !user.getUserState().isEmpty()) {
-            LOGGER.debug("updateOrAddAuth() called for user: " + user.getFirstName());
+            LOGGER.debug("updateOrAddAuth() called for user: "
+                    + user.getFirstName());
             String query = "INSERT INTO authentication (user_id, faculty_id, "
                     + "user_level) VALUES (?, ?, ?) ON CONFLICT UPDATE";
             try (PreparedStatement statement = transaction.getConnection()
@@ -845,7 +832,8 @@ public class UserDAO
                 admin.setEmail(resultSet.getString("email_address"));
                 admin.setFirstName(resultSet.getString("firstname"));
                 admin.setLastName(resultSet.getString("lastname"));
-                admin.setBirthDate(resultSet.getDate("birthdate").toLocalDate());
+                admin.setBirthDate(
+                        resultSet.getDate("birthdate").toLocalDate());
 
                 adminList.add(admin);
             }

@@ -37,13 +37,13 @@
 
       <div class="form-group">
          <label for="birthdate-itxt">Geburtstag:</label>
-         <h:inputText id="birthdate-itxt" value="#{registrationBacking.user.birthDate}" required="true" requiredMessage="You have to put in your birthday!" class="form-control"/>
+         <h:inputText id="birthdate-itxt" value="#{registrationBacking.user.birthDate}" required="true" requiredMessage="You have to put in your birthday!" class="form-control" converter="LocalDateConverter"/>
          <h:message for="birthdate-itxt" style="color: red;" class="error-message"/>
       </div>
 
       <div class="form-group">
          <label>Fakultät</label>
-         <h:selectOneMenu value="#{registrationBacking.faculty}" required="true" requiredMessage="You have to pick a faculty!" class="form-control">
+         <h:selectOneMenu value="#{registrationBacking.faculty}" class="form-control" converter="facultyConverter">
             <f:selectItems value="#{registrationBacking.listOfFaculties}" var="faculty" itemLabel="#{faculty.name}" itemValue="#{faculty}"/>
          </h:selectOneMenu>
       </div>

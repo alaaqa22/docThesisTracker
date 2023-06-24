@@ -9,6 +9,7 @@ import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
 
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 /**
  * A FacesValidator implementation that validates email addresses.
@@ -19,6 +20,8 @@ import java.util.Arrays;
  */
 @FacesValidator("EmailAddressSyntaxValidator")
 public class EmailAddressSyntaxValidator implements Validator {
+
+    private static Pattern pattern;
 
     /**
      * An array of valid domains.
@@ -52,16 +55,8 @@ public class EmailAddressSyntaxValidator implements Validator {
      * @return true if the email is valid, false otherwise.
      */
     private boolean isValidEmailAddress(String email) {
-        if (!ConfigReader.arePropertiesLoaded()) {
-            ConfigReader.loadProperties();
-        }
-
-        if (validDomains == null) {
-            validDomains = ConfigReader.getProperty(ConfigReader.EMAIL_PATTERN).split(",");
-        }
-
-        String domain = email.substring(email.indexOf("@") + 1);  // Extract the domain from the email
-
-        return Arrays.asList(validDomains).contains(domain);
+      String emailPattern = ConfigReader.getProperty(ConfigReader.EMAIL_PATTERN);
+      pattern = Pattern.compile(emailPattern);
+      return pattern.matcher(email).matches();
     }
 }

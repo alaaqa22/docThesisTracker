@@ -1,6 +1,6 @@
 package dtt.business.validation;
 
-import dtt.dataAccess.repository.postgres.CirculationDAO;
+import dtt.dataAccess.repository.interfaces.CirculationDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
 import jakarta.faces.application.FacesMessage;
@@ -22,7 +22,7 @@ import jakarta.inject.Inject;
 public class UniqueCirculationNameValidator implements Validator<String> {
 
     /** circulationDAO object for database access. */
-    //@Inject
+    @Inject
     private CirculationDAO circulationDAO;
 
     /**
@@ -57,7 +57,6 @@ public class UniqueCirculationNameValidator implements Validator<String> {
     private boolean isValueUnique(final String circulationName) {
         Circulation circ = new Circulation();
         circ.setTitle(circulationName);
-        circulationDAO = new CirculationDAO();
         try (Transaction transaction = new Transaction()) {
             return !circulationDAO.findCirculationByTitle(circ, transaction);
         }

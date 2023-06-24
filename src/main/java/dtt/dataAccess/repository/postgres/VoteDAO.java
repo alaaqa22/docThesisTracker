@@ -32,7 +32,7 @@ public class VoteDAO implements dtt.dataAccess.repository.interfaces.VoteDAO {
 	private final String CIRCULATION_ID = "circulation_id";
 	private final String CHOICE = "choice";
 	private final String REASON = "reason";
-	private static final Logger LOGGER = LogManager.getLogger(CirculationDAO.class);
+	private static final Logger LOGGER = LogManager.getLogger(VoteDAO.class);
 
 	/**
 	 * Constructor for VotesDAO

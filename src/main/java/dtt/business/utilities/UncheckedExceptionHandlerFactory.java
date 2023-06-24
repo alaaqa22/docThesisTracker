@@ -14,7 +14,15 @@ import jakarta.faces.context.ExceptionHandlerFactory;
  * @author Johannes Silvennoinen
  */
 public class UncheckedExceptionHandlerFactory extends ExceptionHandlerFactory {
+    private final ExceptionHandlerFactory parent;
 
+    /**
+     * Constructor
+     * @param parent The parent that gets saved in the factory.
+     */
+    public UncheckedExceptionHandlerFactory(ExceptionHandlerFactory parent) {
+        this.parent = parent;
+    }
     /**
      * Creates a new instance of UncheckedExceptionHandler that will be used for
      * handling unchecked exceptions in the JSF application.
@@ -23,6 +31,6 @@ public class UncheckedExceptionHandlerFactory extends ExceptionHandlerFactory {
      */
     @Override
     public ExceptionHandler getExceptionHandler() {
-        return new UncheckedExceptionHandler();
+        return new UncheckedExceptionHandler(parent.getExceptionHandler());
     }
 }

@@ -1,11 +1,16 @@
 package dtt.business.utilities;
 
 import jakarta.faces.FacesException;
+import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.context.ExceptionHandler;
+import jakarta.faces.context.ExceptionHandlerWrapper;
+import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.event.AbortProcessingException;
 import jakarta.faces.event.ExceptionQueuedEvent;
-import jakarta.faces.event.SystemEvent;
+import jakarta.servlet.http.HttpServletResponse;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import java.io.IOException;
 
 /**
  * Custom exception handler for handling unchecked exceptions that occur during the JSF lifecycle.
@@ -14,15 +19,24 @@ import jakarta.faces.event.SystemEvent;
  * This implementation overrides the default JSF exception handling behavior for unchecked exceptions.
  * @author Johannes Silvennoinen
  */
-public class UncheckedExceptionHandler extends ExceptionHandler {
+public class UncheckedExceptionHandler extends ExceptionHandlerWrapper {
+    private static final Logger LOGGER = LogManager.getLogger(UncheckedExceptionHandler.class);
 
     public String UIMessageGenerator(FacesContext facesContext) {
         return null;
     }
 
+    /**
+     * Placeholder method for generating a message. You can implement it to return a specific message if required.
+     * @return
+     */
     public String generateMessage()  {
         return null;
     }
+
+    /**
+     * Placeholder method for converting a category. You can implement it to perform any necessary category conversion logic if needed.
+     */
     public void convertCategory() {
 
     }
@@ -34,36 +48,34 @@ public class UncheckedExceptionHandler extends ExceptionHandler {
      */
     @Override
     public void handle() throws FacesException {
+        // Get the current FacesContext
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        NavigationHandler navigationHandler = facesContext.getApplication().getNavigationHandler();
 
+        Iterable<ExceptionQueuedEvent> exceptionQueue = getUnhandledExceptionQueuedEvents();
+        for (ExceptionQueuedEvent event : exceptionQueue) {
+            Throwable exception = event.getContext().getException();
+
+            LOGGER.error("Unchecked exception thrown: " +  exception.getMessage());
+            try {
+                redirectToErrorPage(facesContext);
+            } catch (IOException e) {
+                LOGGER.error("An IOException occured in handle(): " + e.getMessage());
+            }
+        }
     }
 
-    @Override
-    public ExceptionQueuedEvent getHandledExceptionQueuedEvent() {
-        return null;
+    private void redirectToErrorPage(FacesContext facesContext) throws IOException {
+        ExternalContext externalContext = facesContext.getExternalContext();
+        externalContext.setResponseStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        externalContext.redirect("/anonymous/errorPage.xhtml");
     }
-
-    @Override
-    public Iterable<ExceptionQueuedEvent> getUnhandledExceptionQueuedEvents() {
-        return null;
-    }
-
-    @Override
-    public Iterable<ExceptionQueuedEvent> getHandledExceptionQueuedEvents() {
-        return null;
-    }
-
-    @Override
-    public void processEvent(SystemEvent systemEvent) throws AbortProcessingException {
-
-    }
-
-    @Override
-    public boolean isListenerForSource(Object o) {
-        return false;
-    }
-
     @Override
     public Throwable getRootCause(Throwable throwable) {
-        return null;
+        return throwable.getCause();
+    }
+
+    public UncheckedExceptionHandler(ExceptionHandler handler) {
+        super(handler);
     }
 }

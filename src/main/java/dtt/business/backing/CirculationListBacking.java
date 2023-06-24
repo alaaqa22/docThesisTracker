@@ -3,7 +3,7 @@ package dtt.business.backing;
 
 import dtt.business.utilities.Pagination;
 import dtt.business.utilities.SessionInfo;
-import dtt.dataAccess.repository.postgres.CirculationDAO;
+import dtt.dataAccess.repository.interfaces.CirculationDAO;
 import dtt.dataAccess.repository.postgres.FacultyDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;

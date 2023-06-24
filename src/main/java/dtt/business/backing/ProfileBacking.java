@@ -4,7 +4,7 @@ import dtt.business.utilities.SessionInfo;
 import dtt.dataAccess.exceptions.DataNotFoundException;
 import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.exceptions.KeyExistsException;
-import dtt.dataAccess.repository.postgres.UserDAO;
+import dtt.dataAccess.repository.interfaces.UserDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.AccountState;
 import dtt.global.tansport.User;
@@ -27,7 +27,7 @@ import java.io.Serializable;
 @ViewScoped
 @Named
 public class ProfileBacking implements Serializable {
-    private final Logger logger = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger(ProfileBacking.class);
     private User user;
     @Inject
     private UserDAO userDAO;
@@ -54,7 +54,7 @@ public class ProfileBacking implements Serializable {
             userDAO.getUserById(user, transaction);
             transaction.commit();
         } catch (DataNotFoundException e) {
-            logger.info("Failed to load user information.");
+            LOGGER.info("Failed to load user information.");
             throw new IllegalStateException("Failed to load user information.", e);
 
         }
@@ -74,7 +74,7 @@ public class ProfileBacking implements Serializable {
                 userDAO.update(user, transaction);
                 transaction.commit();
             } catch (DataNotFoundException | InvalidInputException | KeyExistsException e) {
-                logger.info("Error to save the updated information from " + user.getId());
+                LOGGER.info("Error to save the updated information from " + user.getId());
                 throw new IllegalStateException("Error to save the updated information", e);
             }
 
@@ -93,7 +93,7 @@ public class ProfileBacking implements Serializable {
                 sessionInfo.setUser(null);
                 return "/views/anonymous/login.xhtml?faces-redirect=true";
             } catch (DataNotFoundException e) {
-                logger.info("Error by deleting profile " + user.getId());
+                LOGGER.info("Error by deleting profile " + user.getId());
                 throw new IllegalStateException(e);
             }
         } else {

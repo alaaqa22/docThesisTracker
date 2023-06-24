@@ -6,7 +6,7 @@ import jakarta.inject.Named;
 
 import java.io.Serializable;
 
-import dtt.dataAccess.repository.postgres.UserDAO;
+import dtt.dataAccess.repository.interfaces.UserDAO;
 
 /**
  * Backing bean for reset-password page.

@@ -2,14 +2,11 @@ package dtt.business.backing;
 
 import dtt.business.utilities.Hashing;
 import dtt.business.utilities.SessionInfo;
-import dtt.business.utilities.SystemInitializer;
-import dtt.dataAccess.exceptions.DataNotFoundException;
-import dtt.dataAccess.repository.postgres.UserDAO;
+import dtt.dataAccess.repository.interfaces.UserDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.User;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
-import jakarta.faces.annotation.FacesConfig;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
@@ -18,7 +15,6 @@ import jakarta.inject.Named;
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.sql.SQLException;
 
 
 import org.apache.logging.log4j.LogManager;
@@ -32,7 +28,7 @@ import org.apache.logging.log4j.Logger;
 @RequestScoped
 @Named
 public class LoginBacking implements Serializable {
-    private final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger(LoginBacking.class);
     @Inject
     private SessionInfo sessionInfo;
     @Inject

@@ -50,12 +50,10 @@ public class SessionInfo implements Serializable {
     private boolean loggedIn;
 
     public User getUser () {
-        LOGGER.debug ("getUser() called.");
         return user;
     }
 
     public void setUser (User user) {
-        LOGGER.debug ("setUser() called.");
         if (user == null) {
             setLoggedIn (false);
         }
@@ -68,9 +66,8 @@ public class SessionInfo implements Serializable {
      *
      * @return true if the user is an Admin.
      */
-    public boolean isAdmin () {
-        LOGGER.debug ("isAdmin() called.");
-        Map<Faculty, UserState> map = user.getUserState ();
+    public boolean isAdmin() {
+        Map<Faculty, UserState> map = user.getUserState();
         for (UserState state : map.values ()) {
             if (state == UserState.ADMIN) {
                 return true;
@@ -79,8 +76,7 @@ public class SessionInfo implements Serializable {
         return false;
     }
 
-    public boolean isCommitteeMember () {
-        LOGGER.debug ("isCommitteeMember() called.");
+    public boolean isCommitteeMember() {
         Map<Faculty, UserState> map = user.getUserState ();
         for (UserState state : map.values ()) {
             if (state == UserState.EXAMINCOMMITTEEMEMBERS) {
@@ -90,8 +86,7 @@ public class SessionInfo implements Serializable {
         return false;
     }
 
-    public boolean isExaminer () {
-        LOGGER.debug ("isExaminer() called.");
+    public boolean isExaminer() {
         Map<Faculty, UserState> map = user.getUserState ();
         for (UserState state : map.values ()) {
             if (state == UserState.EXAMINER) {
@@ -101,8 +96,7 @@ public class SessionInfo implements Serializable {
         return false;
     }
 
-    public boolean isDeanery () {
-        LOGGER.debug ("isDeanery() called.");
+    public boolean isDeanery() {
         Map<Faculty, UserState> map = user.getUserState ();
         for (UserState state : map.values ()) {
             if (state == UserState.DEANERY) {
@@ -113,7 +107,6 @@ public class SessionInfo implements Serializable {
     }
 
     public boolean isPending () {
-        LOGGER.debug ("isPending() called.");
         Map<Faculty, UserState> map = user.getUserState ();
         for (UserState state : map.values ()) {
             if (state == UserState.PENDING) {
@@ -125,7 +118,6 @@ public class SessionInfo implements Serializable {
 
 
     public boolean isAnonymous () {
-        LOGGER.debug ("isAnonymous() called.");
         Map<Faculty, UserState> map = user.getUserState ();
         if (map == null || map.isEmpty ()) {
             return true;
@@ -134,7 +126,6 @@ public class SessionInfo implements Serializable {
     }
 
     public List<UserState> getUserStates () {
-        LOGGER.debug ("getUserStates() called.");
         if (user != null && user.getUserState () != null) {
             List<UserState> states = new ArrayList<> (user.getUserState ().values ());
 
@@ -145,7 +136,6 @@ public class SessionInfo implements Serializable {
     }
 
     public List<String> getUserFaculties () {
-        LOGGER.debug ("getUserFaculties() called.");
         if (user != null && user.getUserState () != null) {
             List<Faculty> faculties = new ArrayList<> (user.getUserState ().keySet ());
             List<String> facultiesName = new ArrayList<> ();

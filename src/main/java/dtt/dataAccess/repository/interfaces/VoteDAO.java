@@ -25,7 +25,7 @@ public interface VoteDAO {
 	 * @throws DataNotCompleteException if necessary values of the {@code vote} are not set
 	 * @throws InvalidInputException if input data is faulty
 	 */
-	public void add(Vote vote, Transaction transaction) throws DataNotCompleteException, InvalidInputException;
+	void add(Vote vote, Transaction transaction) throws DataNotCompleteException, InvalidInputException;
 	
 	/**
 	 * Remove a vote from the database for a specific circulation.
@@ -37,7 +37,7 @@ public interface VoteDAO {
 	 * @throws DataNotFoundException if the {@code vote} is not found in the database
 	 * @throws InvalidInputException if input data is faulty
 	 */
-	public void remove(Vote vote, Transaction transaction) throws DataNotFoundException, InvalidInputException;
+	void remove(Vote vote, Transaction transaction) throws DataNotFoundException, InvalidInputException;
 	
 	/**
 	 * Update a vote in the database for a specific circulation.
@@ -50,7 +50,7 @@ public interface VoteDAO {
 	 * @throws DataNotFoundException if the {@code vote} is not found in the database
 	 * @throws InvalidInputException if input data is faulty
 	 */
-	public void update(Vote vote, Transaction transaction) throws DataNotFoundException, InvalidInputException;
+	void update(Vote vote, Transaction transaction) throws DataNotFoundException, InvalidInputException;
 	
 	/**
 	 * Retrieve votes for a specific circulation from the database.
@@ -62,7 +62,7 @@ public interface VoteDAO {
 	 * @param transaction The transaction associated with this operation.
 	 * @return List of Votes belonging to the specified circulation. List can be empty if circulation doesn't exist or has no votes yet.
 	 */
-	public List<Vote> getVotes(Vote vote, Transaction transaction);
+	List<Vote> getVotes(Vote vote, Transaction transaction);
 	
 	/**
 	 * Retrieve a specific Vote for a specific user-circulation pair.
@@ -75,5 +75,5 @@ public interface VoteDAO {
 	 * @param transaction The transaction associated with this operation.
 	 * @return {@code true} if the data was found; {@code false} if no entry was found in the database.
 	 */
-	public boolean findVote(Vote vote, Transaction transaction);
+	boolean findVote(Vote vote, Transaction transaction);
 }

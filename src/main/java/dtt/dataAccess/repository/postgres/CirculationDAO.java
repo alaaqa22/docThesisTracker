@@ -11,6 +11,7 @@ import dtt.dataAccess.exceptions.*;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Default;
 import jakarta.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,6 +22,7 @@ import org.apache.logging.log4j.Logger;
  * @author Stefan Witka
  *
  */
+@Default
 @Named
 @ApplicationScoped
 public class CirculationDAO implements dtt.dataAccess.repository.interfaces.CirculationDAO {
@@ -63,13 +65,14 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 				throw new InvalidInputException("Creating circulation failed, no rows affected");
 			}
 		} catch (SQLException e) {
+			LOGGER.error("SQL exception in add(): " + e.getMessage());
 			switch (e.getSQLState()) {
 				case "23502":
 					throw new DataNotCompleteException(e.getLocalizedMessage(), e);
 				case "23505":
 					throw new KeyExistsException("unique_violation", e);
 				default:
-					throw new DBConnectionFailedException();
+					throw new DBConnectionFailedException(e.getMessage());
 			}
 		}
 		
@@ -83,7 +86,10 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 		statement.setString(3, circulation.getDoctoralSupervisor());
 		statement.setString(4, circulation.getDescription());
 		statement.setTimestamp(5, circulation.getStartDate());
+		LOGGER.debug("Timestamp start date set: " + circulation.getStartDate());
+
 		statement.setTimestamp(6, circulation.getEndDate());
+		LOGGER.debug("Timestamp end date set: " + circulation.getEndDate());
 		statement.setBoolean(7, circulation.isObligatory());
 		statement.setInt(8, circulation.getCreatedBy());
 		statement.setInt(9, circulation.getFacultyId());
@@ -106,6 +112,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 				throw new DataNotFoundException("Circulation not found in the database");
 			}
 		} catch (SQLException e) {
+			LOGGER.error("SQL exception in remove(): " + e.getMessage());
 			throw new DataNotFoundException("Circulation not found in the database.", e);
 		}
 		
@@ -124,8 +131,10 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 		try (PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
 			setCirculationStatement(circulation, statement);
 			statement.setInt(11, circulation.getId());
+			statement.executeUpdate();
 
 		} catch (SQLException e) {
+			LOGGER.error("SQL exception in update(): " + e.getMessage());
 			switch (e.getSQLState()) {
 				case "23514":
 					throw new InvalidInputException("check_violation", e);
@@ -164,6 +173,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 				}
 			}
 		} catch (SQLException e) {
+			LOGGER.error("SQL exception in getCirculationById(): " + e.getMessage());
 			throw new DataNotFoundException("Failed to retrieve circulation data.");
 		}
 	}
@@ -182,19 +192,19 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 
 		// Add filter conditions based on the provided properties
 		if (circulation.getTitle() != null) {
-			query.append(" AND title = ?");
+			query.append(" AND title ILIKE ?");
 		}
 
 		if (circulation.getDescription() != null) {
-			query.append(" AND description = ?");
+			query.append(" AND description ILIKE ?");
 		}
 
 		if (circulation.getDoctoralCandidateName() != null) {
-			query.append(" AND doctoral_candidate_name = ?");
+			query.append(" AND doctoral_candidate_name ILIKE ?");
 		}
 
 		if (circulation.getDoctoralSupervisor() != null) {
-			query.append(" AND doctoral_supervisor_name = ?");
+			query.append(" AND doctoral_supervisor_name ILIKE ?");
 		}
 
 		if (circulation.getStartDate() != null) {
@@ -212,19 +222,19 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 
 			// Set filter condition values
 			if (circulation.getTitle() != null) {
-				statement.setString(paramIndex++, circulation.getTitle());
+				statement.setString(paramIndex++,"%" + circulation.getTitle() + "%");
 			}
 
 			if (circulation.getDescription() != null) {
-				statement.setString(paramIndex++, circulation.getDescription());
+				statement.setString(paramIndex++,"%" + circulation.getDescription() + "%");
 			}
 
 			if (circulation.getDoctoralCandidateName() != null) {
-				statement.setString(paramIndex++, circulation.getDoctoralCandidateName());
+				statement.setString(paramIndex++, "%" +circulation.getDoctoralCandidateName() + "%");
 			}
 
 			if (circulation.getDoctoralSupervisor() != null) {
-				statement.setString(paramIndex++, circulation.getDoctoralSupervisor());
+				statement.setString(paramIndex++, "%" +circulation.getDoctoralSupervisor() + "%");
 			}
 
 			if (circulation.isObligatory()) {
@@ -262,6 +272,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 				}
 			}
 		} catch (SQLException e) {
+			LOGGER.error("SQL exception in getCirculations(): " + e.getMessage());
 			// Handle any exceptions that occur during the database operation
 			e.printStackTrace();
 		}
@@ -280,23 +291,23 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 
 		if (circulation != null) {
 			if (circulation.getId() > 0) {
-				query += " AND id = ?";
-				parameters.add(circulation.getId());
+				query += " AND id LIKE ?";
+				parameters.add("%" + circulation.getId() + "?");
 			}
 
 			if (circulation.getTitle() != null) {
-				query += " AND title = ?";
-				parameters.add(circulation.getTitle());
+				query += " AND title LIKE ?";
+				parameters.add("%" + circulation.getTitle() + "?");
 			}
 
 			if (circulation.getDoctoralCandidateName() != null) {
-				query += " AND doctoral_candidate_name = ?";
-				parameters.add(circulation.getDoctoralCandidateName());
+				query += " AND doctoral_candidate_name LIKE ?";
+				parameters.add("%" + circulation.getDoctoralCandidateName() + "?");
 			}
 
 			if (circulation.getDoctoralSupervisor() != null) {
-				query += " AND doctoral_supervisor_name = ?";
-				parameters.add(circulation.getDoctoralSupervisor());
+				query += " AND doctoral_supervisor_name LIKE ?";
+				parameters.add("%" + circulation.getDoctoralSupervisor() + "?");
 			}
 
 			if (circulation.getStartDate() != null) {
@@ -331,6 +342,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 			}
 		} catch (SQLException e) {
 			// Handle any specific exceptions or logging as needed
+			LOGGER.error("SQL exception in find getTotalCirculationNumber(): " + e.getMessage());
 			throw new DBConnectionFailedException("Failed to retrieve circulations.", e);
 		}
 		return 0;
@@ -358,6 +370,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 				return true; // Circulation with the title exists in the Database
 			}
 		} catch (SQLException e) {
+			LOGGER.error("SQL exception in find CirculationByTitle(): " + e.getMessage());
 			// Handle any SQL exceptions
 		}
 		return false;

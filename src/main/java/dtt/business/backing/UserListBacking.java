@@ -3,7 +3,7 @@ package dtt.business.backing;
 import dtt.business.utilities.Pagination;
 import dtt.business.utilities.SessionInfo;
 import dtt.dataAccess.exceptions.InvalidInputException;
-import dtt.dataAccess.repository.postgres.UserDAO;
+import dtt.dataAccess.repository.interfaces.UserDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
 import dtt.global.tansport.Faculty;

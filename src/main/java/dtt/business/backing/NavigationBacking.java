@@ -22,7 +22,7 @@ public class NavigationBacking implements Serializable {
 
     @Inject
     SessionInfo sessionInfo;
-    Logger logger = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger(NavigationBacking.class);
 
     /**
      * Logs out the current user.
@@ -32,7 +32,7 @@ public class NavigationBacking implements Serializable {
      * After successful logout, the user will be redirected to the login page.
      */
     public String logout() {
-        logger.info("User: " + sessionInfo.getUser().getId() + "logged out.");
+        LOGGER.debug("logout() called for user: " + sessionInfo.getUser().getId() + "logged out.");
         sessionInfo.setUser(null);
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
         externalContext.invalidateSession();

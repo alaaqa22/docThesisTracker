@@ -10,16 +10,21 @@ import dtt.dataAccess.exceptions.*;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Faculty;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Default;
 import jakarta.inject.Named;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A Postgres implementation for a class handling database access related to faculties.
  *
  * @author Stefan Witka
  */
+@Default
 @Named
 @ApplicationScoped
 public class FacultyDAO implements dtt.dataAccess.repository.interfaces.FacultyDAO {
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Constructor for FacultyDAO
@@ -30,6 +35,7 @@ public class FacultyDAO implements dtt.dataAccess.repository.interfaces.FacultyD
 
     @Override
     public void add(Faculty faculty, Transaction transaction) throws DataNotCompleteException, InvalidInputException, KeyExistsException {
+        LOGGER.debug("add() called: " + faculty.getName());
         String query = "INSERT INTO faculty (faculty_id, faculty_name) VALUES (? , ?)";
 
         try (PreparedStatement preparedStatement = transaction.getConnection().prepareStatement(query)) {
@@ -67,6 +73,7 @@ public class FacultyDAO implements dtt.dataAccess.repository.interfaces.FacultyD
     @Override
     public void remove(Faculty faculty, Transaction transaction)
             throws DataNotFoundException, DataNotCompleteException {
+        LOGGER.debug("remove() called: " + faculty.getName());
         String query = "DELETE FROM faculty WHERE faculty_id = ?";
         try (PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
             statement.setInt(1, faculty.getId());
@@ -84,6 +91,7 @@ public class FacultyDAO implements dtt.dataAccess.repository.interfaces.FacultyD
     @Override
     public void update(Faculty faculty, Transaction transaction)
             throws DataNotFoundException, DataNotCompleteException, KeyExistsException {
+        LOGGER.debug("update called: " + faculty.getName());
         String query = "UPDATE faculty SET faculty_name = ? WHERE faculty_id = ?";
         try (PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
             statement.setInt(1, faculty.getId());
@@ -101,6 +109,7 @@ public class FacultyDAO implements dtt.dataAccess.repository.interfaces.FacultyD
 
     @Override
     public List<Faculty> getFaculties(Transaction transaction) {
+        LOGGER.debug("getFaculties called().");
         List<Faculty> facultyList = new ArrayList<>();
         String query = "SELECT * FROM faculty";
         try (PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
@@ -120,21 +129,22 @@ public class FacultyDAO implements dtt.dataAccess.repository.interfaces.FacultyD
 
     @Override
     public boolean findFacultyByName(Faculty faculty, Transaction transaction) {
+
+        LOGGER.debug("findFacultyByName called: " + faculty.getName());
         String query = "SELECT * FROM faculty WHERE faculty_name = ?";
         try (PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
-            statement.executeQuery();
             statement.setString(1, faculty.getName());
-
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
                     faculty.setId(rs.getInt("faculty_id"));
-                    faculty.setId(rs.getInt("faculty_name"));
+                    faculty.setName(rs.getString("faculty_name"));
 
                     return true;
                 }
             }
 
         } catch (SQLException e) {
+            LOGGER.debug("An SQLException was thrown: " +  e.getMessage());
             throw new DBConnectionFailedException("Failed to find faculty by name.", e);
 
         }

@@ -1,5 +1,6 @@
 package dtt.dataAccess.repository.postgres;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.enterprise.inject.Default;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +23,6 @@ import dtt.global.tansport.Faculty;
 import dtt.global.tansport.User;
 import dtt.global.tansport.UserState;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Default;
 import jakarta.inject.Named;
 
 /**
@@ -31,6 +32,7 @@ import jakarta.inject.Named;
  * @author Stefan Witka
  *
  */
+
 @Default
 @ApplicationScoped
 @Named
@@ -89,10 +91,12 @@ public class UserDAO
                 || user.getEmail().trim().isEmpty()
                 || user.getFirstName().trim().isEmpty()
                 || user.getLastName().trim().isEmpty()) {
+            LOGGER.error("Data not complete exception! An input was null or empty.");
             throw new DataNotCompleteException();
         }
 
         if (findUserByEmail(user, transaction)) {
+            LOGGER.error("Key exists exception! Email is taken.");
             throw new KeyExistsException();
         }
 
@@ -111,6 +115,7 @@ public class UserDAO
             int affectedRows = statement.executeUpdate();
 
             if (affectedRows == 0) {
+                LOGGER.error("Invalid input exception! Zero rows were affected.");
                 throw new InvalidInputException(
                         "Creating user failed, no rows affected.");
             }
@@ -119,11 +124,13 @@ public class UserDAO
                 if (generatedKeys.next()) {
                     user.setId(generatedKeys.getInt(1));
                 } else {
+                    LOGGER.error("Invalid input exception! Creating user failed, no ID obtained.");
                     throw new InvalidInputException(
                             "Creating user failed, no ID obtained.");
                 }
             }
             if (!user.getUserState().isEmpty()) {
+                LOGGER.debug("User state is not empty trying to write into authentication.");
                 try (PreparedStatement statement2 = transaction.getConnection()
                         .prepareStatement(query2)) {
                     for (Map.Entry<Faculty, UserState> entry : user
@@ -138,6 +145,7 @@ public class UserDAO
             }
 
         } catch (SQLException e) {
+            LOGGER.error("Prepared statement failed! SQL exception thrown: " + e.getMessage());
             switch (e.getSQLState()) {
             case "23502":
                 throw new DataNotCompleteException(e.getLocalizedMessage(), e);
@@ -275,7 +283,7 @@ public class UserDAO
                     user.setFirstName(resultSet.getString("first_name"));
                     user.setLastName(resultSet.getString("last_name"));
                     user.setBirthDate(
-                            resultSet.getDate("birth_date").toString());
+                            resultSet.getDate("birth_date").toLocalDate());
                     user.setPasswordHashed(
                             resultSet.getString("password_hash"));
                     user.setPasswordSalt(resultSet.getString("password_salt"));
@@ -308,7 +316,7 @@ public class UserDAO
                     user.setFirstName(resultSet.getString("first_name"));
                     user.setLastName(resultSet.getString("last_name"));
                     user.setBirthDate(
-                            resultSet.getDate("birth_date").toString());
+                            resultSet.getDate("birth_date").toLocalDate());
                     user.setPasswordHashed(
                             resultSet.getString("password_hash"));
                     user.setPasswordSalt(resultSet.getString("password_salt"));
@@ -387,7 +395,7 @@ public class UserDAO
             }
 
             if (user != null && user.getBirthDate() != null) {
-                statement.setString(paramIndex++, user.getBirthDate());
+                statement.setDate(paramIndex++, Date.valueOf(user.getBirthDate()));
             }
 
             if (faculty != null) {
@@ -500,7 +508,7 @@ public class UserDAO
             }
 
             if (user != null && user.getBirthDate() != null) {
-                statement.setString(paramIndex++, user.getBirthDate());
+                statement.setDate(paramIndex++, Date.valueOf(user.getBirthDate()));
             }
 
             if (faculty != null) {
@@ -592,7 +600,7 @@ public class UserDAO
             }
 
             if (user != null && user.getBirthDate() != null) {
-                statement.setString(paramIndex++, user.getBirthDate());
+                statement.setDate(paramIndex++, Date.valueOf(user.getBirthDate()));
             }
 
             if (faculty != null) {
@@ -690,7 +698,7 @@ public class UserDAO
             }
 
             if (user != null && user.getBirthDate() != null) {
-                statement.setString(paramIndex++, user.getBirthDate());
+                statement.setDate(paramIndex++, Date.valueOf(user.getBirthDate()));
             }
 
             if (faculty != null) {
@@ -718,6 +726,7 @@ public class UserDAO
     public void updateOrAddAuth(final User user, final Transaction transaction)
             throws DataNotCompleteException, InvalidInputException {
         if (user.getUserState() != null || !user.getUserState().isEmpty()) {
+            LOGGER.debug("updateOrAddAuth() called for user: " + user.getFirstName());
             String query = "INSERT INTO authentication (user_id, faculty_id, "
                     + "user_level) VALUES (?, ?, ?) ON CONFLICT UPDATE";
             try (PreparedStatement statement = transaction.getConnection()
@@ -836,7 +845,7 @@ public class UserDAO
                 admin.setEmail(resultSet.getString("email_address"));
                 admin.setFirstName(resultSet.getString("firstname"));
                 admin.setLastName(resultSet.getString("lastname"));
-                admin.setBirthDate(resultSet.getDate("birthdate").toString());
+                admin.setBirthDate(resultSet.getDate("birthdate").toLocalDate());
 
                 adminList.add(admin);
             }

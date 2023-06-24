@@ -4,6 +4,9 @@
               xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
                                   https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_4_0.xsd">
 
+    <factory>
+        <exception-handler-factory>dtt.business.utilities.UncheckedExceptionHandlerFactory</exception-handler-factory>
+    </factory>
     <navigation-rule>
         <from-view-id>/views/deanery/userList.xhtml</from-view-id>
         <navigation-case>
@@ -43,6 +46,7 @@
             <to-view-id>/views/anonymous/Impressum.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
+
 
     <navigation-rule>
         <from-view-id>/views/deanery/userList.xhtml</from-view-id>

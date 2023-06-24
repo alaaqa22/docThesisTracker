@@ -1,5 +1,8 @@
 package dtt.global.tansport;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 /**
@@ -7,6 +10,7 @@ import java.util.Map;
  *   @author Hadi Abou Hassoun
  */
 public class User {
+    private static final Logger LOGGER = LogManager.getLogger(User.class);
     private int id; // The ID of the user
     private String password;
     private String passwordSalt;
@@ -21,7 +25,7 @@ public class User {
 
     private int roleId; // The role ID of the user
 
-    private String birthDate;
+    private LocalDate birthDate;
 
 
 
@@ -31,6 +35,7 @@ public class User {
 
 
     public User() {
+        LOGGER.debug("User() called.");
         userState = new HashMap<> ();
     }
 
@@ -40,6 +45,7 @@ public class User {
      * @param id The ID of the user
      */
     public void setId(int id) {
+        LOGGER.debug("setId called: " + id);
         this.id = id;
     }
 
@@ -48,6 +54,7 @@ public class User {
      * @param firstName The first name of the user
      */
     public void setFirstName(String firstName) {
+        LOGGER.debug("setFirstName() called: " + firstName);
         this.firstName = firstName;
     }
 
@@ -56,6 +63,7 @@ public class User {
      * @param lastName The last name of the user
      */
     public void setLastName(String lastName) {
+        LOGGER.debug("setLastName() called: " + lastName);
         this.lastName = lastName;
     }
 
@@ -72,6 +80,7 @@ public class User {
      * @param email The email of the user
      */
     public void setEmail(String email) {
+        LOGGER.debug("setEmail() called: " + email);
         this.email = email;
     }
 
@@ -81,6 +90,7 @@ public class User {
      * @param accountState The account state of the user
      */
     public void setAccountState(AccountState accountState) {
+        LOGGER.debug("setAccountState() called: " + accountState.toString());
         this.accountState = accountState;
     }
 
@@ -89,6 +99,7 @@ public class User {
      * @param userState The user state map
      */
     public void setUserState(Map<Faculty, UserState> userState) {
+        LOGGER.debug("setUserState() called.");
         this.userState = userState;
     }
 
@@ -106,7 +117,9 @@ public class User {
      * @return The ID of the user
      */
     public int getId() {
+        LOGGER.debug("getId() called: " + id);
         return id;
+
     }
 
     /**
@@ -122,6 +135,7 @@ public class User {
      * @return The first name of the user
      */
     public String getFirstName() {
+        LOGGER.debug("getFirstName() called: " + firstName);
         return firstName;
     }
 
@@ -130,6 +144,7 @@ public class User {
      * @return The last name of the user
      */
     public String getLastName() {
+        LOGGER.debug("getLastName() called:" + lastName);
         return lastName;
     }
 
@@ -138,6 +153,7 @@ public class User {
      * @return The email of the user
      */
     public String getEmail() {
+        LOGGER.debug("getEmail() called: " + email);
         return email;
     }
 
@@ -151,6 +167,7 @@ public class User {
      * @return The account state of the user
      */
     public AccountState getAccountState() {
+        LOGGER.debug("getAccountState() called.");
         return accountState;
     }
 
@@ -159,6 +176,7 @@ public class User {
      * @return The user state map
      */
     public Map<Faculty, UserState> getUserState() {
+        LOGGER.debug("getUserState() called.");
         return userState;
     }
 
@@ -195,11 +213,16 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-    public String getBirthDate () {
+    public LocalDate getBirthDate () {
+        LOGGER.debug("getBirthDate() called: ");
+        if (birthDate != null) {
+            LOGGER.debug(birthDate.toString());
+        }
         return birthDate;
     }
 
-    public void setBirthDate (String birthDate) {
+    public void setBirthDate(LocalDate birthDate) {
+        LOGGER.debug("setBirthDate called: " + birthDate.toString());
         this.birthDate = birthDate;
     }
 

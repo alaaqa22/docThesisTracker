@@ -22,7 +22,7 @@ import jakarta.inject.Inject;
 public class UniqueCirculationNameValidator implements Validator<String> {
 
     /** circulationDAO object for database access. */
-    @Inject
+    //@Inject
     private CirculationDAO circulationDAO;
 
     /**
@@ -57,6 +57,7 @@ public class UniqueCirculationNameValidator implements Validator<String> {
     private boolean isValueUnique(final String circulationName) {
         Circulation circ = new Circulation();
         circ.setTitle(circulationName);
+        circulationDAO = new dtt.dataAccess.repository.postgres.CirculationDAO();
         try (Transaction transaction = new Transaction()) {
             return !circulationDAO.findCirculationByTitle(circ, transaction);
         }

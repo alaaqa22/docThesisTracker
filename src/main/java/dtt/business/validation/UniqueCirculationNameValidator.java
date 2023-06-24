@@ -9,7 +9,6 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
-import jakarta.inject.Inject;
 
 /**
  * A validator that verifies the uniqueness of a given Circulation Name. It
@@ -22,7 +21,6 @@ import jakarta.inject.Inject;
 public class UniqueCirculationNameValidator implements Validator<String> {
 
     /** circulationDAO object for database access. */
-    //@Inject
     private CirculationDAO circulationDAO;
 
     /**
@@ -37,7 +35,7 @@ public class UniqueCirculationNameValidator implements Validator<String> {
             final UIComponent component, final String value)
             throws ValidatorException {
         String circTitle = value;
-        if (!isValueUnique(circTitle)) {
+        if (!isValueUnique(context, circTitle)) {
             FacesMessage msg = new FacesMessage(
                     "A circulation with the same title "
                             + "already exists in the Database.");
@@ -50,16 +48,24 @@ public class UniqueCirculationNameValidator implements Validator<String> {
     /**
      * check if the CirculationName is unique.
      *
+     * @param context FacesContext for the request we are processing.
      * @param circulationName : The Name of the Circulation.
      * @return {@code true} if the Circulation name is unique, {@code false}
      *         otherwise.
      */
-    private boolean isValueUnique(final String circulationName) {
+    private boolean isValueUnique(final FacesContext context,
+            final String circulationName) {
         Circulation circ = new Circulation();
         circ.setTitle(circulationName);
-        circulationDAO = new dtt.dataAccess.repository.postgres.CirculationDAO();
+        circulationDAO = getCirculationDAO(context);
         try (Transaction transaction = new Transaction()) {
             return !circulationDAO.findCirculationByTitle(circ, transaction);
         }
     }
+
+    private CirculationDAO getCirculationDAO(final FacesContext context) {
+        return context.getApplication().evaluateExpressionGet(context,
+                "#{circulationDAO}", CirculationDAO.class);
+    }
+
 }

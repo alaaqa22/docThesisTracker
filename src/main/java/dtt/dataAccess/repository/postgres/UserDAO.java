@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import jakarta.enterprise.inject.Default;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,12 +37,10 @@ import jakarta.inject.Named;
 @Default
 @Named
 @ApplicationScoped
-public class UserDAO
-        implements dtt.dataAccess.repository.interfaces.UserDAO {
+public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 
     /** Initialize Logger. */
-    private static final Logger LOGGER = LogManager
-            .getLogger(CirculationDAO.class);
+    private static final Logger LOGGER = LogManager.getLogger(UserDAO.class);
 
     /**
      * Constructor for UserDAO.
@@ -712,7 +711,8 @@ public class UserDAO
                     int i = 1;
                     statement.setInt(i++, user.getId());
                     statement.setInt(i++, entry.getKey().getId());
-                    statement.setString(i++, entry.getValue().name());
+                    statement.setObject(i++, entry.getValue(),
+                            java.sql.Types.OTHER);
                     statement.executeUpdate();
                 }
             } catch (SQLException e) {
@@ -721,7 +721,7 @@ public class UserDAO
                     throw new InvalidInputException("foreign_key_violation", e);
 
                 default:
-                    throw new DBConnectionFailedException("SQL Error",e);
+                    throw new DBConnectionFailedException("SQL Error", e);
                 }
             }
         } else {
@@ -846,8 +846,7 @@ public class UserDAO
             statement.setInt(1, user.getId());
 
             try (ResultSet resultSet = statement.executeQuery()) {
-                Map<Faculty, UserState> stateMap =
-                        new HashMap<Faculty, UserState>();
+                Map<Faculty, UserState> stateMap = new HashMap<Faculty, UserState>();
                 while (resultSet.next()) {
                     Faculty f = new Faculty();
                     f.setId(resultSet.getInt("faculty_id"));

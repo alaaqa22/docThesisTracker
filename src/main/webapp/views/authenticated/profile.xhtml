@@ -5,6 +5,11 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 <f:view>
+    <f:metadata>
+        <f:viewAction action="#{profileBacking.load()}"/>
+        <f:viewParam name="id" value="#{profileBacking.user.id}"/>
+    </f:metadata>
+
     <h:head>
         <title>Profile</title>
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"/>
@@ -12,57 +17,75 @@
 
     <h:body>
         <ui:composition template="../anonymous/template.xhtml">
-        <ui:define name="mainContent">
-        <div class="container">
-            <h:form>
+            <ui:define name="mainContent">
+                <div class="container">
+                    <h:form>
 
-                <h3>Profile</h3>
+                        <h3>Profile</h3>
 
-                <f:metadata>
-                    <f:viewAction action="#{profileBacking.load()}"/>
-                    <f:viewParam name="id" value="#{profileBacking.user.id}" />
-                </f:metadata>
 
-                <div class="form-group">
-                    <label for="firstName">First Name:</label>
-                    <h:inputText id="firstName" value="#{profileBacking.user.firstName}" class="form-control" />
+                        <div class="form-group">
+                            <label for="firstName-itxt">First Name:</label>
+                            <h:inputText id="firstName-itxt" value="#{profileBacking.user.firstName}"
+                                         class="form-control"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastName-itxt">Last Name:</label>
+                            <h:inputText id="lastName-itxt" value="#{profileBacking.user.lastName}"
+                                         class="form-control"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email-itxt">Email:</label>
+                            <h:inputText id="email-itxt" value="#{profileBacking.newEmail}" class="form-control">
+                                <f:validator validatorId="EmailAddressAvailbilityValidator"/>
+                                <f:validator validatorId="EmailAddressSyntaxValidator"/>
+                            </h:inputText>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password-iscrt">Password:</label>
+                            <h:inputSecret id="password-iscrt" value="#{profileBacking.user.password}"
+                                           validator="PasswordValidator" class="form-control"/>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="birthDate-itxt">Birth Date:</label>
+                            <h:inputText id="birthDate-itxt" type="localdate" value="#{profileBacking.user.birthDate}"
+                                         class="form-control">
+                                <f:convertDateTime type="localDate"/>
+                            </h:inputText>
+                            <h:message for="birthDate-itxt" styleClass="message"/>
+                        </div>
+
+                        <!--set user state select one menu -->
+
+                        <div>
+                            <h:outputLabel for="user-states-slcom" value="Set user state: "
+                                           rendered="#{sessionInfo.deanery or sessionInfo.admin}"/>
+
+                            <h:selectOneMenu id="user-states-slcom" value="#{profileBacking.currentUserState}"
+                                             rendered="#{sessionInfo.deanery or sessionInfo.admin}">
+                                <f:selectItems value="#{profileBacking.userStates}" var="state"
+                                               itemValue="#{state}"/>
+                            </h:selectOneMenu>
+                        </div>
+
+                        <!--save button -->
+
+                        <h:commandButton id="save-cbtn" value="Save" action="#{profileBacking.save()}"
+                                         class="btn btn-primary"/>
+
+                        <!--delete button -->
+
+                        <h:commandButton id="delete-cbtn" value="Delete" action="#{profileBacking.deleteProfile()}"
+                                         class="btn btn-danger"/>
+
+                    </h:form>
                 </div>
-
-                <div class="form-group">
-                    <label for="lastName">Last Name:</label>
-                    <h:inputText id="lastName" value="#{profileBacking.user.lastName}" class="form-control" />
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email:</label>
-                    <h:inputText id="email" value="#{profileBacking.user.email}" class="form-control" />
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <h:inputSecret id="password" value="#{profileBacking.user.password}" validator="PasswordValidator" class="form-control" />
-                </div>
-
-                <div class="form-group">
-                    <label for="birthDate">Birth Date:</label>
-                    <h:inputText id="birthDate" value="#{profileBacking.user.birthDate}" class="form-control" />
-                </div>
-
-                <h:commandButton value="Save" action="#{profileBacking.save()}" class="btn btn-primary" />
-                <h:commandButton value="Delete" action="#{profileBacking.deleteProfile()}" class="btn btn-danger" />
-
-                <div>
-                    <h:outputLabel for="user-statesslcom" value="Set account state:" rendered="#{sessionInfo.deanery}"/>
-                    <h:selectOneMenu id="user-statesslcom" value="#{profileBacking.currentState}" rendered="#{sessionInfo.deanery or sessionInfo.admin}">
-                        <f:selectItems value="#{profileBacking.accountStates}" var="state"
-                                       itemValue="#{state}"/>
-                    </h:selectOneMenu>
-                </div>
-
-            </h:form>
-
-        </div>
-        </ui:define>
+            </ui:define>
         </ui:composition>
     </h:body>
 </f:view>

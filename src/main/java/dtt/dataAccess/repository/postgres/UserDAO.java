@@ -715,7 +715,9 @@ public class UserDAO
             LOGGER.debug("updateOrAddAuth() called for user: "
                     + user.getFirstName());
             String query = "INSERT INTO authentication (user_id, faculty_id, "
-                    + "user_level) VALUES (?, ?, ?) ON CONFLICT UPDATE";
+                    + "user_level) VALUES (?, ?, ?) "
+                    + "ON CONFLICT (user_id, faculty_id) "
+                    + "DO UPDATE SET user_level = EXCLUDED.user_level";
             try (PreparedStatement statement = transaction.getConnection()
                     .prepareStatement(query)) {
                 for (Map.Entry<Faculty, UserState> entry : user.getUserState()
@@ -732,11 +734,11 @@ public class UserDAO
                     throw new InvalidInputException("foreign_key_violation", e);
 
                 default:
-                    throw new DBConnectionFailedException();
+                    throw new DBConnectionFailedException("SQL Error",e);
                 }
             }
         } else {
-            throw new DataNotCompleteException();
+            throw new DataNotCompleteException("Empty UserState to add");
         }
 
     }

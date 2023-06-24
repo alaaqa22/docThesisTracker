@@ -56,9 +56,6 @@ public class UserDAO
         String query = "INSERT INTO \"user\" (email_address, first_name,"
                 + " last_name, birth_date, password_hash, password_salt) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
-        String query2 = "INSERT INTO authentication (user_id, faculty_id,"
-                + " user_level) VALUES (?, ?, ?) ON CONFLICT UPDATE";
-
         if (user.getEmail() == null || user.getFirstName() == null
                 || user.getLastName() == null
                 || user.getEmail().trim().isEmpty()
@@ -108,17 +105,7 @@ public class UserDAO
             if (!user.getUserState().isEmpty()) {
                 LOGGER.debug("User state is not empty "
                         + "trying to write into authentication.");
-                try (PreparedStatement statement2 = transaction.getConnection()
-                        .prepareStatement(query2)) {
-                    for (Map.Entry<Faculty, UserState> entry : user
-                            .getUserState().entrySet()) {
-                        int j = 1;
-                        statement2.setInt(j++, user.getId());
-                        statement2.setInt(j++, entry.getKey().getId());
-                        statement2.setString(j++, entry.getValue().name());
-                        statement2.executeUpdate();
-                    }
-                }
+                updateOrAddAuth(user, transaction);
             }
 
         } catch (SQLException e) {

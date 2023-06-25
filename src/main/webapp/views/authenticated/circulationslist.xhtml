@@ -109,7 +109,15 @@
 
                             </h:column>
 
-                            <!---  Startzeit-->
+                            <!-- Description -->
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Description"/>
+
+                                </f:facet>
+                                <h:outputText value="#{circulation.description}"/>
+                            </h:column>
+
                             <!-- Startzeit -->
                             <h:column>
                                 <f:facet name="header">

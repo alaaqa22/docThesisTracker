@@ -26,35 +26,35 @@
             <div class="container">
                 <h2>Circulation Details</h2>
                 <div class="form-group">
-                    <label for="title-otxt">Title:</label>
-                    <h:inputText id="title-otxt" value="#{circulationDetailsBacking.circulation.title}"
-                                 readonly="#{!sessionInfo.deanery}" class="form-control"/>
+                    <label for="title-itxt">Title:</label>
+                    <h:inputText id="title-itxt" value="#{circulationDetailsBacking.circulation.title}"
+                                 readonly="#{sessionInfo.examiner}" class="form-control"/>
                 </div>
 
                 <div class="form-group">
-                    <label for="doctoralcandidatename-otxt">Doctoral Candidate Name:</label>
-                    <h:inputText id="doctoralcandidatename-otxt"
+                    <label for="doctoralcandidatename-itxt">Doctoral Candidate Name:</label>
+                    <h:inputText id="doctoralcandidatename-itxt"
                                  value="#{circulationDetailsBacking.circulation.doctoralCandidateName}"
-                                 readonly="#{!sessionInfo.deanery}" class="form-control"/>
+                                 readonly="#{sessionInfo.examiner}" class="form-control"/>
                 </div>
 
                 <div class="form-group">
-                    <label for="doctoralsupervisororotxt">Doctoral Supervisor:</label>
-                    <h:inputText id="doctoralsupervisororotxt"
+                    <label for="doctoralsupervisoror-itxt">Doctoral Supervisor:</label>
+                    <h:inputText id="doctoralsupervisoror-itxt"
                                  value="#{circulationDetailsBacking.circulation.doctoralSupervisor}"
-                                 readonly="#{!sessionInfo.deanery}" class="form-control"/>
+                                 readonly="#{sessionInfo.examiner}" class="form-control"/>
                 </div>
 
                 <div class="form-group">
-                    <label for="description-otxt">Description:</label>
-                    <h:inputText id="description-otxt" value="#{circulationDetailsBacking.circulation.description}"
-                                 readonly="#{!sessionInfo.deanery}" class="form-control"/>
+                    <label for="description-itxt">Description:</label>
+                    <h:inputText id="description-itxt" value="#{circulationDetailsBacking.circulation.description}"
+                                 readonly="#{sessionInfo.examiner}" class="form-control"/>
                 </div>
 
                 <div class="form-group">
-                    <label for="start-dateotxt">Start Date:</label>
-                    <h:inputText id="start-dateotxt" value="#{circulationDetailsBacking.startDate}"
-                                 readonly="#{!sessionInfo.deanery}" class="form-control">
+                    <label for="start-date-itxt">Start Date:</label>
+                    <h:inputText id="start-date-itxt" value="#{circulationDetailsBacking.startDate}"
+                                 readonly="#{sessionInfo.examiner}" class="form-control">
                         <f:convertDateTime type="localDate"/>
                     </h:inputText>
                 </div>
@@ -62,26 +62,26 @@
                 <div class="form-group">
                     <label for="end-date-itxt">End Date:</label>
                     <h:inputText id="end-date-itxt" value="#{circulationDetailsBacking.endDate}" required="true"
-                                 readonly="#{!sessionInfo.deanery}" class="form-control">
+                                 readonly="#{sessionInfo.examiner}" class="form-control">
                         <f:convertDateTime type="localDate"/>
                     </h:inputText>
                 </div>
 
                 <div class="form-group">
-                    <label for="created-byotxt">Created By:</label>
-                    <h:outputText id="created-byotxt" value="#{circulationDetailsBacking.circulation.createdBy}"
-                                  class="form-control"/>
+                    <h:outputLabel for="created-by-otxt" value="Created By:" rendered="#{!sessionInfo.examiner}" />
+                    <h:outputText id="created-by-otxt" value="#{circulationDetailsBacking.circulation.createdBy}"
+                                  class="form-control" rendered="#{!sessionInfo.examiner}"/>
                 </div>
 
                 <div class="form-group">
-                    <label for="faculty-idotxt">Faculty ID:</label>
-                    <h:outputText id="faculty-idotxt" value="#{circulationDetailsBacking.circulation.facultyId}"
-                                  class="form-control"/>
+                    <h:outputLabel for="faculty-id-otxt" value="Faculty ID:" rendered="#{!sessionInfo.examiner}" />
+                    <h:outputText id="faculty-id-otxt" value="#{circulationDetailsBacking.circulation.facultyId}"
+                                  class="form-control" rendered="#{!sessionInfo.examiner}"/>
                 </div>
 
                 <div class="form-group">
-                    <label for="vote-optionsslcom">Select vote:</label>
-                    <h:selectOneMenu id="vote-optionsslcom" value="#{circulationDetailsBacking.choice}"
+                    <label for="vote-options-slcom">Select vote:</label>
+                    <h:selectOneMenu id="vote-options-slcom" value="#{circulationDetailsBacking.choice}"
                                      class="form-control">
                         <f:selectItems value="#{circulationDetailsBacking.options}" var="option"
                                        itemValue="#{option}" itemLabel="#{option.label}"/>

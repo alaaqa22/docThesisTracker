@@ -199,6 +199,7 @@ public class CirculationDetailsBacking implements Serializable {
     }
 
     public String getReason() {
+        reason = vote.getDescription();
         return reason;
     }
 
@@ -215,6 +216,7 @@ public class CirculationDetailsBacking implements Serializable {
     }
 
     public Options getChoice() {
+        choice = vote.getSelection();
         return choice;
     }
 

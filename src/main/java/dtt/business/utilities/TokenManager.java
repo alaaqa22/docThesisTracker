@@ -54,6 +54,14 @@ public class TokenManager {
     }
 
     /**
+     * Returns a User for a token.
+     * @param token
+     * @return
+     */
+    public User getUserForToken(String token) {
+        return tokenStore.get(token).user;
+    }
+    /**
      * Looks up if a token exists for the user. Only checks if the email matches.
      *
      * @param token The token to be checked

@@ -7,8 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.time.Duration;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TokenManagerTest {
 
@@ -21,6 +20,19 @@ public class TokenManagerTest {
         user = new User();
         user.setEmail("example@example.com");
 
+    }
+
+    @Test
+    public void testGetUserForToken() {
+        String token = tokenManager.generateToken(user);
+        assertEquals(user, tokenManager.getUserForToken(token));
+    }
+
+    @Test
+    public void testGetUserForTokenMisMatch() {
+        String token = tokenManager.generateToken(user);
+        User user = new User();
+        assertNotEquals(user, tokenManager.getUserForToken(token));
     }
 
     @Test

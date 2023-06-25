@@ -48,6 +48,9 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
     public UserDAO() {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void add(final User user, final Transaction transaction)
             throws DataNotCompleteException, KeyExistsException,
@@ -126,6 +129,9 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void remove(final User user, final Transaction transaction)
             throws DataNotFoundException {
@@ -148,6 +154,9 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void update(final User user, final Transaction transaction)
             throws DataNotFoundException, InvalidInputException,
@@ -229,6 +238,9 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void getUserById(final User user, final Transaction transaction)
             throws DataNotFoundException {
@@ -262,6 +274,9 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean findUserByEmail(final User user,
             final Transaction transaction) {
@@ -299,6 +314,9 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
         return false; // User with the specified email not found in the database
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<User> getUsers(final User user, final Faculty faculty,
             final UserState auth, final Transaction transaction,
@@ -397,6 +415,9 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
         return userList;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<User> getUsers(final User user, final Transaction transaction,
             final int offset, final int count) throws InvalidInputException {
@@ -512,6 +533,9 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
         return userList;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getTotalUserNumber(final User user, final Faculty faculty,
             final UserState auth, final Transaction transaction) {
@@ -594,6 +618,9 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
         return -1;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getTotalUserNumber(final User user,
             final Transaction transaction) throws InvalidInputException {
@@ -694,6 +721,9 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
         return -1;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateOrAddAuth(final User user, final Transaction transaction)
             throws DataNotCompleteException, InvalidInputException {
@@ -730,6 +760,9 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void removeAuth(final User user, final Transaction transaction)
             throws DataNotFoundException, DataNotCompleteException {
@@ -757,6 +790,9 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addAdmin(final User user, final Transaction transaction)
             throws KeyExistsException, InvalidInputException {
@@ -784,6 +820,9 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void removeAdmin(final User user, final Transaction transaction)
             throws DataNotFoundException {
@@ -803,6 +842,9 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<User> getAdmins(final Transaction transaction) {
         List<User> adminList = new ArrayList<>();
@@ -846,7 +888,8 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
             statement.setInt(1, user.getId());
 
             try (ResultSet resultSet = statement.executeQuery()) {
-                Map<Faculty, UserState> stateMap = new HashMap<Faculty, UserState>();
+                Map<Faculty, UserState> stateMap =
+                        new HashMap<Faculty, UserState>();
                 while (resultSet.next()) {
                     Faculty f = new Faculty();
                     f.setId(resultSet.getInt("faculty_id"));

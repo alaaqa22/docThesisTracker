@@ -33,14 +33,15 @@ public class FacultyDAO implements dtt.dataAccess.repository.interfaces.FacultyD
 
     }
 
+
     @Override
     public void add(Faculty faculty, Transaction transaction) throws DataNotCompleteException, InvalidInputException, KeyExistsException {
         LOGGER.debug("add() called: " + faculty.getName());
-        String query = "INSERT INTO faculty (faculty_id, faculty_name) VALUES (? , ?)";
+        String query = "INSERT INTO faculty (faculty_name) VALUES (?)";
 
-        try (PreparedStatement preparedStatement = transaction.getConnection().prepareStatement(query)) {
-            preparedStatement.setInt(1, faculty.getId());
-            preparedStatement.setString(2, faculty.getName());
+        try (PreparedStatement preparedStatement = transaction.getConnection().prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, faculty.getName());
+
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 0) {
                 throw new InvalidInputException("Creating faculty failed, no rows affected.");
@@ -51,6 +52,7 @@ public class FacultyDAO implements dtt.dataAccess.repository.interfaces.FacultyD
                 } else {
                     throw new InvalidInputException("Creating faculty failed, no ID obtained.");
                 }
+
             }
 
         } catch (SQLException e) {
@@ -94,8 +96,8 @@ public class FacultyDAO implements dtt.dataAccess.repository.interfaces.FacultyD
         LOGGER.debug("update called: " + faculty.getName());
         String query = "UPDATE faculty SET faculty_name = ? WHERE faculty_id = ?";
         try (PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
-            statement.setInt(1, faculty.getId());
-            statement.setString(2, faculty.getName());
+            statement.setString(1, faculty.getName());
+            statement.setInt(2, faculty.getId());
 
             int affectedRows = statement.executeUpdate();
 
@@ -144,13 +146,14 @@ public class FacultyDAO implements dtt.dataAccess.repository.interfaces.FacultyD
             }
 
         } catch (SQLException e) {
-            LOGGER.debug("An SQLException was thrown: " +  e.getMessage());
+            LOGGER.debug("An SQLException was thrown: " + e.getMessage());
             throw new DBConnectionFailedException("Failed to find faculty by name.", e);
 
         }
 
         return false;
     }
+
     public Faculty getFacultyById(int id, Transaction transaction) {
         Faculty faculty = null;
         String query = "SELECT * FROM faculty WHERE faculty_id = ?";

@@ -52,6 +52,20 @@ public class TokenManager {
         LOGGER.debug("lookupToken called for: " + token);
         return tokenStore.containsKey(token) && !isTokenExpired(token);
     }
+
+    /**
+     * Looks up if a token exists for the user. Only checks if the email matches.
+     *
+     * @param token The token to be checked
+     * @param user The user that checks the token.
+     * @return True when the given token is mapped to the user in the tokenStore.
+     */
+    public boolean lookupTokenForUser(String token, User user) {
+        if (lookupToken(token)) {
+            return user.getEmail().equals(tokenStore.get(token).getUser().getEmail());
+        }
+        return false;
+    }
     /**
      * Clears expired tokens from the token store.
      */
@@ -85,10 +99,14 @@ public class TokenManager {
         return expirationTime.isBefore(Instant.now());
     }
 
+    /**
+     * Sets the duration in minutes, how long the token lives.
+     * @param ofMinutes Minutes the token is valid.
+     */
     public void setTokenExpirationDuration(Duration ofMinutes) {
+        // This class is mostly needed to test token expiry.
         tokenExpirationDuration = ofMinutes;
     }
-
     /**
      * Represents the token data associated with a user.
      */

@@ -1,13 +1,8 @@
 package dtt.business.utilities;
 
 
-import dtt.dataAccess.repository.postgres.CirculationDAO;
-import dtt.dataAccess.utilities.Transaction;
-import dtt.global.tansport.Circulation;
+
 import dtt.global.utilities.ConfigReader;
-import jakarta.inject.Inject;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
@@ -19,12 +14,10 @@ import java.util.List;
 public abstract class Pagination<T> {
 
     protected int maxItems = Integer.parseInt(ConfigReader.getProperty(ConfigReader.PAGINATION_MAX_ITEMS));
-    private int currentPage;
     protected int totalNumOfPages;
+    private int currentPage;
     private List<T> entries;
     private String sortColumn;
-    private CirculationDAO circDAO = new CirculationDAO();
-    private final Logger logger = LogManager.getLogger ();
 
 
     public Pagination() {
@@ -35,7 +28,6 @@ public abstract class Pagination<T> {
      * Load data of next page, unless you are already on the last page.
      */
     public void nextPage() {
-        logger.fatal ("start nextPage");
         if (currentPage < totalNumOfPages) {
             setCurrentPage(currentPage + 1);
             loadData();
@@ -52,7 +44,6 @@ public abstract class Pagination<T> {
      * Load data on last page.
      */
     public void lastPage() {
-        logger.fatal ("last nextPage");
         setCurrentPage(totalNumOfPages);
         loadData();
 
@@ -63,18 +54,6 @@ public abstract class Pagination<T> {
      */
     public void firstPage() {
         setCurrentPage(1);
-        loadData();
-
-    }
-
-
-    /**
-     * Sort the data in the list by a certain column.
-     *
-     * @param column column identifier to sort by.
-     */
-    public void sortBy(String column) {
-        sortColumn = column;
         loadData();
 
     }
@@ -95,9 +74,8 @@ public abstract class Pagination<T> {
     }
 
     /**
-     * Get the total pages that will be needed to arrange the pages.
+     * Get the total number of needed pages.
      *
-     * // @return Total number of Pages.
      */
     public abstract int getTotalNumOfPages();
 
@@ -132,10 +110,10 @@ public abstract class Pagination<T> {
     public boolean isLastPage() {
         return currentPage == totalNumOfPages;
     }
+
     public boolean isTotalNumberOfPagesOne() {
         return getTotalNumOfPages() == 1;
     }
-
 
 
 }

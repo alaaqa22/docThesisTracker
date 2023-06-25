@@ -13,50 +13,54 @@
 <h:body>
     <ui:composition template="template.xhtml">
 
-    <ui:define name="mainContent">
-    <div class="container">
-        <div class="back jumbotron text-center" > <!-- Bootstrap Jumbotron für Highlight-Effekt -->
-            <h2 class="display-5">Willkommen auf DocTheisesTracker!</h2>
-        </div>
-        <div class="row justify-content-center mt-5">
-            <div class="col-md-6">
-                <h:form id="login-form">
-                    <h3 class="text-center mb-4">Login</h3>
+        <ui:define name="mainContent">
+            <div class="container">
+                <div class="back jumbotron text-center"> <!-- Bootstrap Jumbotron für Highlight-Effekt -->
+                    <h2 class="display-5">Willkommen auf DocTheisesTracker!</h2>
+                </div>
+                <div class="row justify-content-center mt-5">
+                    <div class="col-md-6">
+                        <h:form id="login-form">
+                            <h3 class="text-center mb-4">Login</h3>
 
-                    <div class="form-group">
-                        <label for="email-itxt">Email:</label>
-                        <h:inputText id="email-itxt" value="#{loginBacking.user.email}" required="true"
-                                     requiredMessage="Bitte geben Sie Ihre E-Mail-Adresse ein." class="form-control"/>
-                        <h:message for="email-itxt" styleClass="text-danger"/>
-                    </div>
+                            <div class="form-group">
+                                <label for="email-itxt">Email:</label>
+                                <h:inputText id="email-itxt" value="#{loginBacking.user.email}" required="true"
+                                             requiredMessage="Bitte geben Sie Ihre E-Mail-Adresse ein."
+                                             class="form-control"/>
+                                <h:message for="email-itxt" styleClass="text-danger"/>
+                            </div>
 
-                    <div class="form-group">
-                        <label for="password-iscrt">Passwort:</label>
-                        <h:inputSecret id="password-iscrt" value="#{loginBacking.user.password}" required="true"
-                                       requiredMessage="Bitte geben Sie Ihr Passwort ein" class="form-control"/>
-                        <h:message for="password-iscrt" styleClass="text-danger"/>
-                    </div>
+                            <div class="form-group">
+                                <label for="password-iscrt">Passwort:</label>
+                                <h:inputSecret id="password-iscrt" value="#{loginBacking.user.password}" required="true"
+                                               requiredMessage="Bitte geben Sie Ihr Passwort ein" class="form-control"/>
+                                <h:message for="password-iscrt" styleClass="text-danger"/>
+                            </div>
 
-                    <div class="text-center">
-                        <h:commandButton value="Anmelden" action="#{loginBacking.login()}"
-                                         styleClass="btn btn-primary"/>
-                    </div>
+                            <div class="text-center">
+                                <h:commandButton value="Anmelden" action="#{loginBacking.login()}"
+                                                 styleClass="btn btn-primary"/>
+                            </div>
 
-                    <div class="text-center mt-3">
-                        <h:outputLink value="#" styleClass="text-secondary"
-                                      action="#{loginBacking.forgetPass()}">Passwort vergessen?</h:outputLink>
+                        </h:form>
+
+                        <h:form>
+                            <div class="text-center mt-3">
+                                <h:commandLink action="#{loginBacking.forgetPass()}" value="Passwort vergessen?"
+                                               styleClass="text-secondary"/>
+                            </div>
+                        </h:form>
+                        <h:form>
+                            <div class="text-center mt-3">
+                                <h:commandLink action="#{loginBacking.register()}" value="Registrieren"
+                                               styleClass="text-secondary"/>
+                            </div>
+                        </h:form>
                     </div>
-                </h:form>
-                <h:form>
-                    <div class="text-center mt-3">
-                        <h:commandLink action="#{loginBacking.register()}" value="Registrieren"
-                                       styleClass="text-secondary"/>
-                    </div>
-                </h:form>
+                </div>
             </div>
-        </div>
-    </div>
-    </ui:define>
+        </ui:define>
     </ui:composition>
 </h:body>
 

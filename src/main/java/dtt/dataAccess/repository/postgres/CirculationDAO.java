@@ -593,7 +593,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
     public int getTotalCurrentCirculationNumber (Circulation circulation, Transaction transaction) {
         LOGGER.debug ("getTotalCurrentCirculationNumber() called.");
         StringBuilder query = new StringBuilder ();
-        query.append ("SELECT COUNT(*) FROM circulation WHERE end_date > NOW()");
+        query.append ("SELECT COUNT(*) FROM circulation WHERE DATE(end_date) > DATE(NOW())");
 
         // Add filter conditions based on the provided properties
         if (circulation.getTitle () != null) {
@@ -657,14 +657,14 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
             throw new DBConnectionFailedException ("Failed to retrieve total number of current circulations.", e);
         }
 
-        return 0;
+        return -1;
     }
 
 
     public int getTotalCompletedCirculationNumber (Circulation circulation, Transaction transaction) {
         LOGGER.debug ("getTotalCompletedCirculationNumber() called.");
         StringBuilder query = new StringBuilder ();
-        query.append ("SELECT COUNT(*) FROM circulation WHERE end_date < NOW()");
+        query.append ("SELECT COUNT(*) FROM circulation WHERE DATE(end_date) < DATE(NOW())");
 
         // Add filter conditions based on the provided properties
         if (circulation.getTitle () != null) {
@@ -730,7 +730,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
             throw new DBConnectionFailedException ("Failed to retrieve total number of completed circulations.", e);
         }
 
-        return 0;
+        return -1;
     }
 
 

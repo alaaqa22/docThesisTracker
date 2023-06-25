@@ -74,7 +74,7 @@ public final class Hashing {
      *
      * @return the generated salt as a Base64-encoded string
      */
-    private static String generateSalt() {
+    public static String generateSalt() {
         LOGGER.debug("generateSalt() called.");
         SecureRandom random = new SecureRandom();
         byte[] saltBytes = new byte[SALT_LENGTH];

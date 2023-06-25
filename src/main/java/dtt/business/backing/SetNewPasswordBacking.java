@@ -10,9 +10,9 @@ import dtt.dataAccess.repository.interfaces.UserDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.User;
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Alaa Qasem
  */
-@RequestScoped
+@ViewScoped
 @Named
 public class SetNewPasswordBacking implements Serializable {
     private static final long serialVersionUID = 3599044613046868659L;
@@ -76,8 +76,9 @@ public class SetNewPasswordBacking implements Serializable {
 
     /**
      * Save the new password/user.
+     * @return navigation
      */
-    public void save() {
+    public String save() {
         try (Transaction transaction = new Transaction()) {
             if (userDAO.findUserByEmail(user, transaction)) {
                 User tempUser = new User();
@@ -87,7 +88,6 @@ public class SetNewPasswordBacking implements Serializable {
                         tempUser.getPasswordSalt()));
                 userDAO.update(tempUser, transaction);
             } else {
-                user.setId(user.getId());
                 user.setPasswordSalt(Hashing.generateSalt());
                 user.setPasswordHashed(
                         Hashing.hashPassword(password, user.getPasswordSalt()));
@@ -108,6 +108,7 @@ public class SetNewPasswordBacking implements Serializable {
             fmsg.setSeverity(FacesMessage.SEVERITY_ERROR);
             fctx.addMessage("setNew:generalMessage", fmsg);
         }
+        return "/view/anonymous/login";
     }
 
     /**

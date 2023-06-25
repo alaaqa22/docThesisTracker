@@ -26,9 +26,9 @@ public class FacultyConverter implements Converter<Faculty> {
         Faculty faculty = new Faculty();
         faculty.setName(value);
         try (Transaction transaction = new Transaction()) {
-            if (facultyDAO.findFacultyByName(faculty, transaction)) {
-
-            } else return null;
+            if (!facultyDAO.findFacultyByName(faculty, transaction)) {
+                return null;
+            }
             transaction.commit();
         }
         return faculty;

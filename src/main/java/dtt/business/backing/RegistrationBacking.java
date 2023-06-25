@@ -20,11 +20,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Backing bean for the registration page.
@@ -34,7 +31,8 @@ import java.util.Map;
 @Named("registrationBacking")
 public class RegistrationBacking implements Serializable {
     private static final Logger LOGGER = LogManager.getLogger(RegistrationBacking.class);
-
+    @Inject
+    private TokenManager tokenManager;
     @Inject
     private UserDAO userDAO;
     @Inject
@@ -95,7 +93,6 @@ public class RegistrationBacking implements Serializable {
 
         try (Transaction transaction = new Transaction()) {
             userDAO.add(user, transaction);
-            TokenManager tokenManager = new TokenManager();
             boolean success = userDAO.findUserByEmail(user, transaction);
             transaction.commit();
             if (success) {

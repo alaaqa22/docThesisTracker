@@ -1,6 +1,7 @@
 package dtt.business.utilities;
 
 import dtt.global.tansport.User;
+import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,11 +18,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * and clearing expired tokens.
  * @author Johannes Silvennoinen
  */
+@ApplicationScoped
 public class TokenManager {
     private static final Logger LOGGER = LogManager.getLogger(TokenManager.class);
     private static final int TOKEN_LENGTH = 32;
-    public final Map<String, TokenData> tokenStore = new ConcurrentHashMap<>();
-    public Duration tokenExpirationDuration = Duration.ofHours(1);
+    private final Map<String, TokenData> tokenStore = new ConcurrentHashMap<>();
+    private Duration tokenExpirationDuration = Duration.ofHours(1);
 
     /**
      * Generates a token for the specified user.
@@ -34,6 +36,8 @@ public class TokenManager {
         //Deletes the old token when a user generates a new one.
         tokenStore.remove(user);
         String token = generateUniqueToken();
+        LOGGER.debug("TOKEN: " + token);
+        LOGGER.debug("User: " + user.getEmail());
         Instant expirationTime = Instant.now().plus(tokenExpirationDuration);
         tokenStore.put(token, new TokenData(user, expirationTime));
         return token;
@@ -45,12 +49,14 @@ public class TokenManager {
      * @return true if the token exists and is not expired, false otherwise
      */
     public boolean lookupToken(String token) {
+        LOGGER.debug("lookupToken called for: " + token);
         return tokenStore.containsKey(token) && !isTokenExpired(token);
     }
     /**
      * Clears expired tokens from the token store.
      */
     public void clearExpiredTokens() {
+        LOGGER.debug("clearExpiredTokens() called.");
         tokenStore.entrySet().removeIf(entry -> isTokenExpired(entry.getKey()));
     }
     /**
@@ -59,6 +65,7 @@ public class TokenManager {
      * @return the generated token string
      */
     private String generateUniqueToken() {
+        LOGGER.debug("generateUniqueToken() called.");
         SecureRandom random = new SecureRandom();
         byte[] tokenBytes = new byte[TOKEN_LENGTH];
         random.nextBytes(tokenBytes);
@@ -71,6 +78,7 @@ public class TokenManager {
      * @return true if the token is expired, false otherwise
      */
     private boolean isTokenExpired(String token) {
+        LOGGER.debug("isTokenExpired() called for token: " + token);
         TokenData tokenData = tokenStore.get(token);
         Instant expirationTime = tokenData.getExpirationTime();
 

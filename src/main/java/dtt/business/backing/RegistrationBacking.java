@@ -1,12 +1,9 @@
 package dtt.business.backing;
 
+import dtt.business.utilities.EmailSender;
 import dtt.business.utilities.TokenManager;
 import dtt.dataAccess.exceptions.DBConnectionFailedException;
-import dtt.dataAccess.exceptions.DataNotCompleteException;
-import dtt.dataAccess.exceptions.InvalidInputException;
-import dtt.dataAccess.exceptions.KeyExistsException;
 import dtt.dataAccess.repository.interfaces.FacultyDAO;
-import dtt.dataAccess.repository.interfaces.UserDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.AccountState;
 import dtt.global.tansport.Faculty;
@@ -34,8 +31,6 @@ public class RegistrationBacking implements Serializable {
     @Inject
     private TokenManager tokenManager;
     @Inject
-    private UserDAO userDAO;
-    @Inject
     private FacultyDAO facultyDAO;
     private User user;
     private List<Faculty> listOfFaculties;
@@ -59,10 +54,6 @@ public class RegistrationBacking implements Serializable {
     @PostConstruct
     public void init()
     {
-
-        if (userDAO == null) {
-            LOGGER.error("UserDAO is null!");
-        }
         LOGGER.debug("init() called.");
         user = new User();
         listOfFaculties = getListOfFacultiesFromDB();
@@ -91,6 +82,9 @@ public class RegistrationBacking implements Serializable {
         user.getUserState().put(faculty, UserState.PENDING);
 
 
+        EmailSender.sendEmail(user.getEmail(),"Set a new password!", tokenManager.generateToken(user));
+        return "/views/anonymous/login.xthml?faces-redirect=true";
+        /*
         try (Transaction transaction = new Transaction()) {
             userDAO.add(user, transaction);
             boolean success = userDAO.findUserByEmail(user, transaction);
@@ -108,7 +102,7 @@ public class RegistrationBacking implements Serializable {
             LOGGER.error("Exceptions thrown");
             throw new RuntimeException(e);
         }
-
+        */
     }
 
     public User getUser() {
@@ -135,7 +129,6 @@ public class RegistrationBacking implements Serializable {
             return facultyDAO.getFaculties(transaction);
         } catch (DBConnectionFailedException e) {
             LOGGER.error("DBConnectionFailedException :" + e.getMessage());
-            // Handle the exception
         }
 
         return new ArrayList<>(); // Return an empty list if an exception occurs

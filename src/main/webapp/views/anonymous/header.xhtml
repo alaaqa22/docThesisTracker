@@ -2,15 +2,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+
+>
 
 <f:view>
     <h:head>
         <title>Header</title>
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"/>
         <script type="text/javascript" src="/resources/js/script.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-        <script>
+        <style>
+            .right-align {
+                position: absolute;
+                right: 25px;
+            }
+        </style>
+
+        <script >
             document.addEventListener("DOMContentLoaded", function() {
                 var toggler = document.querySelector('.navbar-toggler');
                 var navMenu = document.querySelector('.navbar-collapse');
@@ -20,6 +31,7 @@
                     navMenu.classList.toggle('show');
                 });
             });
+
         </script>
 
 
@@ -60,6 +72,9 @@
                                     <h:outputText value="Profilseite" styleClass="nav-link"/>
                                 </h:outputLink>
                             </li>
+
+
+
 
                         </h:panelGroup>
                         <!-- für Prüfungsberechtigte -->
@@ -113,6 +128,19 @@
                                 <h:commandButton id="logout-cbtn" action="#{navigationBacking.logout}" value="Abmelden"
                                                  styleClass="nav-link btn btn-secondary"/>
                             </li>
+
+                            <!-- User State  Menu -->
+
+                            <li class="nav-item right-align">
+                                <h:selectOneMenu value="#{navigationBacking.selectedUserState}" styleClass="custom-select">
+                                    <f:selectItems value="#{sessionInfo.userStates}" var="state" itemValue="#{state}" itemLabel="#{state}" />
+                                    <f:ajax render="@form" listener="#{navigationBacking.changeUserState()}" />
+                                </h:selectOneMenu>
+                            </li>
+
+
+
+
 
                         </h:panelGroup>
 

@@ -18,162 +18,179 @@
 
     <h:body>
         <ui:composition template="../anonymous/template.xhtml">
-        <ui:define name="mainContent">
+            <ui:define name="mainContent">
 
 
-        <div class="container">
-            <h:form>            <h:commandButton value="Aktulle Circulations" action="#{circulationListBacking.showCurrentCirculations}" styleClass="btn btn-primary">
-                <f:ajax render="dataForm" />
-            </h:commandButton>
-            <h:commandButton value="Abgeschlossene Circulations" action="#{circulationListBacking.showCompletedCirculations}" styleClass="btn btn-secondary">
-                <f:ajax render="dataForm" />
-            </h:commandButton>
-            </h:form>
+                <div class="container">
+                    <h:form> <h:commandButton value="Aktulle Umläufe"
+                                              action="#{circulationListBacking.showCurrentCirculations}"
+                                              styleClass="btn btn-primary">
+                        <f:ajax render="dataForm"/>
+                    </h:commandButton>
+                        <h:commandButton value="Abgeschlossene Umläufe"
+                                         action="#{circulationListBacking.showCompletedCirculations}"
+                                         styleClass="btn btn-secondary">
+                            <f:ajax render="dataForm"/>
+                        </h:commandButton>
+                    </h:form>
 
-            <h:form id="dataForm">
-
-
-                <!---  dataTable for a Circulation List -->
-                <h:dataTable id="cir-dt" value="#{circulationListBacking.circulations}" var="circulation" styleClass="my-table table table-bordered"
-                             border="2">
-
-                    <f:facet name="header">
-                        <h:outputText value="Circulations" styleClass="text-center"/>
-
-                    </f:facet>
-
-                    <!-- Fakultät -->
-                    <h:column rendered="#{sessionInfo.admin}">
-                        <f:facet name="header">
-                            <h:outputText value="Fakultät"/>
-                            <h:inputText value="#{circulationListBacking.filter.facultyId == 0 ? '' : circulationListBacking.filter.facultyId}" styleClass="form-control">
-                                <f:ajax event="change" listener="#{circulationListBacking.loadCirculations}" render="@form"/>
-                            </h:inputText>
-                        </f:facet>
-                        <h:outputText value="#{circulationListBacking.getFacultyName(circulation.facultyId)}"/>
-
-                    </h:column>
-
-                    <!--> Titel <!-->
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Titel"/>
-                            <h:inputText value="#{circulationListBacking.filter.title}" styleClass="form-control">
-                                <f:ajax event="change" listener="#{circulationListBacking.loadCirculations}" render="@form"/>
-
-                            </h:inputText>
-                        </f:facet>
-                        <h:outputLink value="circulationDetails.xhtml?id=#{circulation.id}">
-                            <h:outputText value="#{circulation.title}"/>
-                        </h:outputLink>
+                    <h:form id="dataForm">
 
 
-                    </h:column>
+                        <!---  dataTable for a Circulation List -->
+                        <h:dataTable id="cir-dt" value="#{circulationListBacking.circulations}" var="circulation"
+                                     styleClass="my-table table table-bordered"
+                                     border="2">
+
+                            <f:facet name="header">
+                                <h:outputText value="#{circulationListBacking.headerText}" styleClass="text-center"/>
+
+                            </f:facet>
+
+                            <!-- Fakultät -->
+                            <h:column rendered="#{sessionInfo.admin}">
+                                <f:facet name="header">
+                                    <h:outputText value="Fakultät"/>
+                                    <h:inputText
+                                            value="#{circulationListBacking.filter.facultyId == 0 ? '' : circulationListBacking.filter.facultyId}"
+                                            styleClass="form-control">
+                                        <f:ajax event="change" listener="#{circulationListBacking.loadCirculations}"
+                                                render="@form"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{circulationListBacking.getFacultyName(circulation.facultyId)}"/>
+
+                            </h:column>
+
+                            <!--> Titel <!-->
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Titel"/>
+                                    <h:inputText value="#{circulationListBacking.filter.title}"
+                                                 styleClass="form-control">
+                                        <f:ajax event="change" listener="#{circulationListBacking.loadCirculations}"
+                                                render="@form"/>
+
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputLink value="circulationDetails.xhtml?id=#{circulation.id}">
+                                    <h:outputText value="#{circulation.title}"/>
+                                </h:outputLink>
 
 
-                    <!---  Name des Doktoranden -->
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Doktoranden"/>
-                            <h:inputText value="#{circulationListBacking.filter.doctoralCandidateName}" styleClass="form-control">
-                                <f:ajax event="change" listener="#{circulationListBacking.loadCirculations}" render="@form"/>
-                            </h:inputText>
-                        </f:facet>
-                        <h:outputText value="#{circulation.doctoralCandidateName}"/>
-
-                    </h:column>
-
-                    <!---  Doktorvater -->
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Doktorvater"/>
-                            <h:inputText value="#{circulationListBacking.filter.doctoralSupervisor}" styleClass="form-control">
-                                <f:ajax event="change" listener="#{circulationListBacking.loadCirculations}" render="@form"/>
-                            </h:inputText>
-                        </f:facet>
-                        <h:outputText value="#{circulation.doctoralSupervisor}"/>
-
-                    </h:column>
-
-                    <!---  Startzeit-->
-                    <!-- Startzeit -->
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Startzeit"/>
-
-                        </f:facet>
-                        <h:outputText value="#{circulation.startDate}"/>
-                    </h:column>
-
-                    <!-- Endzeit -->
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Endzeit"/>
-
-                        </f:facet>
-                        <h:outputText value="#{circulation.endDate}"/>
-                    </h:column>
+                            </h:column>
 
 
-                </h:dataTable>
+                            <!---  Name des Doktoranden -->
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Doktoranden"/>
+                                    <h:inputText value="#{circulationListBacking.filter.doctoralCandidateName}"
+                                                 styleClass="form-control">
+                                        <f:ajax event="change" listener="#{circulationListBacking.loadCirculations}"
+                                                render="@form"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{circulation.doctoralCandidateName}"/>
 
-                <ui:fragment rendered="#{empty circulationListBacking.circulations}">
-                    <div class="alert alert-warning alert-dismissible fade show" style="max-width: 980px;">
-                        <h4 class="alert-heading">Keine Ergebnisse gefunden.</h4>
-                        <p>Bitte ändern Sie Ihre Filtereinstellungen und versuchen Sie es erneut.</p>
-                    </div>
-                </ui:fragment>
+                            </h:column>
+
+                            <!---  Doktorvater -->
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Doktorvater"/>
+                                    <h:inputText value="#{circulationListBacking.filter.doctoralSupervisor}"
+                                                 styleClass="form-control">
+                                        <f:ajax event="change" listener="#{circulationListBacking.loadCirculations}"
+                                                render="@form"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{circulation.doctoralSupervisor}"/>
+
+                            </h:column>
+
+                            <!---  Startzeit-->
+                            <!-- Startzeit -->
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Startzeit"/>
+
+                                </f:facet>
+                                <h:outputText value="#{circulation.startDate}"/>
+                            </h:column>
+
+                            <!-- Endzeit -->
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Endzeit"/>
+
+                                </f:facet>
+                                <h:outputText value="#{circulation.endDate}"/>
+                            </h:column>
 
 
+                        </h:dataTable>
 
-                <!-- Pagination Controls -->
-                <div class="d-flex justify-content-center">
+                        <ui:fragment rendered="#{empty circulationListBacking.circulations}">
+                            <div class="alert alert-warning alert-dismissible fade show" style="max-width: 980px;">
+                                <h4 class="alert-heading">Keine Ergebnisse gefunden.</h4>
+                                <p>Bitte ändern Sie Ihre Filtereinstellungen und versuchen Sie es erneut.</p>
+                            </div>
+                        </ui:fragment>
 
 
-                    <ul class="pagination">
-                        <h:panelGroup rendered="#{!empty circulationListBacking.circulations}">
-                            <h:panelGroup layout="block" styleClass="page-item" rendered="#{!circulationListBacking.circPagination.isFirstPage()}">
-                                <h:commandLink id="firstpage-link" value="First" action="#{circulationListBacking.circPagination.firstPage()}"
-                                               styleClass="page-link">
-                                    <f:ajax execute="@this" render="@form" />
-                                </h:commandLink>
-                            </h:panelGroup>
+                        <!-- Pagination Controls -->
+                        <div class="d-flex justify-content-center">
 
-                            <h:panelGroup layout="block" styleClass="page-item"
-                                          rendered="#{!circulationListBacking.circPagination.isFirstPage()}">
-                                <h:commandLink id="previouspage-link" value="Previous"
-                                               action="#{circulationListBacking.circPagination.previousPage()}"
-                                               styleClass="page-link">
-                                    <f:ajax execute="@this" render="@form" />
-                                </h:commandLink>
-                            </h:panelGroup>
 
-                            <h:outputText styleClass="page-item"
-                                          value="Page : #{circulationListBacking.circPagination.currentPage} of #{circulationListBacking.circPagination.totalNumOfPages}"/>
+                            <ul class="pagination">
+                                <h:panelGroup rendered="#{!empty circulationListBacking.circulations}">
+                                    <h:panelGroup layout="block" styleClass="page-item"
+                                                  rendered="#{!circulationListBacking.circPagination.isFirstPage()}">
+                                        <h:commandLink id="firstpage-link" value="First"
+                                                       action="#{circulationListBacking.circPagination.firstPage()}"
+                                                       styleClass="page-link">
+                                            <f:ajax execute="@this" render="@form"/>
+                                        </h:commandLink>
+                                    </h:panelGroup>
 
-                            <h:panelGroup layout="block" styleClass="page-item"
-                                          rendered="#{!circulationListBacking.circPagination.isLastPage()}">
-                                <h:commandLink id="nextpage-link" value="Next" action="#{circulationListBacking.circPagination.nextPage()}"
-                                               styleClass="page-link">
-                                    <f:ajax execute="@this" render="@form" />
-                                </h:commandLink>
-                            </h:panelGroup>
+                                    <h:panelGroup layout="block" styleClass="page-item"
+                                                  rendered="#{!circulationListBacking.circPagination.isFirstPage()}">
+                                        <h:commandLink id="previouspage-link" value="Previous"
+                                                       action="#{circulationListBacking.circPagination.previousPage()}"
+                                                       styleClass="page-link">
+                                            <f:ajax execute="@this" render="@form"/>
+                                        </h:commandLink>
+                                    </h:panelGroup>
 
-                            <h:panelGroup layout="block" styleClass="page-item"
-                                          rendered="#{!circulationListBacking.circPagination.isLastPage()}">
-                                <h:commandLink id="lastpage-link" value="Last" action="#{circulationListBacking.circPagination.lastPage()}"
-                                               styleClass="page-link">
-                                    <f:ajax execute="@this" render="@form" />
-                                </h:commandLink>
-                            </h:panelGroup>
-                        </h:panelGroup>
-                    </ul>
+                                    <h:outputText styleClass="page-item"
+                                                  value="Page : #{circulationListBacking.circPagination.currentPage} of #{circulationListBacking.circPagination.totalNumOfPages}"/>
 
+                                    <h:panelGroup layout="block" styleClass="page-item"
+                                                  rendered="#{!circulationListBacking.circPagination.isLastPage()}">
+                                        <h:commandLink id="nextpage-link" value="Next"
+                                                       action="#{circulationListBacking.circPagination.nextPage()}"
+                                                       styleClass="page-link">
+                                            <f:ajax execute="@this" render="@form"/>
+                                        </h:commandLink>
+                                    </h:panelGroup>
+
+                                    <h:panelGroup layout="block" styleClass="page-item"
+                                                  rendered="#{!circulationListBacking.circPagination.isLastPage()}">
+                                        <h:commandLink id="lastpage-link" value="Last"
+                                                       action="#{circulationListBacking.circPagination.lastPage()}"
+                                                       styleClass="page-link">
+                                            <f:ajax execute="@this" render="@form"/>
+                                        </h:commandLink>
+                                    </h:panelGroup>
+                                </h:panelGroup>
+                            </ul>
+
+                        </div>
+
+                    </h:form>
                 </div>
-
-            </h:form>
-        </div>
-        </ui:define>
+            </ui:define>
         </ui:composition>
     </h:body>
 </f:view>

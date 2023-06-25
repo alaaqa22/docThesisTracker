@@ -138,18 +138,18 @@ public interface CirculationDAO {
 
 	/**
 	 * Retrieves the total number of completed circulations.
-	 *
+	 * @param circulation  The circulation object containing the filter criteria.
 	 * @param transaction  The database transaction.
 	 * @return             The total number of completed circulations.
 	 */
-	public int getTotalCompletedCirculationNumber(Transaction transaction);
+	public int getTotalCompletedCirculationNumber(Circulation circulation,Transaction transaction);
 
 
 	/**
 	 * Retrieves the total number of aktulle (ongoing) circulations.
-	 *
+	 * @param circulation  The circulation object containing the filter criteria.
 	 * @param transaction  The database transaction.
 	 * @return             The total number of aktulle circulations.
 	 */
-	public int getTotalCurrentCirculationNumber(Transaction transaction);
+	public int getTotalCurrentCirculationNumber(Circulation circulation,Transaction transaction);
 }

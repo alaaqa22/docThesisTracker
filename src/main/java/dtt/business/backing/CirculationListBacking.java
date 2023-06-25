@@ -37,9 +37,9 @@ public class CirculationListBacking implements Serializable {
     private final Logger logger = LogManager.getLogger ();
     @Inject
     private FacultyDAO facultyDAO;
-    private static final Logger LOGGER = LogManager.getLogger(CirculationListBacking.class);
-    boolean timeButton =false;
-    boolean currentCirculation =false;
+    private static final Logger LOGGER = LogManager.getLogger (CirculationListBacking.class);
+    boolean timeButton = false;
+    boolean currentCirculation = false;
 
 
     /**
@@ -66,7 +66,7 @@ public class CirculationListBacking implements Serializable {
 
                 int offset = (currentPage - 1) * maxItems;
                 int count = maxItems;
-                if(!timeButton) {
+                if (!timeButton) {
 
                     try (Transaction transaction = new Transaction ()) {
                         List<Circulation> cir = circDAO.getCirculations (filter, transaction, offset, count);
@@ -74,24 +74,22 @@ public class CirculationListBacking implements Serializable {
                         circulations = cir;
                         transaction.commit ();
                     }
-                }
-                else{
-                    if(currentCirculation){
+                } else {
+                    if (currentCirculation) {
                         try (Transaction transaction = new Transaction ()) {
-                            List<Circulation> cir = circDAO.getAllCurrentCirculations (filter,transaction, offset, count);
+                            List<Circulation> cir = circDAO.getAllCurrentCirculations (filter, transaction, offset, count);
                             setEntries (cir);
                             circulations = cir;
                             transaction.commit ();
                         }
-                    }else{
+                    } else {
                         try (Transaction transaction = new Transaction ()) {
-                            List<Circulation> cir = circDAO.getAllCompletedCirculations (filter,transaction, offset, count);
+                            List<Circulation> cir = circDAO.getAllCompletedCirculations (filter, transaction, offset, count);
                             setEntries (cir);
                             circulations = cir;
                             transaction.commit ();
                         }
                     }
-
 
 
                 }
@@ -104,12 +102,12 @@ public class CirculationListBacking implements Serializable {
                     int totalNumOfPages;
 
                     if (!timeButton) {
-                        totalNumOfPages = (int) Math.ceil((double) (circDAO.getTotalCirculationNumber(filter, t)) / maxItems);
+                        totalNumOfPages = (int) Math.ceil ((double) (circDAO.getTotalCirculationNumber (filter, t)) / maxItems);
                     } else {
                         if (currentCirculation) {
-                            totalNumOfPages = (int) Math.ceil((double) (circDAO.getTotalCurrentCirculationNumber (t)) / maxItems);
+                            totalNumOfPages = (int) Math.ceil ((double) (circDAO.getTotalCurrentCirculationNumber (filter, t)) / maxItems);
                         } else {
-                            totalNumOfPages = (int) Math.ceil((double) (circDAO.getTotalCompletedCirculationNumber(t)) / maxItems);
+                            totalNumOfPages = (int) Math.ceil ((double) (circDAO.getTotalCompletedCirculationNumber (filter, t)) / maxItems);
                         }
                     }
 
@@ -118,10 +116,8 @@ public class CirculationListBacking implements Serializable {
                     return totalNumOfPages;
                 }
             }
-    };}
-
-
-
+        };
+    }
 
 
     /**
@@ -186,9 +182,9 @@ public class CirculationListBacking implements Serializable {
         return circDAO;
     }
 
-    public String getFacultyName(int facultyId) {
+    public String getFacultyName (int facultyId) {
 
-        try(Transaction transaction = new Transaction ()) {
+        try (Transaction transaction = new Transaction ()) {
 
             Faculty faculty = facultyDAO.getFacultyById (facultyId, transaction);
 
@@ -198,20 +194,32 @@ public class CirculationListBacking implements Serializable {
     }
 
 
-    public void showCompletedCirculations() {
-        timeButton = true ;
+    public void showCompletedCirculations () {
+        timeButton = true;
         currentCirculation = false;
-        circPagination.setCurrentPage(1);
+        circPagination.setCurrentPage (1);
         loadCirculations ();
 
 
     }
-    public void showCurrentCirculations() {
-        timeButton = true ;
-        currentCirculation=true;
-        circPagination.setCurrentPage(1);
+
+    public void showCurrentCirculations () {
+        timeButton = true;
+        currentCirculation = true;
+        circPagination.setCurrentPage (1);
         loadCirculations ();
 
+    }
+
+    public String getHeaderText () {
+
+        if (timeButton) {
+            if (currentCirculation) {
+                return "Aktuelle Umläufe ";
+            }
+            return "Abgeschlossene Umläufe";
+        }
+        return "Alle Umläufe ";
     }
 
 }

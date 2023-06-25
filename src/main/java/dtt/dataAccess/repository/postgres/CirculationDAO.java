@@ -293,23 +293,23 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 
         if (circulation != null) {
             if (circulation.getId () > 0) {
-                query += " AND id LIKE ?";
-                parameters.add ("%" + circulation.getId () + "?");
+                query += " AND id ILIKE ?";
+                parameters.add ("%" + circulation.getId () + "%");
             }
 
             if (circulation.getTitle () != null) {
-                query += " AND title LIKE ?";
-                parameters.add ("%" + circulation.getTitle () + "?");
+                query += " AND title ILIKE ?";
+                parameters.add ("%" + circulation.getTitle () + "%");
             }
 
             if (circulation.getDoctoralCandidateName () != null) {
-                query += " AND doctoral_candidate_name LIKE ?";
-                parameters.add ("%" + circulation.getDoctoralCandidateName () + "?");
+                query += " AND doctoral_candidate_name ILIKE ?";
+                parameters.add ("%" + circulation.getDoctoralCandidateName () + "%");
             }
 
             if (circulation.getDoctoralSupervisor () != null) {
-                query += " AND doctoral_supervisor_name LIKE ?";
-                parameters.add ("%" + circulation.getDoctoralSupervisor () + "?");
+                query += " AND doctoral_supervisor_name ILIKE ?";
+                parameters.add ("%" + circulation.getDoctoralSupervisor () + "%");
             }
 
             if (circulation.getStartDate () != null) {

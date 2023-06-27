@@ -82,5 +82,7 @@ public interface FacultyDAO {
 	 * @throws InvalidInputException if input data is faulty
 	 */
 	public List<Faculty> getFaculties(Transaction transaction);
+	public Faculty getFacultyById(int id, Transaction transaction);
+
 }
 

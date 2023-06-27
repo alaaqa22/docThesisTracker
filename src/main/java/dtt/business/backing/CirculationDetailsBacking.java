@@ -3,11 +3,11 @@ package dtt.business.backing;
 import dtt.business.utilities.SessionInfo;
 import dtt.dataAccess.exceptions.*;
 import dtt.dataAccess.repository.interfaces.CirculationDAO;
+import dtt.dataAccess.repository.interfaces.FacultyDAO;
+import dtt.dataAccess.repository.interfaces.UserDAO;
 import dtt.dataAccess.repository.interfaces.VoteDAO;
 import dtt.dataAccess.utilities.Transaction;
-import dtt.global.tansport.Circulation;
-import dtt.global.tansport.Options;
-import dtt.global.tansport.Vote;
+import dtt.global.tansport.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -33,11 +33,15 @@ public class CirculationDetailsBacking implements Serializable {
     private static final Logger LOGGER = LogManager.getLogger(CirculationDetailsBacking.class);
     private Options choice;
     @Inject
+    private UserDAO userDAO;
+    @Inject
     private SessionInfo sessionInfo;
     @Inject
     private CirculationDAO circulationDAO;
     @Inject
     private VoteDAO voteDAO;
+    @Inject
+    private FacultyDAO facultyDAO;
     private Circulation circulation;
     private Vote vote;
     private Options[] options;
@@ -45,8 +49,9 @@ public class CirculationDetailsBacking implements Serializable {
     private LocalDate startDate;
     private LocalDate endDate;
     private String reason;
-
-
+    private String createdBy;
+    private String facultyName;
+    
     /**
      * Initialize circulation und vote dto objects.
      */
@@ -98,7 +103,7 @@ public class CirculationDetailsBacking implements Serializable {
 
         } catch (DataNotFoundException e) {
             LOGGER.error("Circulation" + circulation.getId() + " could not be removed");
-            throw new IllegalStateException();
+            throw new IllegalStateException(e);
         }
     }
 
@@ -112,27 +117,37 @@ public class CirculationDetailsBacking implements Serializable {
             transaction.commit();
             LOGGER.info("circulation with id: " + circulation.getId() + " was modified");
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "Umlauf mit der ID: " + circulation.getId() + " wurde geändert.", null);
+                    "Umlauf wurde geändert.", null);
             FacesContext.getCurrentInstance().addMessage(null, message);
 
-        } catch (DataNotFoundException | InvalidInputException | KeyExistsException e) {
+        } catch (DataNotFoundException e) {
             LOGGER.error("circulation" + circulation.getId() + " could not be modified");
             throw new IllegalStateException(e);
+        } catch (InvalidInputException | KeyExistsException  e) {
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Umlauf konnte nicht geändert werden", null);
+            FacesContext.getCurrentInstance().addMessage(null, message);
+
         }
-    }
+
+        }
 
     /**
      * Casts or change a vote for a specific choice.
      */
     public void submitVote() {
+
         try (Transaction transaction = new Transaction()) {
             if (!voteDAO.findVote(vote, transaction)) {
                 vote.setSelection(choice);
                 vote.setDescription(reason);
                 voteDAO.add(vote, transaction);
                 LOGGER.info("New vote was added to circulation id" + circulation.getId() + " by " + getSessionInfo().getUser().getId());
+
+                // TODO remove null from add message
+
                 FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                        "Ihre Stimme " + "(" + vote.getSelection().getLabel() + ")" + " wurde erfolgreich gespeichert.", null);
+                        "Stimme " + "(" + vote.getSelection().getLabel() + ")" + " wurde erfolgreich gespeichert.", null);
                 FacesContext.getCurrentInstance().addMessage(null, message);
             } else {
                 vote.setSelection(choice);
@@ -140,12 +155,14 @@ public class CirculationDetailsBacking implements Serializable {
                 voteDAO.update(vote, transaction);
                 LOGGER.info("Updated vote to circulation id " + circulation.getId() + " by user id: " + getSessionInfo().getUser().getId());
                 FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                        "Ihre neue Stimme " + "(" + vote.getSelection().getLabel() + ")" + " wurde erfolgreich aktualisiert.", null);
+                        "Neue Stimme " + "(" + vote.getSelection().getLabel() + ")" + " wurde erfolgreich aktualisiert.", null);
                 FacesContext.getCurrentInstance().addMessage(null, message);
 
             }
             transaction.commit();
 
+            //TODO split exceptions only DataNotCompleteException
+            // throw new IllegalStateException(e) else with error message
         } catch (DataNotCompleteException | InvalidInputException | DataNotFoundException e) {
             LOGGER.error("Failed to cast the vote.");
             throw new IllegalStateException(e);
@@ -174,7 +191,19 @@ public class CirculationDetailsBacking implements Serializable {
     public List<Vote> getTotalVotes() {
         try (Transaction transaction = new Transaction()) {
             totalVotes = voteDAO.getVotes(vote, transaction);
+            for (Vote vote: totalVotes) {
+                User user = new User();
+                if(vote.getUserId()!=0) {
+                    user.setId(vote.getUserId());
+                    userDAO.getUserById(user, transaction);
+                    vote.setVotedByName(user.getFirstName().concat(" " + user.getLastName()));
+                }
+
+            }
+        } catch (DataNotFoundException e) {
+            throw new IllegalStateException(e);
         }
+
         return totalVotes;
     }
 
@@ -250,4 +279,30 @@ public class CirculationDetailsBacking implements Serializable {
         circulation.setStartDate(java.sql.Timestamp.valueOf(startDate1.atStartOfDay()));
         startDate = startDate1;
     }
+
+    public String getCreatedBy() {
+        User user=new User();
+        user.setId(circulation.getCreatedBy());
+        try(Transaction transaction= new Transaction()) {
+            userDAO.getUserById(user, transaction);
+            createdBy = user.getFirstName().concat(" "+user.getLastName());
+            transaction.commit();
+        } catch (DataNotFoundException e) {
+            throw new IllegalStateException(e);
+        }
+        return createdBy;
+    }
+
+
+
+
+    public String getFacultyName() {
+        try(Transaction transaction = new Transaction()){
+            Faculty faculty = facultyDAO.getFacultyById(circulation.getFacultyId(),transaction);
+            facultyName = faculty.getName();
+        }
+        return facultyName;
+    }
+
+
 }

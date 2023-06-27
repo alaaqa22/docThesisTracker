@@ -21,101 +21,109 @@
 
     <h:body>
         <ui:composition template="../anonymous/template.xhtml">
-        <ui:define name="mainContent">
-        <h:form>
-            <div class="container">
-                <h2>Circulation Details</h2>
-                <div class="form-group">
-                    <label for="title-itxt">Title:</label>
-                    <h:inputText id="title-itxt" value="#{circulationDetailsBacking.circulation.title}"
-                                 readonly="#{sessionInfo.examiner}" class="form-control"/>
-                </div>
+            <ui:define name="mainContent">
+                <h:form>
+                    <div class="container">
+                        <h2>Circulation Details</h2>
+                        <div class="form-group">
+                            <label for="title-itxt">Title:</label>
+                            <h:inputText id="title-itxt" value="#{circulationDetailsBacking.circulation.title}"
+                                         readonly="#{sessionInfo.examiner}" class="form-control"/>
+                        </div>
 
-                <div class="form-group">
-                    <label for="doctoralcandidatename-itxt">Doctoral Candidate Name:</label>
-                    <h:inputText id="doctoralcandidatename-itxt"
-                                 value="#{circulationDetailsBacking.circulation.doctoralCandidateName}"
-                                 readonly="#{sessionInfo.examiner}" class="form-control"/>
-                </div>
+                        <div class="form-group">
+                            <label for="doctoralcandidatename-itxt">Doctoral Candidate Name:</label>
+                            <h:inputText id="doctoralcandidatename-itxt"
+                                         value="#{circulationDetailsBacking.circulation.doctoralCandidateName}"
+                                         readonly="#{sessionInfo.examiner}" class="form-control"/>
+                        </div>
 
-                <div class="form-group">
-                    <label for="doctoralsupervisoror-itxt">Doctoral Supervisor:</label>
-                    <h:inputText id="doctoralsupervisoror-itxt"
-                                 value="#{circulationDetailsBacking.circulation.doctoralSupervisor}"
-                                 readonly="#{sessionInfo.examiner}" class="form-control"/>
-                </div>
+                        <div class="form-group">
+                            <label for="doctoralsupervisoror-itxt">Doctoral Supervisor:</label>
+                            <h:inputText id="doctoralsupervisoror-itxt"
+                                         value="#{circulationDetailsBacking.circulation.doctoralSupervisor}"
+                                         readonly="#{sessionInfo.examiner}" class="form-control"/>
+                        </div>
 
-                <div class="form-group">
-                    <label for="description-itxt">Description:</label>
-                    <h:inputText id="description-itxt" value="#{circulationDetailsBacking.circulation.description}"
-                                 readonly="#{sessionInfo.examiner}" class="form-control"/>
-                </div>
+                        <div class="form-group">
+                            <label for="description-itxt">Description:</label>
+                            <h:inputText id="description-itxt"
+                                         value="#{circulationDetailsBacking.circulation.description}"
+                                         readonly="#{sessionInfo.examiner}" class="form-control"/>
+                        </div>
 
-                <div class="form-group">
-                    <label for="start-date-itxt">Start Date:</label>
-                    <h:inputText id="start-date-itxt" value="#{circulationDetailsBacking.startDate}"
-                                 readonly="#{sessionInfo.examiner}" class="form-control">
-                        <f:convertDateTime type="localDate"/>
-                    </h:inputText>
-                </div>
+                        <div class="form-group">
+                            <label for="start-date-itxt">Start Date:</label>
+                            <h:inputText id="start-date-itxt" value="#{circulationDetailsBacking.startDate}"
+                                         readonly="#{sessionInfo.examiner}" class="form-control">
+                                <f:convertDateTime type="localDate"/>
+                            </h:inputText>
+                        </div>
 
-                <div class="form-group">
-                    <label for="end-date-itxt">End Date:</label>
-                    <h:inputText id="end-date-itxt" value="#{circulationDetailsBacking.endDate}" required="true"
-                                 readonly="#{sessionInfo.examiner}" class="form-control">
-                        <f:convertDateTime type="localDate"/>
-                    </h:inputText>
-                </div>
+                        <div class="form-group">
+                            <label for="end-date-itxt">End Date:</label>
+                            <h:inputText id="end-date-itxt" value="#{circulationDetailsBacking.endDate}" required="true"
+                                         readonly="#{sessionInfo.examiner}" class="form-control">
+                                <f:validator validatorId="EndDateValidator"/>
+                                <f:attribute name="startDate" value="#{circulationDetailsBacking.startDate}"/>
+                                <f:convertDateTime type="localDate"/>
+                            </h:inputText>
+                        </div>
 
-                <div class="form-group">
-                    <h:outputLabel for="created-by-otxt" value="Created By:" rendered="#{!sessionInfo.examiner}" />
-                    <h:outputText id="created-by-otxt" value="#{circulationDetailsBacking.circulation.createdBy}"
-                                  class="form-control" rendered="#{!sessionInfo.examiner}"/>
-                </div>
+                        <div class="form-group">
+                            <h:outputLabel for="created-by-otxt" value="Created By:"
+                                           rendered="#{!sessionInfo.examiner}"/>
+                            <h:outputText id="created-by-otxt"
+                                          value="#{circulationDetailsBacking.createdBy}"
+                                          class="form-control" rendered="#{!sessionInfo.examiner}"/>
+                        </div>
 
-                <div class="form-group">
-                    <h:outputLabel for="faculty-id-otxt" value="Faculty ID:" rendered="#{!sessionInfo.examiner}" />
-                    <h:outputText id="faculty-id-otxt" value="#{circulationDetailsBacking.circulation.facultyId}"
-                                  class="form-control" rendered="#{!sessionInfo.examiner}"/>
-                </div>
+                        <div class="form-group">
+                            <h:outputLabel for="faculty-id-otxt" value="Faculty :"
+                                           rendered="#{!sessionInfo.examiner}"/>
+                            <h:outputText id="faculty-id-otxt"
+                                          value="#{circulationDetailsBacking.facultyName}"
+                                          class="form-control" rendered="#{!sessionInfo.examiner}"/>
+                        </div>
 
-                <div class="form-group">
-                    <label for="vote-options-slcom">Select vote:</label>
-                    <h:selectOneMenu id="vote-options-slcom" value="#{circulationDetailsBacking.choice}"
-                                     class="form-control">
-                        <f:selectItems value="#{circulationDetailsBacking.options}" var="option"
-                                       itemValue="#{option}" itemLabel="#{option.label}"/>
-                    </h:selectOneMenu>
-                </div>
+                        <div class="form-group">
+                            <label for="vote-options-slcom">Select vote:</label>
+                            <h:selectOneMenu id="vote-options-slcom" value="#{circulationDetailsBacking.choice}"
+                                             class="form-control">
+                                <f:selectItems value="#{circulationDetailsBacking.options}" var="option"
+                                               itemValue="#{option}" itemLabel="#{option.label}"/>
+                            </h:selectOneMenu>
+                        </div>
 
-                <div class="form-group">
-                    <label for="reason-itxt">Erklärung:</label>
-                    <h:inputText id="reason-itxt" value="#{circulationDetailsBacking.reason}" class="form-control"/>
-                </div>
+                        <div class="form-group">
+                            <label for="reason-itxt">Erklärung:</label>
+                            <h:inputText id="reason-itxt" value="#{circulationDetailsBacking.reason}"
+                                         class="form-control"/>
+                        </div>
 
-                <h:commandButton id="vote-btn" action="#{circulationDetailsBacking.submitVote()}" value="Vote"
-                                 class="btn btn-primary"/>
+                        <h:commandButton id="vote-btn" action="#{circulationDetailsBacking.submitVote()}" value="Vote"
+                                         class="btn btn-primary"/>
 
-                <h:commandButton id="modify-cbtn" action="#{circulationDetailsBacking.modify()}"
-                                 value="Modify circulation"
-                                 update="circulationDetailsPanel" rendered="#{!sessionInfo.examiner}"
-                                 class="btn btn-primary"/>
+                        <h:commandButton id="modify-cbtn" action="#{circulationDetailsBacking.modify()}"
+                                         value="Modify circulation"
+                                         update="circulationDetailsPanel" rendered="#{!sessionInfo.examiner}"
+                                         class="btn btn-primary"/>
 
-                <h:link id="voteList-link"
-                        outcome="/views/authenticated/voteList.xhtml?id=#{circulationDetailsBacking.circulation.id}"
-                        rendered="#{!sessionInfo.examiner}" value="Display votes" class="btn btn-success"/>
+                        <h:link id="voteList-link"
+                                outcome="/views/authenticated/voteList.xhtml?id=#{circulationDetailsBacking.circulation.id}"
+                                rendered="#{!sessionInfo.examiner}" value="Display votes" class="btn btn-success"/>
 
-                <h:commandButton id="remove-cbtn" action="#{circulationDetailsBacking.remove()}"
-                                 value="Remove Circulation" rendered="#{!sessionInfo.examiner}"
-                                 class="btn btn-danger"/>
-                <div>
-                    <h:outputText id="votes-otxt"
-                                  value="Total votes: #{circulationDetailsBacking.totalVotes.size()}"
-                                  rendered="#{!sessionInfo.examiner}"/>
-                </div>
-            </div>
-        </h:form>
-        </ui:define>
+                        <h:commandButton id="remove-cbtn" action="#{circulationDetailsBacking.remove()}"
+                                         value="Remove Circulation" rendered="#{!sessionInfo.examiner}"
+                                         class="btn btn-danger"/>
+                        <div>
+                            <h:outputText id="votes-otxt"
+                                          value="Total votes: #{circulationDetailsBacking.totalVotes.size()}"
+                                          rendered="#{!sessionInfo.examiner}"/>
+                        </div>
+                    </div>
+                </h:form>
+            </ui:define>
         </ui:composition>
     </h:body>
 </f:view>

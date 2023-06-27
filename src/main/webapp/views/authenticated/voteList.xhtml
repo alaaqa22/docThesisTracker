@@ -31,11 +31,11 @@
                              rendered="#{!sessionInfo.examiner}" class="table table-bordered">
                     <h:column>
                         <f:facet name="header">Voted by</f:facet>
-                        #{vote.userId}
+                        #{vote.votedByName}
                     </h:column>
                     <h:column>
                         <f:facet name="header">Vote selection</f:facet>
-                        #{vote.selection}
+                        #{vote.selection.label}
                     </h:column>
                     <h:column>
                         <f:facet name="header">Vote reason</f:facet>

@@ -49,7 +49,7 @@ public class LoginBacking implements Serializable {
      * to circulationList page.
      *
      * @return Go to circulation-list page on success or stay
-     * in the same page on failure.
+     * in the same page on Invalid credentials.
      */
     public String login() {
         try (Transaction transaction = new Transaction()) {
@@ -60,33 +60,29 @@ public class LoginBacking implements Serializable {
                 boolean verified;
                 try {
                     verified = Hashing.verifyPassword(user.getPassword(), userDB.getPasswordSalt(), userDB.getPasswordHashed());
+                    if (verified) {
+                        sessionInfo.setLoggedIn(true);
+                        user = userDB;
+                        sessionInfo.setUser(user);
+                        transaction.commit();
+
+                        // Password matches, login successful
+                        return "/views/authenticated/circulationslist?faces-redirect=true";
+                    }
 
                 } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
                     LOGGER.error("Login attempt unsuccessful from user " + user.getId());
                     throw new IllegalStateException(e);
                 }
-                if (verified) {
-                    sessionInfo.setLoggedIn(true);
-                    user = userDB;
-                    sessionInfo.setUser(user);
-                    transaction.commit();
 
-                    // Password matches, login successful
-                    return "/views/authenticated/circulationslist?faces-redirect=true";
-                } else {
-                    // Password does not match, show error message
-
-                    FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid credentials!", null);
-                    FacesContext.getCurrentInstance().addMessage(null, message);
-                    return null;
-                }
-            } else {
-                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "User not found!", null);
-                FacesContext.getCurrentInstance().addMessage(null, message);
-                LOGGER.error("User not found" + user.getEmail());
-                return null;
             }
         }
+
+        // Password does not match or user not found, show error message
+
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid credentials!", null);
+        FacesContext.getCurrentInstance().addMessage(null, message);
+        return null;
 
     }
 

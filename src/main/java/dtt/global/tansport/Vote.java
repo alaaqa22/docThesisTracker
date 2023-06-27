@@ -8,6 +8,7 @@ public class Vote {
     private int voteId;  // The ID of the Vote.
     private Options selection; // The selected option for the vote
     private int  userId; //
+    private String votedByName;
 
     private int  circulationId; //
 
@@ -70,5 +71,13 @@ public class Vote {
 
     public void setVoteId (int voteId) {
         this.voteId = voteId;
+    }
+
+    public String getVotedByName() {
+        return votedByName;
+    }
+
+    public void setVotedByName(String votedByName) {
+        this.votedByName = votedByName;
     }
 }

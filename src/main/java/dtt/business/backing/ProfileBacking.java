@@ -22,8 +22,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Backing bean for the profile page.
@@ -39,7 +38,7 @@ public class ProfileBacking implements Serializable {
     private UserDAO userDAO;
     @Inject
     private SessionInfo sessionInfo;
-    private UserState[] userStates;
+    private List<UserState> userStates;
     private UserState currentUserState;
     private String newEmail;
 
@@ -83,10 +82,10 @@ public class ProfileBacking implements Serializable {
             try {
                 user.setPasswordSalt(Hashing.generateSalt());
                 user.setPasswordHashed(Hashing.hashPassword(user.getPassword(), user.getPasswordSalt()));
-                LOGGER.info("Password has been changed from " + user.getId());
+                LOGGER.info("Password has been changed from " + user.getEmail());
 
             } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-                LOGGER.error("Failed to change password " + user.getId());
+                LOGGER.error("Failed to change password " + user.getEmail());
                 throw new IllegalStateException("Failed to change password", e);
             }
         }
@@ -99,13 +98,13 @@ public class ProfileBacking implements Serializable {
             try {
                 userDAO.update(user, transaction);
                 transaction.commit();
-                LOGGER.info("Changes saved" + user.getId());
+                LOGGER.info("Changes saved" + user.getEmail());
                 FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
                         "Ihre persönlichen Informationen wurden erfolgreich aktualisiert.", null);
                 FacesContext.getCurrentInstance().addMessage(null, message);
 
             } catch (DataNotFoundException | InvalidInputException | KeyExistsException e) {
-                LOGGER.error("Failed to save the updated information from userID: " + user.getId());
+                LOGGER.error("Failed to save the updated information from userID: " + user.getEmail());
                 transaction.abort();
                 throw new IllegalStateException("Failed to save the updated information", e);
             }
@@ -124,10 +123,10 @@ public class ProfileBacking implements Serializable {
             try (Transaction transaction = new Transaction()) {
                 userDAO.remove(user, transaction);
                 transaction.commit();
-                LOGGER.error("Profile with ID= " + user.getId() + " has been removed");
+                LOGGER.debug("Profile with ID= " + user.getEmail() + " has been removed");
                 return "/views/anonymous/login.xhtml?faces-redirect=true";
             } catch (DataNotFoundException e) {
-                LOGGER.error("Failed to remove profile with ID= " + user.getId());
+                LOGGER.error("Failed to remove profile  " + user.getEmail());
                 throw new IllegalStateException("Failed to remove profile.", e);
             }
         } else {
@@ -157,8 +156,14 @@ public class ProfileBacking implements Serializable {
         this.currentUserState = currentUserState;
     }
 
-    public UserState[] getUserStates() {
-        return UserState.values();
+    public List<UserState> getUserStates() {
+        userStates = new ArrayList<>(Arrays.asList(UserState.values()));
+
+        if (sessionInfo.isDeanery()) {
+            userStates.remove(UserState.ADMIN);
+        }
+
+        return userStates;
     }
 
     public String getNewEmail() {

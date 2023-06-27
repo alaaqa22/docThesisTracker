@@ -24,10 +24,10 @@ import org.apache.logging.log4j.Logger;
 @Named
 public class ResetPasswordBacking implements Serializable {
     private static final Logger LOGGER = LogManager.getLogger(CirculationDetailsBacking.class);
-
+    @Inject
+    TokenManager tokenManager;
     @Inject
     private UserDAO userDAO;
-
     private User user;
 
 
@@ -38,7 +38,8 @@ public class ResetPasswordBacking implements Serializable {
     }
 
     /**
-     * Method reset a password.it will be new unique token generated and redirect to another page to set a new password.
+     * Method reset a password.New unique token will be generated.If the email
+     * will be found.
      */
 
     public void sendResetPasswordEmail() {
@@ -46,15 +47,11 @@ public class ResetPasswordBacking implements Serializable {
         try (Transaction transaction = new Transaction()) {
             boolean found = userDAO.findUserByEmail(user, transaction);
             if (found) {
-                TokenManager tokenManager = new TokenManager();
                 tokenManager.generateToken(user);
-                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Email was sent", null);
-                FacesContext.getCurrentInstance().addMessage(null, message);
-            } else {
-                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid Email", null);
-                FacesContext.getCurrentInstance().addMessage(null, message);
             }
         }
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Email was sent", null);
+        FacesContext.getCurrentInstance().addMessage(null, message);
     }
 
     public User getUser() {

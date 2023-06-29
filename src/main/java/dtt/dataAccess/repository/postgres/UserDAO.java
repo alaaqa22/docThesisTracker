@@ -884,7 +884,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
         LOGGER.debug("Loading authentications.");
         String query = "SELECT authentication.faculty_id, "
                 + "authentication.user_level, faculty.faculty_name "
-                + "FROM authentication INNER JOIN faculty "
+                + "FROM authentication LEFT JOIN faculty "
                 + "ON authentication.faculty_id=faculty.faculty_id "
                 + "WHERE user_id = ?";
         try (PreparedStatement statement = transaction.getConnection()

@@ -355,7 +355,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 
         if (auth != null) {
             query.append(
-                    " AND authentication.user_level ILIKE '%' || ? || '%'");
+                    " AND authentication.user_level = ?");
         }
 
         query.append(" LIMIT ? OFFSET ?");
@@ -474,7 +474,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 
         if (auth != null) {
             query.append(
-                    " AND authentication.user_level ILIKE '%' || ? || '%'");
+                    " AND authentication.user_level = ?");
         }
 
         query.append(" LIMIT ? OFFSET ?");
@@ -545,7 +545,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 
         // Building SQL
         StringBuilder query = new StringBuilder();
-        query.append("SELECT Count(*) FROM \"user\" "
+        query.append("SELECT COUNT (DISTINCT \"user\".user_id) FROM \"user\" "
                 + "INNER JOIN authentication "
                 + "ON \"user\".user_id=authentication.user_id "
                 + "INNER JOIN faculty "
@@ -574,7 +574,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 
         if (auth != null) {
             query.append(
-                    " AND authentication.user_level ILIKE '%' || ? || '%'");
+                    " AND authentication.user_level = ?");
         }
 
         try (PreparedStatement statement = transaction.getConnection()
@@ -649,7 +649,8 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 
         // Building SQL
         StringBuilder query = new StringBuilder();
-        query.append("SELECT Count(*) FROM \"user\" "
+        query.append("SELECT COUNT (DISTINCT \\\"user\\\".user_id) "
+                + "FROM \"user\" "
                 + "INNER JOIN authentication "
                 + "ON \"user\".user_id=authentication.user_id "
                 + "INNER JOIN faculty "
@@ -678,7 +679,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 
         if (auth != null) {
             query.append(
-                    " AND authentication.user_level ILIKE '%' || ? || '%'");
+                    " AND authentication.user_level = ?");
         }
 
         try (PreparedStatement statement = transaction.getConnection()

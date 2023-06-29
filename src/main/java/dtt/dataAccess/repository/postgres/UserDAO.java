@@ -387,7 +387,8 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
             }
 
             if (auth != null) {
-                statement.setString(paramIndex++, auth.name());
+                statement.setObject(paramIndex++, auth.name(),
+                        java.sql.Types.OTHER);
             }
 
             // Set pagination parameters
@@ -505,7 +506,8 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
             }
 
             if (auth != null) {
-                statement.setString(paramIndex++, auth.name());
+                statement.setObject(paramIndex++, auth.name(),
+                        java.sql.Types.OTHER);
             }
 
             // Set pagination parameters
@@ -602,7 +604,8 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
             }
 
             if (auth != null) {
-                statement.setString(paramIndex++, auth.name());
+                statement.setObject(paramIndex++, auth.name(),
+                        java.sql.Types.OTHER);
             }
 
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -705,7 +708,8 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
             }
 
             if (auth != null) {
-                statement.setString(paramIndex++, auth.name());
+                statement.setObject(paramIndex++, auth.name(),
+                        java.sql.Types.OTHER);
             }
 
             try (ResultSet resultSet = statement.executeQuery()) {

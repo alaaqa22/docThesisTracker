@@ -83,6 +83,7 @@ public interface FacultyDAO {
 	 */
 	public List<Faculty> getFaculties(Transaction transaction);
 	public Faculty getFacultyById(int id, Transaction transaction);
-
+	public Faculty getFacultyByName(Faculty faculty, Transaction transaction);
 }
+
 

@@ -2,24 +2,20 @@ package dtt.business.backing;
 
 import dtt.business.utilities.Pagination;
 import dtt.business.utilities.SessionInfo;
-import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.repository.interfaces.UserDAO;
+import dtt.dataAccess.repository.postgres.FacultyDAO;
 import dtt.dataAccess.utilities.Transaction;
-import dtt.global.tansport.Circulation;
 import dtt.global.tansport.Faculty;
 import dtt.global.tansport.User;
 import dtt.global.tansport.UserState;
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jboss.logging.annotations.Pos;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,13 +33,17 @@ public class UserListBacking implements Serializable {
 
     @Inject
     private UserDAO userDAO;
+    @Inject
+    private FacultyDAO facultyDAO;
 
     @Inject
     private SessionInfo sessionInfo;
     private final Logger logger = LogManager.getLogger ();
     int totalNumberOfPages;
-    Faculty faculty = new Faculty ();
-    UserState userState = UserState.DEANERY;;
+    Faculty faculty;
+    String facultyName;
+    UserState userState = UserState.DEANERY;
+    ;
 
     /**
      * Constructs a new instance of UserListBacking.
@@ -71,12 +71,12 @@ public class UserListBacking implements Serializable {
 
                 int offset = (currentPage - 1) * maxItems;
                 int count = maxItems;
-                userState = UserState.DEANERY;
+                faculty = getFacultyByName (facultyName);
 
                 try (Transaction transaction = new Transaction ()) {
 
-                    users = userDAO.getUsers (filter, null, null, transaction, offset, count);
-                    transaction.commit ();  // Ensure that the transaction is committed.
+                    users = userDAO.getUsers (filter, faculty, userState, transaction, offset, count);
+                    transaction.commit ();
                 }
             }
 
@@ -84,7 +84,7 @@ public class UserListBacking implements Serializable {
             public int getTotalNumOfPages () {
 
                 try (Transaction t = new Transaction ()) {
-                    int totalNumOfPages = (int) Math.ceil ((double) (userDAO.getTotalUserNumber (filter, null, null, t))
+                    int totalNumOfPages = (int) Math.ceil ((double) (userDAO.getTotalUserNumber (filter, faculty, userState, t))
                             / maxItems);
                     this.totalNumOfPages = totalNumOfPages;
                     return totalNumOfPages;
@@ -97,6 +97,7 @@ public class UserListBacking implements Serializable {
     // Creates a new User object to be used as a filter and loads the first page of users.
     @PostConstruct
     public void init () {
+        userState= null;
         filter = new User ();
 
         loadUsers ();
@@ -161,17 +162,56 @@ public class UserListBacking implements Serializable {
 
         for (UserState userState : allUserStates) {
             if (sessionInfo.isAdmin ()) {
-                allowedUserStates.add (userState);
+
+                if(!userState.equals (UserState.ADMIN)){
+                    allowedUserStates.add (userState);
+                }
+
 
             } else {
-                if (!userState.equals (UserState.DEANERY) && !userState.equals (UserState.ADMIN))  {
+                if (!userState.equals (UserState.DEANERY) && !userState.equals (UserState.ADMIN)) {
                     allowedUserStates.add (userState);
                 }
             }
         }
 
-        return allowedUserStates.toArray(new UserState[0]);
-}
+        return allowedUserStates.toArray (new UserState[0]);
+    }
 
+    public String[] getAllUserFaculties () {
+        List<Faculty> faculties;
+        try (Transaction transaction = new Transaction ()) {
+            faculties = facultyDAO.getFaculties (transaction);
+        }
+        String[] facultyNames = new String[faculties.size ()];
+
+        for (int i = 0; i < faculties.size (); i++) {
+            facultyNames[i] = faculties.get (i).getName ();
+        }
+
+        return facultyNames;
+    }
+
+    public void setFacultyName (String facultyName) {
+        this.facultyName = facultyName;
+    }
+
+    public String getFacultyName () {
+        return facultyName;
+    }
+
+    private Faculty getFacultyByName (String name) {
+        Faculty faculty = new Faculty ();
+        faculty.setName (name);
+
+        if (faculty.getName () == null) {
+            return null;
+        }
+        try (Transaction transaction = new Transaction ()) {
+            faculty = facultyDAO.getFacultyByName (faculty, transaction);
+        }
+
+        return faculty;
+    }
 }
 

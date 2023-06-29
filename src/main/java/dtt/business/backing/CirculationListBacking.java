@@ -221,6 +221,11 @@ public class CirculationListBacking implements Serializable {
         }
         return "Alle Umläufe ";
     }
+    public String showAllCirculations() {
+
+        return "/views/authenticated/circulationslist.xhtml";
+    }
+
 
 }
 

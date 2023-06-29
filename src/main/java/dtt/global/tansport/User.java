@@ -3,7 +3,9 @@ package dtt.global.tansport;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 /**
  *  Represents a User in the System.
@@ -26,6 +28,8 @@ public class User {
     private int roleId; // The role ID of the user
 
     private LocalDate birthDate;
+
+    private UserState currentUserState;
 
 
 
@@ -225,6 +229,32 @@ public class User {
         LOGGER.debug("setBirthDate called: " + birthDate.toString());
         this.birthDate = birthDate;
     }
+    public List<UserState> getUserStates () {
+
+        return new ArrayList<> (getUserState ().values ());
+
+    }
+    public List<String> getUserFaculties () {
+
+            List<Faculty> faculties = new ArrayList<> (getUserState ().keySet ());
+            List<String> facultiesName = new ArrayList<> ();
+
+            for (Faculty faculty : faculties) {
+                facultiesName.add (faculty.getName ());
+
+            }
+
+            return facultiesName;
+
+    }
+    public void setCurrentUserState (UserState currentUserState) {
+        this.currentUserState = currentUserState;
+    }
+
+    public UserState getCurrentUserState () {
+        return currentUserState;
+    }
+
 
 }
 

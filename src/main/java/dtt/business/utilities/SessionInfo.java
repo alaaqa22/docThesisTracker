@@ -37,6 +37,7 @@ public class SessionInfo implements Serializable {
     private static final long serialVersionUID = 10;
     private User user = new User ();
 
+
     public boolean isLoggedIn () {
         LOGGER.debug ("isLoggedIn() called.");
         return loggedIn;
@@ -123,32 +124,6 @@ public class SessionInfo implements Serializable {
             return true;
         }
         return false;
-    }
-
-    public List<UserState> getUserStates () {
-        if (user != null && user.getUserState () != null) {
-            List<UserState> states = new ArrayList<> (user.getUserState ().values ());
-
-            return states;
-        } else {
-            return new ArrayList<> ();
-        }
-    }
-
-    public List<String> getUserFaculties () {
-        if (user != null && user.getUserState () != null) {
-            List<Faculty> faculties = new ArrayList<> (user.getUserState ().keySet ());
-            List<String> facultiesName = new ArrayList<> ();
-
-            for (Faculty faculty : faculties) {
-                facultiesName.add (faculty.getName ());
-
-            }
-
-            return facultiesName;
-        } else {
-            return new ArrayList<> ();
-        }
     }
 
 

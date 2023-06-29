@@ -4,6 +4,7 @@ import dtt.business.utilities.SessionInfo;
 import dtt.global.tansport.Faculty;
 import dtt.global.tansport.UserState;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
@@ -19,14 +20,17 @@ import java.util.Map;
  *
  * @author Hadi Abou Hassoun
  */
-@RequestScoped
+
 @Named
+@RequestScoped
 public class NavigationBacking implements Serializable {
 
     @Inject
     SessionInfo sessionInfo;
-    private UserState selectedUserState;
+    static String selectedFaculty;
     private static final Logger LOGGER = LogManager.getLogger(NavigationBacking.class);
+
+
 
     /**
      * Logs out the current user.
@@ -49,37 +53,39 @@ public class NavigationBacking implements Serializable {
         this.sessionInfo = sessionInfo;
     }
 
-    public void setSelectedUserState (UserState selectedUserState) {
-        this.selectedUserState = selectedUserState;
+    public void setSelectedUserState (String selectedfaculty) {
+        this.selectedFaculty = selectedfaculty;
     }
 
     public SessionInfo getSessionInfo () {
         return sessionInfo;
     }
 
-    public UserState getSelectedUserState () {
-        return selectedUserState;
-    }
     public void changeUserState() {
 
-        UserState selectedState = selectedUserState;
+        Map<Faculty, UserState> userStateMap = sessionInfo.getUser().getUserState();
+        Faculty selectedFacultyObj = null;
 
-        if (sessionInfo.getUser () != null) {
-            Map<Faculty, UserState> userStateMap = sessionInfo.getUser ().getUserState();
-            Faculty selectedFaculty = null;
-
-            for (Map.Entry<Faculty, UserState> entry : userStateMap.entrySet()) {
-                if (entry.getValue() == selectedState) {
-                    selectedFaculty = entry.getKey();
-                    break;
-                }
-            }
-
-            // Wenn eine passende Fakultät gefunden wurde, ändern Sie den Benutzerstatus für diese Fakultät
-            if (selectedFaculty != null) {
-                userStateMap.put(selectedFaculty, selectedState); // setzt den neuen Benutzerstatus
+        for (Faculty faculty : userStateMap.keySet()) {
+            if (faculty.getName().equals(selectedFaculty)) {
+                selectedFacultyObj = faculty;
+                break;
             }
         }
+
+        if (selectedFacultyObj != null) {
+            UserState userState = userStateMap.get(selectedFacultyObj);
+            sessionInfo.getUser ().setCurrentUserState (userState);
+
+        }
+
+        }
+
+    public void setSelectedFaculty (String selectedFaculty) {
+        this.selectedFaculty = selectedFaculty;
     }
 
+    public String getSelectedFaculty () {
+        return selectedFaculty;
+    }
 }

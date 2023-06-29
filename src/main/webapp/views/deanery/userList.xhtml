@@ -20,7 +20,26 @@
         <ui:define name="mainContent">
 
         <div class="container">
+
             <h:form>
+                <div class="form-group">
+                    <h:selectOneMenu id="userState" value="#{userListBacking.userState}" class="form-control">
+                        <f:selectItems value="#{userListBacking.getAllUserStates()}" var="state" itemLabel="#{state}" itemValue="#{state}" />
+                        <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="data" />
+                    </h:selectOneMenu>
+                </div>
+            </h:form>
+
+
+            <h:form id="data">
+
+<!--                <h:selectOneMenu value="#{userListBacking.userState}">-->
+<!--                    <f:selectItems value="#{userListBacking.allUserStates}" var="state" itemLabel="#{state}" itemValue="#{state}" />-->
+<!--                    <f:ajax event="change" istener="#{userListBacking.loadUsers()}"  render="user-dt"/>-->
+<!--                </h:selectOneMenu>-->
+
+
+
                 <!-- DataTable for a User List -->
                 <h:dataTable id="user-dt" value="#{userListBacking.users}" var="user" styleClass="table table-bordered"
                              border="2">
@@ -28,6 +47,7 @@
                     <f:facet name="header">
                         <h:outputText value="Users" styleClass="text-center"/>
                     </f:facet>
+
 
                     <!-- First Name -->
                     <h:column>
@@ -64,11 +84,11 @@
                         <h:outputText value="#{user.email}"/>
                     </h:column>
                     <!-- Fakultät -->
-                    <h:column>
+                    <h:column randerd = "#{sessionInfo.admin}">
                         <f:facet name="header">
                             <h:outputText value="Fakultät"/>
                         </f:facet>
-                        <ui:repeat value="#{sessionInfo.userFaculties}" var="entry">
+                        <ui:repeat value="#{user.userFaculties}" var="entry">
                             <h:outputText value="#{entry}" styleClass="form-control" />
                         </ui:repeat>
                     </h:column>
@@ -78,7 +98,7 @@
                         <f:facet name="header">
                             <h:outputText value="UserState"/>
                         </f:facet>
-                        <ui:repeat value="#{sessionInfo.userStates}" var="entry">
+                        <ui:repeat value="#{user.userStates}" var="entry">
                             <h:outputText value="#{entry}" styleClass="form-control" />
                         </ui:repeat>
                     </h:column>
@@ -93,9 +113,10 @@
                 </ui:fragment>
 
                 <!-- Pagination Controls -->
-                <div class="d-flex justify-content-center">
+                <div class="d-flex justify-content-center"  >
                     <ul class="pagination">
-                        <h:panelGroup rendered="#{!empty userListBacking.users}">
+
+                        <h:panelGroup rendered="#{!empty userListBacking.users}" >
                             <h:panelGroup layout="block" styleClass="page-item" rendered="#{!userListBacking.userPagination.isFirstPage()}">
                                 <h:commandLink id="firstpage-link" value="First" action="#{userListBacking.userPagination.firstPage}"
                                                styleClass="page-link">

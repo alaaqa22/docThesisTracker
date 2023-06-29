@@ -20,6 +20,7 @@ import org.jboss.logging.annotations.Pos;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,6 +42,8 @@ public class UserListBacking implements Serializable {
     private SessionInfo sessionInfo;
     private final Logger logger = LogManager.getLogger ();
     int totalNumberOfPages;
+    Faculty faculty = new Faculty ();
+    UserState userState = UserState.DEANERY;;
 
     /**
      * Constructs a new instance of UserListBacking.
@@ -68,11 +71,11 @@ public class UserListBacking implements Serializable {
 
                 int offset = (currentPage - 1) * maxItems;
                 int count = maxItems;
+                userState = UserState.DEANERY;
 
                 try (Transaction transaction = new Transaction ()) {
-                    Faculty faculty = null;
-                    UserState auth = null;
-                    users = userDAO.getUsers (filter, faculty, auth, transaction, offset, count);
+
+                    users = userDAO.getUsers (filter, null, null, transaction, offset, count);
                     transaction.commit ();  // Ensure that the transaction is committed.
                 }
             }
@@ -95,6 +98,7 @@ public class UserListBacking implements Serializable {
     @PostConstruct
     public void init () {
         filter = new User ();
+
         loadUsers ();
     }
 
@@ -134,5 +138,40 @@ public class UserListBacking implements Serializable {
     public User getFilter () {
         return filter;
     }
+
+    public void setFaculty (Faculty faculty) {
+        this.faculty = faculty;
+    }
+
+    public void setUserState (UserState userState) {
+        this.userState = userState;
+    }
+
+    public Faculty getFaculty () {
+        return faculty;
+    }
+
+    public UserState getUserState () {
+        return userState;
+    }
+
+    public UserState[] getAllUserStates () {
+        UserState[] allUserStates = UserState.values ();
+        List<UserState> allowedUserStates = new ArrayList<> ();
+
+        for (UserState userState : allUserStates) {
+            if (sessionInfo.isAdmin ()) {
+                allowedUserStates.add (userState);
+
+            } else {
+                if (!userState.equals (UserState.DEANERY) && !userState.equals (UserState.ADMIN))  {
+                    allowedUserStates.add (userState);
+                }
+            }
+        }
+
+        return allowedUserStates.toArray(new UserState[0]);
+}
+
 }
 

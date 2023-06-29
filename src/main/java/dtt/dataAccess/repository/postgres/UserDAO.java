@@ -794,90 +794,90 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void addAdmin(final User user, final Transaction transaction)
-            throws KeyExistsException, InvalidInputException {
-        String query = "INSERT INTO \"admin\" (user_id) VALUES (?)";
-
-        try (PreparedStatement statement = transaction.getConnection()
-                .prepareStatement(query)) {
-            statement.setInt(1, user.getId());
-
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            switch (e.getSQLState()) {
-            case "23503":
-                throw new InvalidInputException(
-                        "User with user ID " + user.getId() + " doesn't exist.",
-                        e);
-
-            case "23505":
-                throw new KeyExistsException("Admin with user ID "
-                        + user.getId() + " already exists.", e);
-
-            default:
-                throw new DBConnectionFailedException();
-            }
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void removeAdmin(final User user, final Transaction transaction)
-            throws DataNotFoundException {
-        String query = "DELETE FROM \"admin\" WHERE user_id = ?";
-
-        try (PreparedStatement statement = transaction.getConnection()
-                .prepareStatement(query)) {
-            statement.setInt(1, user.getId());
-
-            int rowsAffected = statement.executeUpdate();
-            if (rowsAffected == 0) {
-                throw new DataNotFoundException(
-                        "Admin with user ID " + user.getId() + " not found.");
-            }
-        } catch (SQLException e) {
-            throw new DBConnectionFailedException("Failed to remove admin.", e);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<User> getAdmins(final Transaction transaction) {
-        List<User> adminList = new ArrayList<>();
-        String query = "SELECT u.user_id, u.email_address, "
-                + "u.firstname, u.lastname, u.birthdate "
-                + "FROM \"admin\" AS a "
-                + "INNER JOIN \"user\" AS u ON a.user_id = u.user_id";
-
-        try (PreparedStatement statement = transaction.getConnection()
-                .prepareStatement(query);
-                ResultSet resultSet = statement.executeQuery()) {
-
-            while (resultSet.next()) {
-                User admin = new User();
-                admin.setId(resultSet.getInt("user_id"));
-                admin.setEmail(resultSet.getString("email_address"));
-                admin.setFirstName(resultSet.getString("firstname"));
-                admin.setLastName(resultSet.getString("lastname"));
-                admin.setBirthDate(
-                        resultSet.getDate("birthdate").toLocalDate());
-
-                adminList.add(admin);
-            }
-        } catch (SQLException e) {
-            throw new DBConnectionFailedException("Failed to retrieve admins.",
-                    e);
-        }
-        return adminList;
-    }
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public void addAdmin(final User user, final Transaction transaction)
+//            throws KeyExistsException, InvalidInputException {
+//        String query = "INSERT INTO \"admin\" (user_id) VALUES (?)";
+//
+//        try (PreparedStatement statement = transaction.getConnection()
+//                .prepareStatement(query)) {
+//            statement.setInt(1, user.getId());
+//
+//            statement.executeUpdate();
+//        } catch (SQLException e) {
+//            switch (e.getSQLState()) {
+//            case "23503":
+//                throw new InvalidInputException(
+//                      "User with user ID " + user.getId() + " doesn't exist.",
+//                        e);
+//
+//            case "23505":
+//                throw new KeyExistsException("Admin with user ID "
+//                        + user.getId() + " already exists.", e);
+//
+//            default:
+//                throw new DBConnectionFailedException();
+//            }
+//        }
+//    }
+//
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public void removeAdmin(final User user, final Transaction transaction)
+//            throws DataNotFoundException {
+//        String query = "DELETE FROM \"admin\" WHERE user_id = ?";
+//
+//        try (PreparedStatement statement = transaction.getConnection()
+//                .prepareStatement(query)) {
+//            statement.setInt(1, user.getId());
+//
+//            int rowsAffected = statement.executeUpdate();
+//            if (rowsAffected == 0) {
+//                throw new DataNotFoundException(
+//                        "Admin with user ID " + user.getId() + " not found.");
+//            }
+//        } catch (SQLException e) {
+//          throw new DBConnectionFailedException("Failed to remove admin.", e);
+//        }
+//    }
+//
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public List<User> getAdmins(final Transaction transaction) {
+//        List<User> adminList = new ArrayList<>();
+//        String query = "SELECT u.user_id, u.email_address, "
+//                + "u.firstname, u.lastname, u.birthdate "
+//                + "FROM \"admin\" AS a "
+//                + "INNER JOIN \"user\" AS u ON a.user_id = u.user_id";
+//
+//        try (PreparedStatement statement = transaction.getConnection()
+//                .prepareStatement(query);
+//                ResultSet resultSet = statement.executeQuery()) {
+//
+//            while (resultSet.next()) {
+//                User admin = new User();
+//                admin.setId(resultSet.getInt("user_id"));
+//                admin.setEmail(resultSet.getString("email_address"));
+//                admin.setFirstName(resultSet.getString("firstname"));
+//                admin.setLastName(resultSet.getString("lastname"));
+//                admin.setBirthDate(
+//                        resultSet.getDate("birthdate").toLocalDate());
+//
+//                adminList.add(admin);
+//            }
+//        } catch (SQLException e) {
+//          throw new DBConnectionFailedException("Failed to retrieve admins.",
+//                    e);
+//        }
+//        return adminList;
+//    }
 
     private void setAuthentications(final User user,
             final Transaction transaction) {

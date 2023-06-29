@@ -232,43 +232,43 @@ public interface UserDAO {
             throws DataNotFoundException, InvalidInputException,
             DataNotCompleteException;
 
-    /**
-     * Add user to admin table.
-     *
-     * <p>
-     * The {@code user.id} needs to exist in the user table and be set correctly
-     * and not yet in the admin database, all other fields will be ignored.
-     *
-     * @param user        The user DTO containing the ID to be added to the
-     *                    admin table
-     * @param transaction The transaction associated with this operation.
-     * @throws KeyExistsException    if user is already in the table
-     * @throws InvalidInputException
-     */
-    void addAdmin(User user, Transaction transaction)
-            throws KeyExistsException, InvalidInputException;
-
-    /**
-     * Remove a User from the admin Table.
-     *
-     * <p>
-     * The {@code user.id} needs to exist in the user table and in the admin
-     * database.
-     *
-     * @param user        The user DTO containing the ID to be removed from the
-     *                    admin table
-     * @param transaction The transaction associated with this operation.
-     * @throws DataNotFoundException if the user doesn't exist in the database
-     */
-    void removeAdmin(User user, Transaction transaction)
-            throws DataNotFoundException;
-
-    /**
-     * Retrieves a list of administrators.
-     *
-     * @param transaction The transaction associated with this operation.
-     * @return A list of administrators.
-     */
-    List<User> getAdmins(Transaction transaction);
+//    /**
+//     * Add user to admin table.
+//     *
+//     * <p>
+//   * The {@code user.id} needs to exist in the user table and be set correctly
+//     * and not yet in the admin database, all other fields will be ignored.
+//     *
+//     * @param user        The user DTO containing the ID to be added to the
+//     *                    admin table
+//     * @param transaction The transaction associated with this operation.
+//     * @throws KeyExistsException    if user is already in the table
+//     * @throws InvalidInputException
+//     */
+//    void addAdmin(User user, Transaction transaction)
+//            throws KeyExistsException, InvalidInputException;
+//
+//    /**
+//     * Remove a User from the admin Table.
+//     *
+//     * <p>
+//     * The {@code user.id} needs to exist in the user table and in the admin
+//     * database.
+//     *
+//   * @param user        The user DTO containing the ID to be removed from the
+//     *                    admin table
+//     * @param transaction The transaction associated with this operation.
+//     * @throws DataNotFoundException if the user doesn't exist in the database
+//     */
+//    void removeAdmin(User user, Transaction transaction)
+//            throws DataNotFoundException;
+//
+//    /**
+//     * Retrieves a list of administrators.
+//     *
+//     * @param transaction The transaction associated with this operation.
+//     * @return A list of administrators.
+//     */
+//    List<User> getAdmins(Transaction transaction);
 
 }

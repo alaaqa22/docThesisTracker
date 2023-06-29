@@ -25,19 +25,35 @@
                 <div class="form-group">
                    <!--  Fakultät filter -->
 
-                    <h:selectOneMenu id="userFaculty" value="#{userListBacking.facultyName}" class="form-control">
-                        <f:selectItem itemLabel="Alle Fakultäten" itemValue="" />
-                        <f:selectItems value="#{userListBacking.getAllUserFaculties()}" var="faculty" itemLabel="#{faculty}" itemValue="#{faculty}" />
-                        <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="data" />
-                    </h:selectOneMenu>
+<!--                    <h:selectOneMenu id="userFaculty" value="#{userListBacking.facultyName}" class="form-control">-->
+<!--                        <f:selectItem itemLabel="Alle Fakultäten" itemValue="Alle Fakultäten" />-->
+<!--                        <f:selectItems value="#{userListBacking.getAllUserFaculties()}" var="faculty" itemLabel="#{faculty}" itemValue="#{faculty}" />-->
+<!--                        <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="data" />-->
+<!--                    </h:selectOneMenu>-->
 
-                    <!-- User State filter -->
+<!--                    &lt;!&ndash; User State filter &ndash;&gt;-->
 
-                    <h:selectOneMenu id="userState" value="#{userListBacking.userState}" class="form-control">
-                        <f:selectItem itemLabel="Alle Benutzer" itemValue="" />
-                        <f:selectItems value="#{userListBacking.getAllUserStates()}" var="state" itemLabel="#{state}" itemValue="#{state}" />
-                        <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="data" />
-                    </h:selectOneMenu>
+<!--                    <h:selectOneMenu id="userState" value="#{userListBacking.userState}" class="form-control">-->
+<!--                        <f:selectItem itemLabel="Alle Benutzer" itemValue="" />-->
+<!--                        <f:selectItems value="#{userListBacking.getAllUserStates()}" var="state" itemLabel="#{state}" itemValue="#{state}" />-->
+<!--                        <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="data" />-->
+<!--                    </h:selectOneMenu>-->
+
+
+                        <h:selectOneMenu id="userFaculty" value="#{userListBacking.facultyName}" class="form-control scones-style">
+                            <f:selectItem itemLabel="Alle Fakultäten" itemValue="Alle Fakultäten" />
+                            <f:selectItems value="#{userListBacking.getAllUserFaculties()}" var="faculty" itemLabel="#{faculty}" itemValue="#{faculty}" />
+                            <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="data" />
+                        </h:selectOneMenu>
+
+                        <!-- User State filter -->
+
+                        <h:selectOneMenu id="userState" value="#{userListBacking.userState}" class="form-control scones-style">
+                            <f:selectItem itemLabel="Alle Benutzer" itemValue="" />
+                            <f:selectItems value="#{userListBacking.getAllUserStates()}" var="state" itemLabel="#{state}" itemValue="#{state}" />
+                            <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="data" />
+                        </h:selectOneMenu>
+
 
 
 

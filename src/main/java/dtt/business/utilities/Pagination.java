@@ -115,5 +115,12 @@ public abstract class Pagination<T> {
         return getTotalNumOfPages() == 1;
     }
 
+    public void isValidCurrent(){
+        if(currentPage>getTotalNumOfPages ()){
+            setCurrentPage (1);
+        }
+
+    }
+
 
 }

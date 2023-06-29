@@ -193,7 +193,7 @@ public class FacultyDAO implements dtt.dataAccess.repository.interfaces.FacultyD
 
         }
 
-        return faculty;
+        return null;
     }
 
 

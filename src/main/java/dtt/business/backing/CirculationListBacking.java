@@ -57,6 +57,7 @@ public class CirculationListBacking implements Serializable {
         return new Pagination<Circulation> () {
             @Override
             public void loadData () {
+                isValidCurrent ();
                 int currentPage = getCurrentPage ();
                 int maxItems = getMaxItems ();
                 if (currentPage <= 0 || maxItems <= 0) {
@@ -64,6 +65,8 @@ public class CirculationListBacking implements Serializable {
                 }
 
 
+                System.out.println (totalNumOfPages);
+                System.out.println (currentPage);
                 int offset = (currentPage - 1) * maxItems;
                 int count = maxItems;
                 if (!timeButton) {

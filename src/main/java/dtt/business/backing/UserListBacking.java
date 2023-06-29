@@ -42,7 +42,7 @@ public class UserListBacking implements Serializable {
     int totalNumberOfPages;
     Faculty faculty;
     String facultyName;
-    UserState userState = UserState.DEANERY;
+    UserState userState;
     ;
 
     /**
@@ -64,14 +64,18 @@ public class UserListBacking implements Serializable {
             @Override
             public void loadData () {
                 int currentPage = this.getCurrentPage ();
+
                 int maxItems = getMaxItems ();
                 if (currentPage <= 0 || maxItems <= 0) {
                     logger.error ("Invalid currentPage or maxItems value.");
                 }
+                faculty = getFacultyByName (facultyName);
+
+                isValidCurrent ();
 
                 int offset = (currentPage - 1) * maxItems;
                 int count = maxItems;
-                faculty = getFacultyByName (facultyName);
+
 
                 try (Transaction transaction = new Transaction ()) {
 
@@ -87,6 +91,7 @@ public class UserListBacking implements Serializable {
                     int totalNumOfPages = (int) Math.ceil ((double) (userDAO.getTotalUserNumber (filter, faculty, userState, t))
                             / maxItems);
                     this.totalNumOfPages = totalNumOfPages;
+
                     return totalNumOfPages;
                 }
             }
@@ -97,7 +102,8 @@ public class UserListBacking implements Serializable {
     // Creates a new User object to be used as a filter and loads the first page of users.
     @PostConstruct
     public void init () {
-        userState= null;
+        userState = null;
+        facultyName = null;
         filter = new User ();
 
         loadUsers ();
@@ -124,13 +130,6 @@ public class UserListBacking implements Serializable {
         return users;
     }
 
-    public int getTotalNumberOfPages () {
-        return totalNumberOfPages;
-    }
-
-    public void setTotalNumberOfPages (int totalNumberOfPages) {
-        this.totalNumberOfPages = totalNumberOfPages;
-    }
 
     public void setFilter (User filter) {
         this.filter = filter;
@@ -163,7 +162,7 @@ public class UserListBacking implements Serializable {
         for (UserState userState : allUserStates) {
             if (sessionInfo.isAdmin ()) {
 
-                if(!userState.equals (UserState.ADMIN)){
+                if (!userState.equals (UserState.ADMIN)) {
                     allowedUserStates.add (userState);
                 }
 
@@ -204,14 +203,12 @@ public class UserListBacking implements Serializable {
         Faculty faculty = new Faculty ();
         faculty.setName (name);
 
-        if (faculty.getName () == null) {
-            return null;
-        }
         try (Transaction transaction = new Transaction ()) {
             faculty = facultyDAO.getFacultyByName (faculty, transaction);
         }
 
         return faculty;
     }
+
 }
 

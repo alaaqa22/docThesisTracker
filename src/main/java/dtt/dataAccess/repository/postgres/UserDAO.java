@@ -326,7 +326,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 
         // Building SQL
         StringBuilder query = new StringBuilder();
-        query.append("SELECT \"user\".user_id FROM \"user\" "
+        query.append("SELECT DISTINCT \"user\".user_id FROM \"user\" "
                 + "INNER JOIN authentication "
                 + "ON \"user\".user_id=authentication.user_id "
                 + "INNER JOIN faculty "
@@ -445,7 +445,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
 
         // Building SQL
         StringBuilder query = new StringBuilder();
-        query.append("SELECT \"user\".user_id FROM \"user\" "
+        query.append("SELECT DISTINCT \"user\".user_id FROM \"user\" "
                 + "INNER JOIN authentication "
                 + "ON \"user\".user_id=authentication.user_id "
                 + "INNER JOIN faculty "

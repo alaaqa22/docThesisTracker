@@ -113,7 +113,7 @@ public class CirculationCreatingBacking implements Serializable {
             fmsg.setSeverity(FacesMessage.SEVERITY_ERROR);
             fctx.addMessage("createCirculation:create", fmsg);
         }
-        return null;
+        return "/views/authenticated/circulationslist.xhtml";
     }
 
     /**

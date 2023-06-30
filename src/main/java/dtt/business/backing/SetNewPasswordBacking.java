@@ -100,15 +100,15 @@ public class SetNewPasswordBacking implements Serializable {
             LOGGER.error("Failed to change password " + user.getId(), e);
             throw new IllegalStateException("Failed to change password", e);
         } catch (KeyExistsException e) {
-            LOGGER.error(
-                    "Failed to change password " + user.getId() + "key exists",
-                    e);
+            LOGGER.error("Failed to change password " + user.getEmail()
+                    + "key exists", e);
             final FacesMessage fmsg = new FacesMessage(
-                    "Error adding Faculty: Incomplete Data");
+                    "Registrierung fehlgeschlagen. Nutzer mit derselben "
+                            + "Email befindet sich bereits im System");
             fmsg.setSeverity(FacesMessage.SEVERITY_ERROR);
             fctx.addMessage("setNew:generalMessage", fmsg);
         }
-        return "/view/anonymous/login";
+        return "/views/anonymous/login";
     }
 
     /**

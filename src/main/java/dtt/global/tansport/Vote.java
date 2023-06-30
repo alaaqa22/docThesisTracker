@@ -80,4 +80,12 @@ public class Vote {
     public void setVotedByName(String votedByName) {
         this.votedByName = votedByName;
     }
+
+    public void setUserId (int userId) {
+        this.userId = userId;
+    }
+
+    public void setCirculationId (int circulationId) {
+        this.circulationId = circulationId;
+    }
 }

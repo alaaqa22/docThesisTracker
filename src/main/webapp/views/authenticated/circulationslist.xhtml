@@ -24,20 +24,18 @@
                 <div class="container">
 
 
-
-
-
                     <h:form>
 
-                        <h:commandButton value="Alle Umläufe" action="#{circulationListBacking.showAllCirculations}" styleClass="btn btn-primary">
+                        <h:commandButton value="Alle Umläufe" action="#{circulationListBacking.showAllCirculations}"
+                                         styleClass="btn btn-primary">
                             <f:ajax render="dataForm"/>
                         </h:commandButton>
 
                         <h:commandButton value="Aktulle Umläufe"
-                                              action="#{circulationListBacking.showCurrentCirculations}"
-                                              styleClass="btn btn-primary">
-                        <f:ajax render="dataForm"/>
-                    </h:commandButton>
+                                         action="#{circulationListBacking.showCurrentCirculations}"
+                                         styleClass="btn btn-primary">
+                            <f:ajax render="dataForm"/>
+                        </h:commandButton>
                         <h:commandButton value="Abgeschlossene Umläufe"
                                          action="#{circulationListBacking.showCompletedCirculations}"
                                          styleClass="btn btn-secondary">
@@ -58,21 +56,6 @@
 
                             </f:facet>
 
-                            <!-- Fakultät
-                             value="#{circulationListBacking.filter.facultyId == 0 ? '' : circulationListBacking.filter.facultyId}"
-                             -->
-                            <h:column >
-                                <f:facet name="header" randerd = "#{sessionInfo.admin}">
-                                    <h:outputText value="Fakultät"/>
-                                    <h:inputText value="#{circulation.facultyId}"
-                                            styleClass="form-control">
-                                        <f:ajax event="change" listener="#{circulationListBacking.loadCirculations}"
-                                                render="@form"/>
-                                    </h:inputText>
-                                </f:facet>
-                                <h:outputText value="#{circulationListBacking.getFacultyName(circulation.facultyId)}"/>
-
-                            </h:column>
 
                             <!--> Titel <!-->
                             <h:column>
@@ -84,6 +67,7 @@
                                                 render="@form"/>
 
                                     </h:inputText>
+
                                 </f:facet>
                                 <h:outputLink value="circulationDetails.xhtml?id=#{circulation.id}">
                                     <h:outputText value="#{circulation.title}"/>
@@ -118,6 +102,17 @@
                                     </h:inputText>
                                 </f:facet>
                                 <h:outputText value="#{circulation.doctoralSupervisor}"/>
+
+                            </h:column>
+
+                            <!-- Fakultät-->
+
+                            <h:column>
+                                <f:facet name="header" randerd="#{sessionInfo.admin}">
+                                    <h:outputText value="Fakultät"/>
+
+                                </f:facet>
+                                <h:outputText value="#{circulationListBacking.getFacultyName(circulation.facultyId)}"/>
 
                             </h:column>
 

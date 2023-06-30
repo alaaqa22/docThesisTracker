@@ -17,173 +17,166 @@
 
     <h:body>
         <ui:composition template="../anonymous/template.xhtml">
-        <ui:define name="mainContent">
+            <ui:define name="mainContent">
 
-        <div class="container">
+                <div class="container">
 
-            <h:form>
-                <div class="form-group">
-                   <!--  Fakultät filter -->
-
-<!--                    <h:selectOneMenu id="userFaculty" value="#{userListBacking.facultyName}" class="form-control">-->
-<!--                        <f:selectItem itemLabel="Alle Fakultäten" itemValue="Alle Fakultäten" />-->
-<!--                        <f:selectItems value="#{userListBacking.getAllUserFaculties()}" var="faculty" itemLabel="#{faculty}" itemValue="#{faculty}" />-->
-<!--                        <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="data" />-->
-<!--                    </h:selectOneMenu>-->
-
-<!--                    &lt;!&ndash; User State filter &ndash;&gt;-->
-
-<!--                    <h:selectOneMenu id="userState" value="#{userListBacking.userState}" class="form-control">-->
-<!--                        <f:selectItem itemLabel="Alle Benutzer" itemValue="" />-->
-<!--                        <f:selectItems value="#{userListBacking.getAllUserStates()}" var="state" itemLabel="#{state}" itemValue="#{state}" />-->
-<!--                        <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="data" />-->
-<!--                    </h:selectOneMenu>-->
+                    <h:form>
+                        <div class="form-group">
+                            <!--  Fakultät filter -->
 
 
-                        <h:selectOneMenu id="userFaculty" value="#{userListBacking.facultyName}" class="form-control scones-style">
-                            <f:selectItem itemLabel="Alle Fakultäten" itemValue="Alle Fakultäten" />
-                            <f:selectItems value="#{userListBacking.getAllUserFaculties()}" var="faculty" itemLabel="#{faculty}" itemValue="#{faculty}" />
-                            <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="data" />
-                        </h:selectOneMenu>
+                            <h:selectOneMenu id="userFaculty" value="#{userListBacking.facultyName}" rendered="#{sessionInfo.admin}"
+                                             class="form-control scones-style">
+                                <f:selectItem itemLabel="Alle Fakultäten" itemValue="Alle Fakultäten"/>
+                                <f:selectItems value="#{userListBacking.getAllUserFaculties()}" var="faculty"
+                                               itemLabel="#{faculty}" itemValue="#{faculty}"/>
+                                <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="data"/>
+                            </h:selectOneMenu>
 
-                        <!-- User State filter -->
+                            <!-- User State filter -->
 
-                        <h:selectOneMenu id="userState" value="#{userListBacking.userState}" class="form-control scones-style">
-                            <f:selectItem itemLabel="Alle Benutzer" itemValue="" />
-                            <f:selectItems value="#{userListBacking.getAllUserStates()}" var="state" itemLabel="#{state}" itemValue="#{state}" />
-                            <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="data" />
-                        </h:selectOneMenu>
+                            <h:selectOneMenu id="userState" value="#{userListBacking.userState}"
+                                             class="form-control scones-style">
+                                <f:selectItem itemLabel="Alle Benutzer" itemValue=""/>
+                                <f:selectItems value="#{userListBacking.getAllUserStates()}" var="state"
+                                               itemLabel="#{state}" itemValue="#{state}"/>
+                                <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="data"/>
+                            </h:selectOneMenu>
+
+
+                        </div>
+                    </h:form>
+
+
+                    <h:form id="data">
 
 
 
+                        <!-- DataTable for a User List -->
+                        <h:dataTable id="user-dt" value="#{userListBacking.users}" var="user"
+                                     styleClass="table table-bordered"  style="width: 112%; height: 500px;"
+                                     border="4">
+
+                            <f:facet name="header">
+                                <h:outputText value="Users" styleClass="text-center"/>
+                            </f:facet>
 
 
+                            <!-- First Name -->
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="First Name"/>
+                                    <h:inputText value="#{userListBacking.filter.firstName}" styleClass="form-control">
+                                        <f:ajax event="change" listener="#{userListBacking.loadUsers()}"
+                                                render="@form"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputLink value="../authenticated/profile.xhtml?id=#{user.id}">
+                                    <h:outputText value="#{user.firstName}"/>
+                                </h:outputLink>
+                            </h:column>
 
+                            <!-- Last Name -->
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Last Name"/>
+                                    <h:inputText value="#{userListBacking.filter.lastName}" styleClass="form-control">
+                                        <f:ajax event="change" listener="#{userListBacking.loadUsers()}"
+                                                render="@form"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{user.lastName}"/>
+                            </h:column>
+
+                            <!-- Email -->
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Email"/>
+                                    <h:inputText value="#{userListBacking.filter.email}" styleClass="form-control">
+                                        <f:ajax event="change" listener="#{userListBacking.loadUsers()}"
+                                                render="@form"/>
+                                    </h:inputText>
+                                </f:facet>
+                                <h:outputText value="#{user.email}"/>
+                            </h:column>
+                            <!-- Fakultät -->
+                            <h:column randerd="#{sessionInfo.admin}">
+                                <f:facet name="header">
+                                    <h:outputText value="Fakultät"/>
+                                </f:facet>
+                                <ui:repeat value="#{user.userFaculties}" var="entry">
+                                    <h:outputText value="#{entry}" styleClass="form-control"/>
+                                </ui:repeat>
+                            </h:column>
+
+                            <!-- UserState -->
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="UserState"/>
+                                </f:facet>
+                                <ui:repeat value="#{user.userStates}" var="entry">
+                                    <h:outputText value="#{entry}" styleClass="form-control"/>
+                                </ui:repeat>
+                            </h:column>
+
+                        </h:dataTable>
+
+                        <ui:fragment rendered="#{empty userListBacking.users}">
+                            <div class="alert alert-warning alert-dismissible fade show" style="max-width: 1000px;">
+                                <h4 class="alert-heading">Keine Ergebnisse gefunden.</h4>
+                                <p>Bitte ändern Sie Ihre Filtereinstellungen und versuchen Sie es erneut.</p>
+                            </div>
+                        </ui:fragment>
+
+                        <!-- Pagination Controls -->
+                        <div class="d-flex justify-content-center">
+                            <ul class="pagination">
+
+                                <h:panelGroup rendered="#{!empty userListBacking.users}">
+                                    <h:panelGroup layout="block" styleClass="page-item"
+                                                  rendered="#{!userListBacking.userPagination.isFirstPage()}">
+                                        <h:commandLink id="firstpage-link" value="First"
+                                                       action="#{userListBacking.userPagination.firstPage}"
+                                                       styleClass="page-link">
+                                            <f:ajax execute="@this" render="@form"/>
+                                        </h:commandLink>
+                                    </h:panelGroup>
+                                    <h:panelGroup layout="block" styleClass="page-item"
+                                                  rendered="#{!userListBacking.userPagination.isFirstPage()}">
+                                        <h:commandLink id="previouspage-link" value="Previous"
+                                                       action="#{userListBacking.userPagination.previousPage}"
+                                                       styleClass="page-link">
+                                            <f:ajax execute="@this" render="@form"/>
+                                        </h:commandLink>
+                                    </h:panelGroup>
+                                    <h:panelGroup layout="block" styleClass="page-item disabled">
+                                        <h:outputText
+                                                value="Page: #{userListBacking.userPagination.currentPage} of #{userListBacking.userPagination.totalNumOfPages}"
+                                                styleClass="page-link"/>
+                                    </h:panelGroup>
+                                    <h:panelGroup layout="block" styleClass="page-item"
+                                                  rendered="#{!userListBacking.userPagination.isLastPage()}">
+                                        <h:commandLink id="nextpage-link" value="Next"
+                                                       action="#{userListBacking.userPagination.nextPage}"
+                                                       styleClass="page-link">
+                                            <f:ajax execute="@this" render="@form"/>
+                                        </h:commandLink>
+                                    </h:panelGroup>
+                                    <h:panelGroup layout="block" styleClass="page-item"
+                                                  rendered="#{!userListBacking.userPagination.isLastPage()}">
+                                        <h:commandLink id="lastpage-link" value="Last"
+                                                       action="#{userListBacking.userPagination.lastPage}"
+                                                       styleClass="page-link">
+                                            <f:ajax execute="@this" render="@form"/>
+                                        </h:commandLink>
+                                    </h:panelGroup>
+                                </h:panelGroup>
+                            </ul>
+                        </div>
+                    </h:form>
                 </div>
-            </h:form>
-
-
-            <h:form id="data">
-
-<!--                <h:selectOneMenu value="#{userListBacking.userState}">-->
-<!--                    <f:selectItems value="#{userListBacking.allUserStates}" var="state" itemLabel="#{state}" itemValue="#{state}" />-->
-<!--                    <f:ajax event="change" istener="#{userListBacking.loadUsers()}"  render="user-dt"/>-->
-<!--                </h:selectOneMenu>-->
-
-
-
-                <!-- DataTable for a User List -->
-                <h:dataTable id="user-dt" value="#{userListBacking.users}" var="user" styleClass="table table-bordered"
-                             border="2">
-
-                    <f:facet name="header">
-                        <h:outputText value="Users" styleClass="text-center"/>
-                    </f:facet>
-
-
-                    <!-- First Name -->
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="First Name"/>
-                            <h:inputText value="#{userListBacking.filter.firstName}" styleClass="form-control">
-                                <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="@form"/>
-                            </h:inputText>
-                        </f:facet>
-                        <h:outputLink value="../authenticated/profile.xhtml?id=#{user.id}">
-                            <h:outputText value="#{user.firstName}"/>
-                        </h:outputLink>
-                    </h:column>
-
-                    <!-- Last Name -->
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Last Name"/>
-                            <h:inputText value="#{userListBacking.filter.lastName}" styleClass="form-control">
-                                <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="@form"/>
-                            </h:inputText>
-                        </f:facet>
-                        <h:outputText value="#{user.lastName}"/>
-                    </h:column>
-
-                    <!-- Email -->
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Email"/>
-                            <h:inputText value="#{userListBacking.filter.email}" styleClass="form-control">
-                                <f:ajax event="change" listener="#{userListBacking.loadUsers()}" render="@form"/>
-                            </h:inputText>
-                        </f:facet>
-                        <h:outputText value="#{user.email}"/>
-                    </h:column>
-                    <!-- Fakultät -->
-                    <h:column randerd = "#{sessionInfo.admin}">
-                        <f:facet name="header">
-                            <h:outputText value="Fakultät"/>
-                        </f:facet>
-                        <ui:repeat value="#{user.userFaculties}" var="entry">
-                            <h:outputText value="#{entry}" styleClass="form-control" />
-                        </ui:repeat>
-                    </h:column>
-
-                    <!-- UserState -->
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="UserState"/>
-                        </f:facet>
-                        <ui:repeat value="#{user.userStates}" var="entry">
-                            <h:outputText value="#{entry}" styleClass="form-control" />
-                        </ui:repeat>
-                    </h:column>
-
-                </h:dataTable>
-
-                <ui:fragment rendered="#{empty userListBacking.users}">
-                    <div class="alert alert-warning alert-dismissible fade show" style="max-width: 1000px;">
-                        <h4 class="alert-heading">Keine Ergebnisse gefunden.</h4>
-                        <p>Bitte ändern Sie Ihre Filtereinstellungen und versuchen Sie es erneut.</p>
-                    </div>
-                </ui:fragment>
-
-                <!-- Pagination Controls -->
-                <div class="d-flex justify-content-center"  >
-                    <ul class="pagination">
-
-                        <h:panelGroup rendered="#{!empty userListBacking.users}" >
-                            <h:panelGroup layout="block" styleClass="page-item" rendered="#{!userListBacking.userPagination.isFirstPage()}">
-                                <h:commandLink id="firstpage-link" value="First" action="#{userListBacking.userPagination.firstPage}"
-                                               styleClass="page-link">
-                                    <f:ajax execute="@this" render="@form"/>
-                                </h:commandLink>
-                            </h:panelGroup>
-                            <h:panelGroup layout="block" styleClass="page-item" rendered="#{!userListBacking.userPagination.isFirstPage()}">
-                                <h:commandLink id="previouspage-link" value="Previous"
-                                               action="#{userListBacking.userPagination.previousPage}"
-                                               styleClass="page-link">
-                                    <f:ajax execute="@this" render="@form"/>
-                                </h:commandLink>
-                            </h:panelGroup>
-                            <h:panelGroup layout="block" styleClass="page-item disabled">
-                                <h:outputText value="Page: #{userListBacking.userPagination.currentPage} of #{userListBacking.userPagination.totalNumOfPages}"
-                                              styleClass="page-link"/>
-                            </h:panelGroup>
-                            <h:panelGroup layout="block" styleClass="page-item" rendered="#{!userListBacking.userPagination.isLastPage()}">
-                                <h:commandLink id="nextpage-link" value="Next" action="#{userListBacking.userPagination.nextPage}"
-                                               styleClass="page-link">
-                                    <f:ajax execute="@this" render="@form"/>
-                                </h:commandLink>
-                            </h:panelGroup>
-                            <h:panelGroup layout="block" styleClass="page-item" rendered="#{!userListBacking.userPagination.isLastPage()}">
-                                <h:commandLink id="lastpage-link" value="Last" action="#{userListBacking.userPagination.lastPage}"
-                                               styleClass="page-link">
-                                    <f:ajax execute="@this" render="@form"/>
-                                </h:commandLink>
-                            </h:panelGroup>
-                        </h:panelGroup>
-                    </ul>
-                </div>
-            </h:form>
-        </div>
-        </ui:define>
+            </ui:define>
         </ui:composition>
     </h:body>
 </f:view>

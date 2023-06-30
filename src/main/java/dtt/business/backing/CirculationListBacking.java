@@ -64,9 +64,6 @@ public class CirculationListBacking implements Serializable {
                     logger.error ("Invalid currentPage or maxItems value.");
                 }
 
-
-                System.out.println (totalNumOfPages);
-                System.out.println (currentPage);
                 int offset = (currentPage - 1) * maxItems;
                 int count = maxItems;
                 if (!timeButton) {

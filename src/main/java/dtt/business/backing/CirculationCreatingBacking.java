@@ -1,7 +1,6 @@
 package dtt.business.backing;
 
 import dtt.business.utilities.SessionInfo;
-import dtt.dataAccess.exceptions.DBConnectionFailedException;
 import dtt.dataAccess.exceptions.DataNotCompleteException;
 import dtt.dataAccess.exceptions.InvalidInputException;
 import dtt.dataAccess.exceptions.KeyExistsException;
@@ -20,7 +19,6 @@ import jakarta.inject.Named;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -193,12 +191,6 @@ public class CirculationCreatingBacking implements Serializable {
         LOGGER.debug("getListOfFaculties() called.");
         try (Transaction transaction = new Transaction()) {
             return facultyDAO.getFaculties(transaction);
-        } catch (DBConnectionFailedException e) {
-            LOGGER.error("DBConnectionFailedException", e);
-            // Handle the exception
         }
-
-        return new ArrayList<>(); // Return an empty list if an exception occurs
     }
-
 }

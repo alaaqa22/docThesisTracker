@@ -19,7 +19,7 @@
       <div class="form-group">
          <label for="email-itxt">Email:</label>
          <h:inputText id="email-itxt" value="#{registrationBacking.user.email}" required="true" requiredMessage="Empty email!"
-                      validator="EmailAddressSyntaxValidator" class="form-control" />
+                      validator="compositeValidator" class="form-control" />
          <h:message for="email-itxt" style="color: red;" class="error-message"/>
       </div>
 

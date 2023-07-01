@@ -58,7 +58,6 @@ public class UncheckedExceptionHandler extends ExceptionHandlerWrapper {
 
             LOGGER.error("Unchecked exception thrown: " +  exception.getMessage());
             try {
-                //TODO fix redirect so it works.
                 redirectToErrorPage(facesContext);
             } catch (IOException e) {
                 LOGGER.error("An IOException occurred in handle(): " + e.getMessage());
@@ -69,7 +68,7 @@ public class UncheckedExceptionHandler extends ExceptionHandlerWrapper {
     private void redirectToErrorPage(FacesContext facesContext) throws IOException {
         ExternalContext externalContext = facesContext.getExternalContext();
         externalContext.setResponseStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        externalContext.redirect("/views/anonymous/errorPage.xhtml");
+        externalContext.redirect(externalContext.getRequestContextPath() + "/views/anonymous/errorPage.xhtml");
     }
     @Override
     public Throwable getRootCause(Throwable throwable) {

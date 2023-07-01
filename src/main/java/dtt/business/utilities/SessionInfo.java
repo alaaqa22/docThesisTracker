@@ -37,6 +37,27 @@ public class SessionInfo implements Serializable {
     private static final long serialVersionUID = 10;
     private User user = new User ();
 
+    private Faculty currentFaculty;
+    private boolean loggedIn;
+
+    public User getUser () {
+        return user;
+    }
+    public void setUser (User user) {
+        if (user == null) {
+            setLoggedIn (false);
+        }
+        this.user = user;
+        setLoggedIn (true);
+    }
+
+    public void setCurrentFaculty(Faculty currentFaculty) {
+        this.currentFaculty = currentFaculty;
+    }
+
+    public Faculty getCurrentFaculty() {
+        return this.currentFaculty;
+    }
 
     public boolean isLoggedIn () {
         LOGGER.debug ("isLoggedIn() called.");
@@ -46,20 +67,6 @@ public class SessionInfo implements Serializable {
     public void setLoggedIn (boolean loggedIn) {
         LOGGER.debug ("setLoggedIn() called.");
         this.loggedIn = loggedIn;
-    }
-
-    private boolean loggedIn;
-
-    public User getUser () {
-        return user;
-    }
-
-    public void setUser (User user) {
-        if (user == null) {
-            setLoggedIn (false);
-        }
-        this.user = user;
-        setLoggedIn (true);
     }
 
     /**
@@ -116,7 +123,6 @@ public class SessionInfo implements Serializable {
         }
         return false;
     }
-
 
     public boolean isAnonymous () {
         Map<Faculty, UserState> map = user.getUserState ();

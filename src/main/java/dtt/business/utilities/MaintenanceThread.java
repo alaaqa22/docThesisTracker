@@ -12,8 +12,9 @@ import java.util.TimerTask;
  * This thread periodically sends reminder emails to users based on certain criteria.
  * @author Johannes Silvennoinen
  */
-@ApplicationScoped
 public class MaintenanceThread extends TimerTask {
+    // Variable for schedule period and delay, 24h in ms.
+    private final static int PERIOD = 24 * 60 * 60 * 1000;
     private Timer timer;
     @Inject
     TokenManager tokenManager;
@@ -32,7 +33,7 @@ public class MaintenanceThread extends TimerTask {
     public void startMaintenance() {
         timer = new Timer();
         //Once a day
-        timer.schedule(this, 0, 24 * 60 * 60 * 1000);
+        timer.schedule(this, PERIOD, PERIOD);
     }
 
     /**

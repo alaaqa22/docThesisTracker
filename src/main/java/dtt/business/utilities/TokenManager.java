@@ -33,12 +33,14 @@ public class TokenManager {
      * @return the generated token string
      */
     public String generateToken(User user) {
-        //Deletes the old token when a user generates a new one.
-        tokenStore.remove(user);
+        // Remove any existing tokens associated with the user.
+        deleteTokenForUser(user);
+        // Generate a new unique token.
         String token = generateUniqueToken();
         LOGGER.debug("TOKEN: " + token);
-        LOGGER.debug("User: " + user.getEmail());
+        // Set the expiration time.
         Instant expirationTime = Instant.now().plus(tokenExpirationDuration);
+        // Put the token and the tokendata in to the token store.
         tokenStore.put(token, new TokenData(user, expirationTime));
         return token;
     }
@@ -82,9 +84,9 @@ public class TokenManager {
         tokenStore.entrySet().removeIf(entry -> isTokenExpired(entry.getKey()));
     }
     /**
-     * Generates a unique token string.
+     * Generates a unique token string with SecureRandom.
      *
-     * @return the generated token string
+     * @return the generated token string.
      */
     private String generateUniqueToken() {
         LOGGER.debug("generateUniqueToken() called.");
@@ -96,8 +98,8 @@ public class TokenManager {
     /**
      * Checks if the given token is expired.
      *
-     * @param token the token to check
-     * @return true if the token is expired, false otherwise
+     * @param token the token to check.
+     * @return true if the token is expired, false otherwise.
      */
     private boolean isTokenExpired(String token) {
         LOGGER.debug("isTokenExpired() called for token: " + token);
@@ -115,6 +117,21 @@ public class TokenManager {
         // This class is mostly needed to test token expiry.
         tokenExpirationDuration = ofMinutes;
     }
+
+    /**
+     * Deletes the token out of the tokenstore if the user has a token.
+     * @param user the user whose token should be deleted.
+     */
+    private void deleteTokenForUser(User user) {
+        for (Map.Entry<String, TokenData> entry: tokenStore.entrySet()) {
+            String token = entry.getKey();
+            TokenData value = entry.getValue();
+            if (value.user.getEmail().equals(user.getEmail())) {
+                LOGGER.debug("Deleting token for user: " + user.getEmail());
+                tokenStore.remove(token);
+            }
+        }
+    }
     /**
      * Represents the token data associated with a user.
      */
@@ -124,8 +141,8 @@ public class TokenManager {
         /**
          * Constructs a new TokenData object.
          *
-         * @param user            the user associated with the token
-         * @param expirationTime  the expiration time of the token
+         * @param user            the user associated with the token.
+         * @param expirationTime  the expiration time of the token.
          */
         TokenData(User user, Instant expirationTime) {
             this.user = user;

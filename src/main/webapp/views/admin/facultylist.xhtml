@@ -37,7 +37,7 @@
 
 					<h:message id="global" styleClass="message" />
 					<h:dataTable id="facultyTable" value="#{facultyBacking.faculties}" var="faculty"
-						border="1">
+						border="1"  class="table">
 						<f:facet name="header">
 							<h:outputText value="Faculties" styleClass="text-center" />
 						</f:facet>
@@ -46,13 +46,13 @@
 						</h:column>
 						<h:column>
 							<h:commandButton update="facultyTable" value="Remove"
-								action="#{facultyBacking.remove(faculty)}" />
+								action="#{facultyBacking.remove(faculty)}" class="btn btn-danger" />
 						</h:column>
 						<h:column>
 							<h:inputText value="#{faculty.name}" required="true"
 								validator="UniqueFacultyNameValidator" />
 							<h:commandButton update="facultyTable" value="Rename"
-								action="#{facultyBacking.update(faculty)}" />
+								action="#{facultyBacking.update(faculty)}"  class="btn btn-primary"/>
 						</h:column>
 					</h:dataTable>
 				</h:form>

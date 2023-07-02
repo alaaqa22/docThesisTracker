@@ -7,12 +7,32 @@
       xmlns:ui="jakarta.faces.facelets">
 
 <h:head>
-    <title>help</title>
+    <title>Hilfe Seite</title>
 </h:head>
 
 <h:body>
-    <ui:include src="/views/anonymous/header.xhtml" />
+    <h:panelGroup>
+        <ui:include src="/views/anonymous/header.xhtml" />
 
+    </h:panelGroup>
+    <h2>Hilfe seite von DocThesisTracker</h2>
+    <h:panelGroup>
+        <ui:include src="anonymous.xhtml"></ui:include>
+    </h:panelGroup>
+
+
+    <h:panelGroup rendered="#{sessionInfo.isLoggedIn()}">
+        <ui:include src="exminer.xhtml"></ui:include>
+    </h:panelGroup>
+    <h:panelGroup rendered="#{sessionInfo.isCommitteeMember() or sessionInfo.isAdmin() or sessionInfo.isDeanery()}">
+        <ui:include src="examinecommittee.xhtml"></ui:include>
+    </h:panelGroup>
+    <h:panelGroup rendered="#{sessionInfo.isDeanery() or sessionInfo.isAdmin()}">
+        <ui:include src="deanery.xhtml"></ui:include>
+    </h:panelGroup>
+    <h:panelGroup rendered="#{sessionInfo.isAdmin()}">
+        <ui:include src="admin.xhtml"></ui:include>
+    </h:panelGroup>
 </h:body>
 
 

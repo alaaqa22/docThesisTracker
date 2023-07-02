@@ -21,8 +21,8 @@
             }
         </style>
 
-        <script >
-            document.addEventListener("DOMContentLoaded", function() {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
                 var toggler = document.querySelector('.navbar-toggler');
                 var navMenu = document.querySelector('.navbar-collapse');
 
@@ -54,69 +54,57 @@
                             <h:link id="homepageLog-lin" outcome="/views/anonymous/login.xhtml" value="Hauptseite"
                                     styleClass="nav-link"/>
                             <li class="nav-item">
-                                <h:link id="help-anonymous-link" outcome="/views/help/help" value="Hilfeseite" styleClass="nav-link"/>
+                                <h:link id="help-link" outcome="/views/help/help" value="Hilfeseite"
+                                        styleClass="nav-link"/>
                             </li>
                         </h:panelGroup>
                         <!--  für authenticated -->
                         <h:panelGroup rendered="#{!sessionInfo.pending and !sessionInfo.anonymous}">
 
                             <li class="nav-item">
-                                <h:link id="homepage-link" outcome="/views/authenticated/circulationslist.xhtml" value="Hauptseite"
+                                <h:link id="homepage-link" outcome="/views/authenticated/circulationslist.xhtml"
+                                        value="Hauptseite"
                                         styleClass="nav-link"/>
                             </li>
 
                             <li class="nav-item">
-<!--                                <h:link id="profil-link" outcome="/views/authenticated/profile.xhtml" value="Profilseite"-->
-<!--                                        styleClass="nav-link"/>-->
-                                <h:outputLink  id="profil-link" value="../authenticated/profile.xhtml?id=#{sessionInfo.user.id}">
+
+                                <h:outputLink id="profil-link"
+                                              value="../authenticated/profile.xhtml?id=#{sessionInfo.user.id}">
                                     <h:outputText value="Profilseite" styleClass="nav-link"/>
                                 </h:outputLink>
                             </li>
 
 
-
-
                         </h:panelGroup>
-                        <!-- für Prüfungsberechtigte -->
-                        <h:panelGroup rendered="#{sessionInfo.examiner}">
 
-                            <li class="nav-item">
-                                <h:link id="help-Examiner-link" outcome="/views/help/help" value="Hilfeseite" styleClass="nav-link"/>
-                            </li>
-                        </h:panelGroup>
+
+
+
 
                         <!-- für committeeMember/ deanery/ admin -->
                         <h:panelGroup
                                 rendered="#{sessionInfo.committeeMember or sessionInfo.deanery or sessionInfo.admin}">
 
                             <li class="nav-item">
-                                <h:link  id="create-circulation-link" outcome="/views/examineCommittee/createCirculation" value="Umlauf erstellen" styleClass="nav-link"/>
+                                <h:link id="create-circulation-link" outcome="/views/examineCommittee/createCirculation"
+                                        value="Umlauf erstellen" styleClass="nav-link"/>
                             </li>
 
                         </h:panelGroup>
                         <!-- deanery/ admin -->
                         <h:panelGroup rendered="#{sessionInfo.deanery or sessionInfo.admin}">
                             <li class="nav-item">
-                                <h:link id="user-list-link" outcome="/views/deanery/userList" value="BenutzerListe" styleClass="nav-link"/>
+                                <h:link id="user-list-link" outcome="/views/deanery/userList" value="BenutzerListe"
+                                        styleClass="nav-link"/>
                             </li>
                         </h:panelGroup>
 
-                        <!-- für Prüfungskommissionsmitglieder -->
-                        <h:panelGroup rendered="#{sessionInfo.committeeMember}">
+                        <!-- Admin -->
+                        <h:panelGroup rendered="#{ sessionInfo.admin}">
                             <li class="nav-item">
-                                <h:link id="help-committee-link" outcome="/views/help/help" value="Hilfeseite" styleClass="nav-link"/>
-                            </li>
-                        </h:panelGroup>
-                        <!-- für Dekanate -->
-                        <h:panelGroup rendered="#{sessionInfo.deanery}">
-                            <li class="nav-item">
-                                <h:link id="help-deanery-link" outcome="/views/help/help" value="Hilfeseite" styleClass="nav-link"/>
-                            </li>
-                        </h:panelGroup>
-                        <!-- für Administratoren -->
-                        <h:panelGroup rendered="#{sessionInfo.admin}">
-                            <li class="nav-item">
-                                <h:link id="help-admin-link" outcome="/views/help/help" value="Hilfeseite" styleClass="nav-link"/>
+                                <h:link id="faculty-id" outcome="/views/admin/facultylist.xhtml" value="Fakultät erstellen"
+                                        styleClass="nav-link"/>
                             </li>
                         </h:panelGroup>
 
@@ -125,18 +113,26 @@
                         <h:panelGroup rendered="#{ !sessionInfo.anonymous}">
 
                             <li class="nav-item">
+                                <h:link id="help-authenticated-link" outcome="/views/help/help" value="Hilfeseite"
+                                        styleClass="nav-link"/>
+                            </li>
+
+                            <li class="nav-item">
                                 <h:commandButton id="logout-cbtn" action="#{navigationBacking.logout}" value="Abmelden"
                                                  styleClass="nav-link btn btn-secondary"/>
                             </li>
 
                             <h:outputText value="#{sessionInfo.user.userStates}" styleClass="nav-link disabled "/>
 
-                            <!-- User State  Menu -->
+
+                            <!-- Faculties  Menu -->
 
                             <li class="nav-item right-align">
-                                <h:selectOneMenu value="#{navigationBacking.selectedFaculty}"  rendered="#{!sessionInfo.admin}" styleClass="custom-select">
-                                    <f:selectItems value="#{sessionInfo.user.userFaculties}" var="state" itemValue="#{state}" itemLabel="#{state}" />
-                                    <f:ajax listener="#{navigationBacking.changeUserState}" render="@form" />
+                                <h:selectOneMenu value="#{navigationBacking.selectedFaculty}"
+                                                 rendered="#{!sessionInfo.admin}" styleClass="custom-select">
+                                    <f:selectItems value="#{sessionInfo.user.userFaculties}" var="state"
+                                                   itemValue="#{state}" itemLabel="#{state}"/>
+                                    <f:ajax listener="#{navigationBacking.changeUserState}" render="@form"/>
                                 </h:selectOneMenu>
                             </li>
 

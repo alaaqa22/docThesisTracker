@@ -8,7 +8,10 @@ import dtt.dataAccess.repository.postgres.FacultyDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
 import dtt.global.tansport.Faculty;
+import jakarta.annotation.ManagedBean;
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ConversationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -49,7 +52,6 @@ public class CirculationListBacking implements Serializable {
      * Any SQLException that occurs during the transaction commit is caught and an error message is printed.
      */
     public CirculationListBacking () {
-        this.circPagination = createPagination ();
 
     }
 
@@ -93,7 +95,7 @@ public class CirculationListBacking implements Serializable {
 
 
                 }
-
+                circPagination.setTotalOfPages (getTotalNumOfPages ());
             }
 
             @Override
@@ -112,7 +114,7 @@ public class CirculationListBacking implements Serializable {
                     }
 
                     t.commit ();
-                    this.totalNumOfPages = totalNumOfPages;
+                    this.totalOfPages = totalNumOfPages;
                     return totalNumOfPages;
                 }
             }
@@ -127,6 +129,10 @@ public class CirculationListBacking implements Serializable {
     public void init () {
         logger.fatal ("start init");
         filter = new Circulation ();
+        if(!sessionInfo.isAdmin ()) {
+            filter.setFacultyId (sessionInfo.getCurrentFaculty ().getId ());
+        }
+        this.circPagination = createPagination ();
         loadCirculations ();
 
     }
@@ -225,6 +231,8 @@ public class CirculationListBacking implements Serializable {
 
         return "/views/authenticated/circulationslist.xhtml";
     }
+
+
 
 
 }

@@ -5,9 +5,20 @@ package dtt.global.tansport;
  *  @author Hadi Abou Hassoun
  */
 public enum UserState {
-    ADMIN,  // Represents an administrator user
-    EXAMINCOMMITTEEMEMBERS,  // Represents members of the examination committee
-    EXAMINER,  // Represents an examiner user
-    DEANERY,  // Represents a deanery user
-    PENDING  // Represents a user with a pending status
+    ADMIN(4),  // Represents an administrator user
+    EXAMINCOMMITTEEMEMBERS(2),  // Represents members of the examination committee
+    EXAMINER(1),  // Represents an examiner user
+    DEANERY(3),  // Represents a deanery user
+    PENDING(0);  // Represents a user with a pending status
+
+    private final int priority;
+
+    UserState(int priority) {
+        this.priority = priority;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
 }
+

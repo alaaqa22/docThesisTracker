@@ -3,6 +3,7 @@ package dtt.business.utilities;
 import dtt.global.tansport.Faculty;
 import dtt.global.tansport.User;
 import dtt.global.tansport.UserState;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 import org.apache.logging.log4j.LogManager;
@@ -39,6 +40,13 @@ public class SessionInfo implements Serializable {
 
     private Faculty currentFaculty;
     private boolean loggedIn;
+
+    private UserState currentUserState;
+
+
+    public  SessionInfo () {
+
+    }
 
     public User getUser () {
         return user;
@@ -131,6 +139,46 @@ public class SessionInfo implements Serializable {
         }
         return false;
     }
+    public void setCurrentUserState (UserState currentUserState) {
+        this.currentUserState = currentUserState;
+    }
+
+    public UserState getCurrentUserState () {
+        return currentUserState;
+    }
+
+    public boolean deaneryInCurrentFaculty(){
+        getDefaultUserFaculty ();
+        return currentUserState==UserState.DEANERY;
+    }
+    public boolean examinerInCurrentFaculty(){
+        return currentUserState==UserState.EXAMINER;
+    }
+    public boolean committeeMemberInCurrentFaculty(){
+        return currentUserState==UserState.EXAMINCOMMITTEEMEMBERS;
+    }
+    public boolean pendingInCurrentFaculty(){
+        return currentUserState==UserState.PENDING;
+    }
+    public boolean adminInCurrentFaculty(){
+        return currentUserState==UserState.ADMIN;
+    }
+
+    private void getDefaultUserFaculty() {
+        int maxPriority = -1;
+        Faculty defaultFaculty = null;
+
+        for (Map.Entry<Faculty, UserState> entry : user.getUserState ().entrySet()) {
+            UserState userState = entry.getValue();
+            if (userState.getPriority() > maxPriority) {
+                maxPriority = userState.getPriority();
+                defaultFaculty = entry.getKey();
+            }
+        }
+        currentFaculty = defaultFaculty;
+
+    }
+
 
 
 }

@@ -76,10 +76,15 @@ public class UserListBacking implements Serializable {
                 int offset = (currentPage - 1) * maxItems;
                 int count = maxItems;
 
+                if(!sessionInfo.adminInCurrentFaculty ()){
+                    userState = sessionInfo.getCurrentUserState ();
+                    faculty =sessionInfo.getCurrentFaculty ();
+                }
+
 
                 try (Transaction transaction = new Transaction ()) {
 
-                    users = userDAO.getUsers (filter, faculty, userState, transaction, offset, count);
+                    users = userDAO.getUsers (filter, faculty ,userState, transaction, offset, count);
                     transaction.commit ();
                 }
             }
@@ -88,9 +93,9 @@ public class UserListBacking implements Serializable {
             public int getTotalNumOfPages () {
 
                 try (Transaction t = new Transaction ()) {
-                    int totalNumOfPages = (int) Math.ceil ((double) (userDAO.getTotalUserNumber (filter, faculty, userState, t))
+                    int totalNumOfPages = (int) Math.ceil ((double) (userDAO.getTotalUserNumber (filter,faculty ,userState , t))
                             / maxItems);
-                    this.totalNumOfPages = totalNumOfPages;
+                    this.totalOfPages = totalNumOfPages;
 
                     return totalNumOfPages;
                 }
@@ -102,8 +107,8 @@ public class UserListBacking implements Serializable {
     // Creates a new User object to be used as a filter and loads the first page of users.
     @PostConstruct
     public void init () {
-        userState = null;
-        facultyName = null;
+
+
         filter = new User ();
 
         loadUsers ();

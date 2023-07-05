@@ -19,7 +19,6 @@ public class Circulation {
 
     private int createdBy; // The userId of the creator.
     private int facultyId;
-
     public boolean isValid() {
         return isValid;
     }
@@ -116,6 +115,7 @@ public class Circulation {
     public Timestamp getEndDate() {
         return endDate;
     }
+
 
 
 }

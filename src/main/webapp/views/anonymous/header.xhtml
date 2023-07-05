@@ -2,8 +2,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
 
 >
 
@@ -59,7 +57,7 @@
                             </li>
                         </h:panelGroup>
                         <!--  für authenticated -->
-                        <h:panelGroup rendered="#{!sessionInfo.pending and !sessionInfo.anonymous}">
+                        <h:panelGroup rendered="#{!sessionInfo.pendingInCurrentFaculty() and !sessionInfo.anonymous}">
 
                             <li class="nav-item">
                                 <h:link id="homepage-link" outcome="/views/authenticated/circulationslist.xhtml"
@@ -78,13 +76,9 @@
 
                         </h:panelGroup>
 
-
-
-
-
                         <!-- für committeeMember/ deanery/ admin -->
                         <h:panelGroup
-                                rendered="#{sessionInfo.committeeMember or sessionInfo.deanery or sessionInfo.admin}">
+                                rendered="#{sessionInfo.committeeMemberInCurrentFaculty() or sessionInfo.deaneryInCurrentFaculty() or sessionInfo.admin}">
 
                             <li class="nav-item">
                                 <h:link id="create-circulation-link" outcome="/views/examineCommittee/createCirculation"
@@ -93,7 +87,7 @@
 
                         </h:panelGroup>
                         <!-- deanery/ admin -->
-                        <h:panelGroup rendered="#{sessionInfo.deanery or sessionInfo.admin}">
+                        <h:panelGroup rendered="#{sessionInfo.deaneryInCurrentFaculty() or sessionInfo.admin}">
                             <li class="nav-item">
                                 <h:link id="user-list-link" outcome="/views/deanery/userList" value="BenutzerListe"
                                         styleClass="nav-link"/>
@@ -112,28 +106,29 @@
                         <!-- Logout button -->
                         <h:panelGroup rendered="#{ !sessionInfo.anonymous}">
 
-                            <li class="nav-item">
+                            <li class="nav-item" >
                                 <h:link id="help-authenticated-link" outcome="/views/help/help" value="Hilfeseite"
                                         styleClass="nav-link"/>
                             </li>
 
                             <li class="nav-item">
-                                <h:commandButton id="logout-cbtn" action="#{navigationBacking.logout}" value="Abmelden"
+                                <h:commandButton id="logout-cbtn" action="#{logout.logout()}" value="Abmelden"
                                                  styleClass="nav-link btn btn-secondary"/>
                             </li>
 
-                            <h:outputText value="#{sessionInfo.user.userStates}" styleClass="nav-link disabled "/>
+                            <h:outputText value="#{navigationBacking.currentUserState}" styleClass="nav-link disabled "/>
 
-
-                            <!-- Faculties  Menu -->
 
                             <li class="nav-item right-align">
                                 <h:selectOneMenu value="#{navigationBacking.selectedFaculty}"
                                                  rendered="#{!sessionInfo.admin}" styleClass="custom-select">
                                     <f:selectItems value="#{sessionInfo.user.userFaculties}" var="state"
                                                    itemValue="#{state}" itemLabel="#{state}"/>
-                                    <f:ajax listener="#{navigationBacking.changeUserState}" render="@form"/>
+                                    <f:ajax event="change" execute="@all" listener="#{navigationBacking.changeUserState}" render="@form :dataForm" />
+
+
                                 </h:selectOneMenu>
+
                             </li>
 
 
@@ -146,6 +141,7 @@
                 </h:form>
             </div>
         </nav>
+
     </h:body>
 </f:view>
 </html>

@@ -14,7 +14,7 @@ import java.util.List;
 public abstract class Pagination<T> {
 
     protected int maxItems = Integer.parseInt(ConfigReader.getProperty(ConfigReader.PAGINATION_MAX_ITEMS));
-    protected int totalNumOfPages;
+    protected int totalOfPages;
     private int currentPage;
     private List<T> entries;
     private String sortColumn;
@@ -28,7 +28,7 @@ public abstract class Pagination<T> {
      * Load data of next page, unless you are already on the last page.
      */
     public void nextPage() {
-        if (currentPage < totalNumOfPages) {
+        if (currentPage < totalOfPages) {
             setCurrentPage(currentPage + 1);
             loadData();
         }
@@ -44,7 +44,7 @@ public abstract class Pagination<T> {
      * Load data on last page.
      */
     public void lastPage() {
-        setCurrentPage(totalNumOfPages);
+        setCurrentPage(totalOfPages);
         loadData();
 
     }
@@ -80,7 +80,7 @@ public abstract class Pagination<T> {
     public abstract int getTotalNumOfPages();
 
     public void setTotalNumOfPages() {
-        this.totalNumOfPages = totalNumOfPages;
+        this.totalOfPages = totalOfPages;
     }
 
     public List<T> getEntries() {
@@ -108,7 +108,7 @@ public abstract class Pagination<T> {
     }
 
     public boolean isLastPage() {
-        return currentPage == totalNumOfPages;
+        return currentPage == totalOfPages;
     }
 
     public boolean isTotalNumberOfPagesOne() {
@@ -122,5 +122,11 @@ public abstract class Pagination<T> {
 
     }
 
+    public int getTotalOfPages () {
+        return totalOfPages;
+    }
 
+    public void setTotalOfPages (int totalOfPages) {
+        this.totalOfPages = totalOfPages;
+    }
 }

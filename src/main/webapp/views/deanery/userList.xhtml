@@ -19,7 +19,7 @@
         <ui:composition template="../anonymous/template.xhtml">
             <ui:define name="mainContent">
 
-                <div class="container">
+                <div class="container" >
 
                     <h:form>
                         <div class="form-group">
@@ -49,7 +49,7 @@
                     </h:form>
 
 
-                    <h:form id="data">
+                    <h:form id="data" rendered="#{sessionInfo.deaneryInCurrentFaculty() or sessionInfo.adminInCurrentFaculty()}">
 
 
 
@@ -100,8 +100,9 @@
                                 </f:facet>
                                 <h:outputText value="#{user.email}"/>
                             </h:column>
+
                             <!-- Fakultät -->
-                            <h:column randerd="#{sessionInfo.admin}">
+                            <h:column rendered="#{sessionInfo.admin}">
                                 <f:facet name="header">
                                     <h:outputText value="Fakultät"/>
                                 </f:facet>
@@ -110,12 +111,21 @@
                                 </ui:repeat>
                             </h:column>
 
-                            <!-- UserState -->
-                            <h:column>
+                            <!-- UserState Admin -->
+                            <h:column rendered="#{sessionInfo.adminInCurrentFaculty()}">
                                 <f:facet name="header">
                                     <h:outputText value="UserState"/>
                                 </f:facet>
                                 <ui:repeat value="#{user.userStates}" var="entry">
+                                    <h:outputText value="#{entry}" styleClass="form-control"/>
+                                </ui:repeat>
+                            </h:column>
+                            <!-- UserState deanery -->
+                            <h:column rendered="#{!sessionInfo.adminInCurrentFaculty()}">
+                                <f:facet name="header">
+                                    <h:outputText value="UserState"/>
+                                </f:facet>
+                                <ui:repeat value="#{user.userState.get(sessionInfo.currentFaculty)}" var="entry">
                                     <h:outputText value="#{entry}" styleClass="form-control"/>
                                 </ui:repeat>
                             </h:column>

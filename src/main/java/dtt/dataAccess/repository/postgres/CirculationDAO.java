@@ -217,6 +217,10 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
             query.append (" AND end_deadline = ?");
         }
 
+        if (circulation.getFacultyId() != 0) {
+            query.append(" AND faculty_id = ?");
+        }
+
         query.append (" LIMIT ? OFFSET ?");
 
         try (PreparedStatement statement = transaction.getConnection ().prepareStatement (query.toString ())) {
@@ -249,6 +253,9 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 
             if (circulation.getEndDate () != null) {
                 statement.setObject (paramIndex++, circulation.getEndDate ());
+            }
+            if (circulation.getFacultyId() != 0) {
+                statement.setInt(paramIndex++, circulation.getFacultyId());
             }
 
             // Set pagination parameters
@@ -326,7 +333,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 				query += "AND is_obligatory = true";
 			} Don't know if this works.
 			 */
-            if (circulation.getFacultyId () < 0) {
+            if (circulation.getFacultyId () > 0) {
                 query += " AND faculty_id = ?";
                 parameters.add (circulation.getFacultyId ());
             }
@@ -412,6 +419,9 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
         if (circulation.getEndDate () != null) {
             query.append (" AND end_deadline = ?");
         }
+        if(circulation.getFacultyId () !=0){
+            query.append(" AND faculty_id = ?");
+        }
 
         // Add the filter condition for completed Circulations (end_date < currentTimestamp)
         query.append (" AND end_date < ?");
@@ -448,6 +458,9 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 
             if (circulation.getEndDate () != null) {
                 statement.setObject (paramIndex++, circulation.getEndDate ());
+            }
+            if(circulation.getFacultyId ()!=0){
+                statement.setInt(paramIndex++, circulation.getFacultyId ());
             }
 
             // Set the current timestamp for the filter condition (end_date < currentTimestamp)
@@ -517,6 +530,9 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
         if (circulation.getEndDate () != null) {
             query.append (" AND end_deadline = ?");
         }
+        if(circulation.getFacultyId () != 0 ){
+            query.append(" AND faculty_id = ?");
+        }
 
         // Add the filter condition for aktulle Circulations (end_date > currentTimestamp)
         query.append (" AND end_date > ?");
@@ -553,6 +569,9 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 
             if (circulation.getEndDate () != null) {
                 statement.setObject (paramIndex++, circulation.getEndDate ());
+            }
+            if(circulation.getFacultyId () != 0){
+                statement.setInt(paramIndex++, circulation.getFacultyId ());
             }
 
             // Set the current timestamp for the filter condition (end_date > currentTimestamp)
@@ -619,6 +638,9 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
         if (circulation.getEndDate () != null) {
             query.append (" AND end_deadline = ?");
         }
+        if (circulation.getFacultyId() != 0) {
+            query.append(" AND faculty_id = ?");
+        }
 
         try (PreparedStatement statement = transaction.getConnection ().prepareStatement (query.toString ())) {
             int paramIndex = 1;
@@ -646,6 +668,9 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 
             if (circulation.getEndDate () != null) {
                 statement.setObject (paramIndex++, circulation.getEndDate ());
+            }
+            if (circulation.getFacultyId() != 0) {
+                statement.setInt(paramIndex, circulation.getFacultyId());
             }
 
             try (ResultSet resultSet = statement.executeQuery ()) {
@@ -691,6 +716,9 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
             // Compare only the date part of the end_deadline column
             query.append (" AND DATE(end_deadline) = DATE(?)");
         }
+        if (circulation.getFacultyId() != 0) {
+            query.append(" AND faculty_id = ?");
+        }
 
         try (PreparedStatement statement = transaction.getConnection ().prepareStatement (query.toString ())) {
             int paramIndex = 1;
@@ -719,6 +747,9 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
             if (circulation.getEndDate () != null) {
                 // Set the date part of the end date
                 statement.setObject (paramIndex++, circulation.getEndDate (), Types.DATE);
+            }
+            if (circulation.getFacultyId() != 0) {
+                statement.setInt(paramIndex++, circulation.getFacultyId());
             }
 
             try (ResultSet resultSet = statement.executeQuery ()) {

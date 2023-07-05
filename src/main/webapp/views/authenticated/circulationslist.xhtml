@@ -22,7 +22,12 @@
 
 
                 <div class="container">
-
+                    <h:form rendered="#{!sessionInfo.pendingInCurrentFaculty() and sessionInfo.user.userFaculties.size()>1}">
+                    <h:commandButton value="akktlisieren" action="#{circulationListBacking.showAllCirculations}"
+                                     styleClass="btn btn-primary">
+                        <f:ajax render="dataForm"/>
+                    </h:commandButton>
+                    </h:form>
 
                     <h:form>
 
@@ -32,12 +37,12 @@
                         </h:commandButton>
 
                         <h:commandButton value="Aktulle Umläufe"
-                                         action="#{circulationListBacking.showCurrentCirculations}"
+                                         action="#{circulationListBacking.showCurrentCirculations()}"
                                          styleClass="btn btn-primary">
                             <f:ajax render="dataForm"/>
                         </h:commandButton>
                         <h:commandButton value="Abgeschlossene Umläufe"
-                                         action="#{circulationListBacking.showCompletedCirculations}"
+                                         action="#{circulationListBacking.showCompletedCirculations()}"
                                          styleClass="btn btn-secondary">
                             <f:ajax render="dataForm"/>
                         </h:commandButton>

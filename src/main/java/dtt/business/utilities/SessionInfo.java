@@ -148,7 +148,7 @@ public class SessionInfo implements Serializable {
     }
 
     public boolean deaneryInCurrentFaculty(){
-        getDefaultUserFaculty ();
+
         return currentUserState==UserState.DEANERY;
     }
     public boolean examinerInCurrentFaculty(){
@@ -164,20 +164,6 @@ public class SessionInfo implements Serializable {
         return currentUserState==UserState.ADMIN;
     }
 
-    private void getDefaultUserFaculty() {
-        int maxPriority = -1;
-        Faculty defaultFaculty = null;
-
-        for (Map.Entry<Faculty, UserState> entry : user.getUserState ().entrySet()) {
-            UserState userState = entry.getValue();
-            if (userState.getPriority() > maxPriority) {
-                maxPriority = userState.getPriority();
-                defaultFaculty = entry.getKey();
-            }
-        }
-        currentFaculty = defaultFaculty;
-
-    }
 
 
 

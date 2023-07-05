@@ -4,7 +4,9 @@ import dtt.business.utilities.Hashing;
 import dtt.business.utilities.SessionInfo;
 import dtt.dataAccess.repository.interfaces.UserDAO;
 import dtt.dataAccess.utilities.Transaction;
+import dtt.global.tansport.Faculty;
 import dtt.global.tansport.User;
+import dtt.global.tansport.UserState;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.application.FacesMessage;
@@ -16,6 +18,7 @@ import jakarta.inject.Named;
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Map;
 
 
 import org.apache.logging.log4j.LogManager;
@@ -64,6 +67,8 @@ public class LoginBacking implements Serializable {
                         sessionInfo.setLoggedIn(true);
                         user = userDB;
                         sessionInfo.setUser(user);
+                        sessionInfo.setCurrentFaculty (getDefaultUserFaculty ());
+                        sessionInfo.setCurrentUserState (getUserStareOfCurrentFaculty (getDefaultUserFaculty ()));
                         transaction.commit();
 
                         // Password matches, login successful
@@ -119,5 +124,26 @@ public class LoginBacking implements Serializable {
 
     public void setUserDAO(UserDAO userDAO) {
         this.userDAO = userDAO;
+    }
+    private Faculty getDefaultUserFaculty() {
+        int maxPriority = -1;
+        Faculty defaultFaculty = null;
+
+        for (Map.Entry<Faculty, UserState> entry : sessionInfo.getUser ().getUserState ().entrySet()) {
+            UserState userState = entry.getValue();
+            if (userState.getPriority() > maxPriority) {
+                maxPriority = userState.getPriority();
+                defaultFaculty = entry.getKey();
+            }
+        }
+        sessionInfo.setCurrentFaculty (defaultFaculty);
+
+        return defaultFaculty;
+    }
+    private UserState getUserStareOfCurrentFaculty(Faculty faculty){
+        Map<Faculty, UserState> userStateMap = user.getUserState();
+        UserState userState = userStateMap.get(faculty);
+
+        return userState;
     }
 }

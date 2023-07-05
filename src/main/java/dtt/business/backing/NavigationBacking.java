@@ -42,15 +42,12 @@ public class NavigationBacking implements Serializable {
     @PostConstruct
     public void  init () {
         if(!sessionInfo.isAdmin ()) {
-            selectedFaculty = getDefaultUserFaculty ();
+            selectedFaculty = sessionInfo.getCurrentFaculty ().getName ();
             getUserStareOfCurrentFaculty (getFacultyByName (selectedFaculty));
-            sessionInfo.setCurrentFaculty (getFacultyByName (selectedFaculty));
         }
         else{
             currentUserState = UserState.ADMIN;
         }
-        sessionInfo.setCurrentUserState (currentUserState);
-        sessionInfo.getUser ().setCurrentUserState (currentUserState);
     }
 
     /**
@@ -92,6 +89,7 @@ public class NavigationBacking implements Serializable {
         }
 
         if (selectedFacultyObj != null) {
+            sessionInfo.setCurrentFaculty (getFacultyByName (selectedFaculty));
             getUserStareOfCurrentFaculty(selectedFacultyObj);
         }
 
@@ -111,21 +109,6 @@ public class NavigationBacking implements Serializable {
 
     public UserState getCurrentUserState () {
         return currentUserState;
-    }
-    private String getDefaultUserFaculty() {
-        int maxPriority = -1;
-        Faculty defaultFaculty = null;
-
-        for (Map.Entry<Faculty, UserState> entry : sessionInfo.getUser ().getUserState ().entrySet()) {
-            UserState userState = entry.getValue();
-            if (userState.getPriority() > maxPriority) {
-                maxPriority = userState.getPriority();
-                defaultFaculty = entry.getKey();
-            }
-        }
-        sessionInfo.setCurrentFaculty (defaultFaculty);
-
-        return defaultFaculty.getName ();
     }
     private UserState getUserStareOfCurrentFaculty(Faculty faculty){
         Map<Faculty, UserState> userStateMap = sessionInfo.getUser().getUserState();

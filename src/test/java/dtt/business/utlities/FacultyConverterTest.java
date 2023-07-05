@@ -28,7 +28,7 @@ class FacultyConverterTest {
     }
 
     @Test
-    void testGetAsString_withValidFaculty_shouldReturnName() {
+    void testGetAsString_withValidFaculty() {
         String facultyName = "Computer Science";
         Faculty faculty = new Faculty();
         faculty.setName(facultyName);

@@ -15,7 +15,7 @@ class LocalDateConverterTest {
     private final LocalDateConverter converter = new LocalDateConverter();
 
     @Test
-    void testGetAsObject_withValidString_shouldReturnLocalDate() {
+    void testGetAsObject_withValidString() {
         FacesContext facesContext = null;
         UIComponent uiComponent = null;
         String dateString = "2023-06-25";
@@ -27,7 +27,7 @@ class LocalDateConverterTest {
     }
 
     @Test
-    void testGetAsObject_withNullString_shouldReturnNull() {
+    void testGetAsObject_withNullString() {
         FacesContext facesContext = null;
         UIComponent uiComponent = null;
         String dateString = null;
@@ -38,7 +38,7 @@ class LocalDateConverterTest {
     }
 
     @Test
-    void testGetAsString_withNonNullLocalDate_shouldReturnStringRepresentation() {
+    void testGetAsString_withNonNullLocalDate() {
         FacesContext facesContext = null;
         UIComponent uiComponent = null;
         LocalDate localDate = LocalDate.of(2023, 6, 25);
@@ -50,7 +50,7 @@ class LocalDateConverterTest {
     }
 
     @Test
-    void testGetAsString_withNullLocalDate_shouldReturnEmptyString() {
+    void testGetAsString_withNullLocalDate() {
         FacesContext facesContext = null;
         UIComponent uiComponent = null;
         LocalDate localDate = null;

@@ -39,11 +39,10 @@ public class UserListBacking implements Serializable {
     @Inject
     private SessionInfo sessionInfo;
     private final Logger logger = LogManager.getLogger ();
-    int totalNumberOfPages;
     Faculty faculty;
     String facultyName;
     UserState userState;
-    ;
+
 
     /**
      * Constructs a new instance of UserListBacking.
@@ -77,7 +76,6 @@ public class UserListBacking implements Serializable {
                 int count = maxItems;
 
                 if(!sessionInfo.adminInCurrentFaculty ()){
-                    userState = sessionInfo.getCurrentUserState ();
                     faculty =sessionInfo.getCurrentFaculty ();
                 }
 

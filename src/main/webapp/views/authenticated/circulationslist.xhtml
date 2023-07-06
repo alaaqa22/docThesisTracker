@@ -20,7 +20,7 @@
         <ui:composition template="../anonymous/template.xhtml">
             <ui:define name="mainContent">
 
-
+                <h:panelGroup rendered="#{!sessionInfo.pendingInCurrentFaculty()}">
                 <div class="container">
                     <h:form rendered="#{!sessionInfo.pendingInCurrentFaculty() and sessionInfo.user.userFaculties.size()>1}">
                     <h:commandButton value="akktlisieren" action="#{circulationListBacking.showAllCirculations}"
@@ -30,7 +30,7 @@
                     </h:form>
 
                     <h:form >
-                        <h:panelGroup rendered="#{!sessionInfo.pendingInCurrentFaculty()}">
+                        <h:panelGroup >
                         <h:commandButton value="Alle Umläufe" action="#{circulationListBacking.showAllCirculations}"
                                          styleClass="btn btn-primary">
                             <f:ajax render="dataForm"/>
@@ -53,7 +53,7 @@
 
 
                         <!---  dataTable for a Circulation List -->
-                        <h:dataTable id="cir-dt" value="#{circulationListBacking.circulations}" var="circulation"
+                        <h:dataTable id="cir-dt"  value="#{circulationListBacking.circulations}" var="circulation"
                                      styleClass="my-table table table-bordered"
                                      border="2">
 
@@ -211,6 +211,7 @@
 
                     </h:form>
                 </div>
+                </h:panelGroup>
             </ui:define>
         </ui:composition>
     </h:body>

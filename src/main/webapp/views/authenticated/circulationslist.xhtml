@@ -29,8 +29,8 @@
                     </h:commandButton>
                     </h:form>
 
-                    <h:form>
-
+                    <h:form >
+                        <h:panelGroup rendered="#{!sessionInfo.pendingInCurrentFaculty()}">
                         <h:commandButton value="Alle Umläufe" action="#{circulationListBacking.showAllCirculations}"
                                          styleClass="btn btn-primary">
                             <f:ajax render="dataForm"/>
@@ -46,6 +46,7 @@
                                          styleClass="btn btn-secondary">
                             <f:ajax render="dataForm"/>
                         </h:commandButton>
+                        </h:panelGroup>
                     </h:form>
 
                     <h:form id="dataForm">

@@ -23,14 +23,14 @@
 			<div class="container">
 
 				<h:form id="facultyList">
-					<h2>Faculty List</h2>
+					<h2>Liste der Fakultäten</h2>
 
 					<div class="form-group row">
-						<h:outputLabel for="newFaculty" value="New Faculty:" />
+						<h:outputLabel for="newFaculty" value="Neue Fakultät:" />
 						<h:inputText id="newFaculty"
 							value="#{facultyBacking.newFacultyName}"
 							validator="UniqueFacultyNameValidator" />
-						<h:commandButton update="facultyTable" value="Add Faculty"
+						<h:commandButton update="facultyTable" value="Hinzufügen"
 							action="#{facultyBacking.add}" />
 						<h:message for="newFaculty" styleClass="message" />
 					</div>
@@ -40,16 +40,16 @@
 				<h:dataTable id="facultyTable" value="#{facultyBacking.faculties}"
 					var="faculty" border="1" class="table">
 					<f:facet name="header">
-						<h:outputText value="Faculties" styleClass="text-center" />
+						<h:outputText value="Fakultäten" styleClass="text-center" />
 					</f:facet>
 					<h:column>
 						<h:form>
 							<h:inputText value="#{faculty.name}" required="true"
 								validator="UniqueFacultyNameValidator" />
-							<h:commandButton update="facultyTable" value="Remove"
+							<h:commandButton update="facultyTable" value="Löschen"
 								action="#{facultyBacking.remove(faculty)}"
 								class="btn btn-danger" />
-							<h:commandButton update="facultyTable" value="Rename"
+							<h:commandButton update="facultyTable" value="Umbenennen"
 								action="#{facultyBacking.update(faculty)}"
 								class="btn btn-primary" />
 						</h:form>

@@ -12,20 +12,23 @@ import java.util.Map;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+
+import selenium.setup.TestSetup;
+
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 
 
 public class ChangeEmailPwTest {
 
-    private final static String localhost = "http://localhost:9999/docthesistracker_war_exploded/";
     private WebDriver driver;
     private Map<String, Object> vars;
     JavascriptExecutor js;
 
     @Before
     public void setUp() {
-        driver = new FirefoxDriver();
+        TestSetup.setup();
+        driver = TestSetup.getDriver();
         js = (JavascriptExecutor) driver;
         vars = new HashMap<String, Object>();
     }
@@ -38,7 +41,7 @@ public class ChangeEmailPwTest {
     @SuppressWarnings("deprecation")
     @Test
     public void changeEmailPw() {
-        driver.get(localhost);
+        driver.get(TestSetup.getBaseUrl());
         driver.manage().window().setSize(new Dimension(1299, 692));
         driver.findElement(By.id("login-form:email-itxt")).click();
         driver.findElement(By.id("login-form:password-iscrt"))

@@ -8,6 +8,9 @@ import static org.hamcrest.CoreMatchers.is;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+
+import selenium.setup.TestSetup;
+
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import java.util.HashMap;
@@ -16,14 +19,14 @@ import java.util.Map;
 
 public class RegisterTest {
     
-    private final static String localhost = "http://localhost:9999/docthesistracker_war_exploded/";
     private WebDriver driver;
     private Map<String, Object> vars;
     JavascriptExecutor js;
 
     @Before
     public void setUp() {
-        driver = new FirefoxDriver();
+        TestSetup.setup();
+        driver = TestSetup.getDriver();
         js = (JavascriptExecutor) driver;
         vars = new HashMap<String, Object>();
     }
@@ -35,7 +38,7 @@ public class RegisterTest {
 
     @Test
     public void register() {
-        driver.get(localhost);
+        driver.get(TestSetup.getBaseUrl());
         driver.manage().window().setSize(new Dimension(1382, 692));
         driver.findElement(By.linkText("Registrieren")).click();
         driver.findElement(By.id("registration-form:email-itxt")).click();

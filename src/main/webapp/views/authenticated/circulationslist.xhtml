@@ -21,9 +21,11 @@
             <ui:define name="mainContent">
 
                 <h:panelGroup rendered="#{!sessionInfo.pendingInCurrentFaculty()}">
-                <div class="container">
-                    <h:form rendered="#{!sessionInfo.pendingInCurrentFaculty() and sessionInfo.user.userFaculties.size()>1}">
-                    <h:commandButton value="akktlisieren" action="#{circulationListBacking.showAllCirculations}"
+
+
+                    <div id ="result-container" class="container">
+                    <h:form  rendered="#{!sessionInfo.pendingInCurrentFaculty() and sessionInfo.user.userFaculties.size()>1}">
+                    <h:commandButton id="aktiv-all-cir-btn" value="aktualisieren" action="#{circulationListBacking.showAllCirculations}"
                                      styleClass="btn btn-primary">
                         <f:ajax render="dataForm"/>
                     </h:commandButton>
@@ -31,17 +33,17 @@
 
                     <h:form >
                         <h:panelGroup >
-                        <h:commandButton value="Alle Umläufe" action="#{circulationListBacking.showAllCirculations}"
+                        <h:commandButton id="all-cir-btn" value="Alle Umläufe" action="#{circulationListBacking.showAllCirculations}"
                                          styleClass="btn btn-primary">
                             <f:ajax render="dataForm"/>
                         </h:commandButton>
 
-                        <h:commandButton value="Aktulle Umläufe"
+                        <h:commandButton id="aktiv-cir-btn" value="Aktulle Umläufe"
                                          action="#{circulationListBacking.showCurrentCirculations()}"
                                          styleClass="btn btn-primary">
                             <f:ajax render="dataForm"/>
                         </h:commandButton>
-                        <h:commandButton value="Abgeschlossene Umläufe"
+                        <h:commandButton id="old-cir-btn" value="Abgeschlossene Umläufe"
                                          action="#{circulationListBacking.showCompletedCirculations()}"
                                          styleClass="btn btn-secondary">
                             <f:ajax render="dataForm"/>
@@ -58,7 +60,7 @@
                                      border="2">
 
                             <f:facet name="header">
-                                <h:outputText value="#{circulationListBacking.headerText}" styleClass="text-center"/>
+                                <h:outputText id="header-out" value="#{circulationListBacking.headerText}" styleClass="text-center"/>
 
                             </f:facet>
 
@@ -66,8 +68,8 @@
                             <!--> Titel <!-->
                             <h:column>
                                 <f:facet name="header">
-                                    <h:outputText value="Titel"/>
-                                    <h:inputText value="#{circulationListBacking.filter.title}"
+                                    <h:outputText id="headre-titel-otxt" value="Titel"/>
+                                    <h:inputText id="titel-itxt" value="#{circulationListBacking.filter.title}"
                                                  styleClass="form-control">
                                         <f:ajax event="change" listener="#{circulationListBacking.loadCirculations}"
                                                 render="@form"/>
@@ -75,8 +77,8 @@
                                     </h:inputText>
 
                                 </f:facet>
-                                <h:outputLink value="circulationDetails.xhtml?id=#{circulation.id}">
-                                    <h:outputText value="#{circulation.title}"/>
+                                <h:outputLink id="id-olink" value="circulationDetails.xhtml?id=#{circulation.id}">
+                                    <h:outputText id="titel-otxt" value="#{circulation.title}"/>
                                 </h:outputLink>
 
 
@@ -86,28 +88,28 @@
                             <!---  Name des Doktoranden -->
                             <h:column>
                                 <f:facet name="header">
-                                    <h:outputText value="Doktoranden"/>
-                                    <h:inputText value="#{circulationListBacking.filter.doctoralCandidateName}"
+                                    <h:outputText id="header-doctoranden-otxt" value="Doktoranden"/>
+                                    <h:inputText id="doctoranden-itxt" value="#{circulationListBacking.filter.doctoralCandidateName}"
                                                  styleClass="form-control">
                                         <f:ajax event="change" listener="#{circulationListBacking.loadCirculations}"
                                                 render="@form"/>
                                     </h:inputText>
                                 </f:facet>
-                                <h:outputText value="#{circulation.doctoralCandidateName}"/>
+                                <h:outputText id="doctoranden-otxt" value="#{circulation.doctoralCandidateName}"/>
 
                             </h:column>
 
                             <!---  Doktorvater -->
                             <h:column>
                                 <f:facet name="header">
-                                    <h:outputText value="Doktorvater"/>
-                                    <h:inputText value="#{circulationListBacking.filter.doctoralSupervisor}"
+                                    <h:outputText id ="header-doctoralSupervisor-otxt" value="Doktorvater"/>
+                                    <h:inputText id ="doctoralSupervisor-itxt" value="#{circulationListBacking.filter.doctoralSupervisor}"
                                                  styleClass="form-control">
                                         <f:ajax event="change" listener="#{circulationListBacking.loadCirculations}"
                                                 render="@form"/>
                                     </h:inputText>
                                 </f:facet>
-                                <h:outputText value="#{circulation.doctoralSupervisor}"/>
+                                <h:outputText id ="doctoralSupervisor-otxt" value="#{circulation.doctoralSupervisor}"/>
 
                             </h:column>
 
@@ -115,20 +117,20 @@
 
                             <h:column>
                                 <f:facet name="header" randerd="#{sessionInfo.admin}">
-                                    <h:outputText value="Fakultät"/>
+                                    <h:outputText id="header-Faculty-otxt" value="Fakultät"/>
 
                                 </f:facet>
-                                <h:outputText value="#{circulationListBacking.getFacultyName(circulation.facultyId)}"/>
+                                <h:outputText id="Faculty-otxt" value="#{circulationListBacking.getFacultyName(circulation.facultyId)}"/>
 
                             </h:column>
 
                             <!-- Description -->
                             <h:column>
                                 <f:facet name="header">
-                                    <h:outputText value="Description"/>
+                                    <h:outputText id="header-description-otxt" value="Description"/>
 
                                 </f:facet>
-                                <h:outputText value="#{circulation.description}"/>
+                                <h:outputText id="description-otxt" value="#{circulation.description}"/>
                             </h:column>
 
                             <!-- Startzeit -->
@@ -137,7 +139,7 @@
                                     <h:outputText value="Startzeit"/>
 
                                 </f:facet>
-                                <h:outputText value="#{circulation.startDate}"/>
+                                <h:outputText id="startDate-otxt" value="#{circulation.startDate}"/>
                             </h:column>
 
                             <!-- Endzeit -->
@@ -146,7 +148,7 @@
                                     <h:outputText value="Endzeit"/>
 
                                 </f:facet>
-                                <h:outputText value="#{circulation.endDate}"/>
+                                <h:outputText id="endDate-otxt" value="#{circulation.endDate}"/>
                             </h:column>
 
 

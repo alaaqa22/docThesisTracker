@@ -59,74 +59,74 @@
                                      border="4">
 
                             <f:facet name="header">
-                                <h:outputText value="Users" styleClass="text-center"/>
+                                <h:outputText id="header-otxt" value="Users" styleClass="text-center"/>
                             </f:facet>
 
 
                             <!-- First Name -->
                             <h:column>
                                 <f:facet name="header">
-                                    <h:outputText value="First Name"/>
-                                    <h:inputText value="#{userListBacking.filter.firstName}" styleClass="form-control">
+                                    <h:outputText id="header-firstName-otxt" value="First Name"/>
+                                    <h:inputText id="firstName-itxt"  value="#{userListBacking.filter.firstName}" styleClass="form-control">
                                         <f:ajax event="change" listener="#{userListBacking.loadUsers()}"
                                                 render="@form"/>
                                     </h:inputText>
                                 </f:facet>
                                 <h:outputLink value="../authenticated/profile.xhtml?id=#{user.id}">
-                                    <h:outputText value="#{user.firstName}"/>
+                                    <h:outputText id="firstName-otxt" value="#{user.firstName}"/>
                                 </h:outputLink>
                             </h:column>
 
                             <!-- Last Name -->
                             <h:column>
                                 <f:facet name="header">
-                                    <h:outputText value="Last Name"/>
-                                    <h:inputText value="#{userListBacking.filter.lastName}" styleClass="form-control">
+                                    <h:outputText id="header-lastname-otxt" value="Last Name"/>
+                                    <h:inputText id="lastname-itxt" value="#{userListBacking.filter.lastName}" styleClass="form-control">
                                         <f:ajax event="change" listener="#{userListBacking.loadUsers()}"
                                                 render="@form"/>
                                     </h:inputText>
                                 </f:facet>
-                                <h:outputText value="#{user.lastName}"/>
+                                <h:outputText id="lastname-otxt" value="#{user.lastName}"/>
                             </h:column>
 
                             <!-- Email -->
                             <h:column>
                                 <f:facet name="header">
-                                    <h:outputText value="Email"/>
-                                    <h:inputText value="#{userListBacking.filter.email}" styleClass="form-control">
+                                    <h:outputText id="headre-email-otxt" value="Email"/>
+                                    <h:inputText id="email-itxt" value="#{userListBacking.filter.email}" styleClass="form-control">
                                         <f:ajax event="change" listener="#{userListBacking.loadUsers()}"
                                                 render="@form"/>
                                     </h:inputText>
                                 </f:facet>
-                                <h:outputText value="#{user.email}"/>
+                                <h:outputText id="email-otxt" value="#{user.email}"/>
                             </h:column>
 
                             <!-- Fakultät -->
                             <h:column rendered="#{sessionInfo.admin}">
                                 <f:facet name="header">
-                                    <h:outputText value="Fakultät"/>
+                                    <h:outputText id="header-faculty-otxt" value="Fakultät"/>
                                 </f:facet>
                                 <ui:repeat value="#{user.userFaculties}" var="entry">
-                                    <h:outputText value="#{entry}" styleClass="form-control"/>
+                                    <h:outputText id="faculty-otxt" value="#{entry}" styleClass="form-control"/>
                                 </ui:repeat>
                             </h:column>
 
                             <!-- UserState Admin -->
                             <h:column rendered="#{sessionInfo.adminInCurrentFaculty()}">
                                 <f:facet name="header">
-                                    <h:outputText value="UserState"/>
+                                    <h:outputText id="header-userstate" value="UserState"/>
                                 </f:facet>
                                 <ui:repeat value="#{user.userStates}" var="entry">
-                                    <h:outputText value="#{entry}" styleClass="form-control"/>
+                                    <h:outputText id="admin-userstate-otxt" value="#{entry}" styleClass="form-control"/>
                                 </ui:repeat>
                             </h:column>
                             <!-- UserState deanery -->
                             <h:column rendered="#{!sessionInfo.adminInCurrentFaculty()}">
                                 <f:facet name="header">
-                                    <h:outputText value="UserState"/>
+                                    <h:outputText id="header-userState-otxt" value="Userstate"/>
                                 </f:facet>
                                 <ui:repeat value="#{user.userState.get(sessionInfo.currentFaculty)}" var="entry">
-                                    <h:outputText value="#{entry}" styleClass="form-control"/>
+                                    <h:outputText id="userstate-otxt" value="#{entry}" styleClass="form-control"/>
                                 </ui:repeat>
                             </h:column>
 

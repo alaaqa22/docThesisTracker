@@ -53,8 +53,6 @@ public class UniqueFacultyNameValidator implements Validator {
         faculty.setName (facultyName);
         facultyDAO = getFacultyDAO (context);
         try (Transaction transaction = new Transaction ()) {
-            System.out.println (facultyDAO.findFacultyByName (faculty, transaction));
-            System.out.println (facultyName);
             return !facultyDAO.findFacultyByName (faculty, transaction);
 
         }

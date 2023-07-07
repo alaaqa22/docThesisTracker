@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:p="http://primefaces.org/ui">
 
 <f:view>
     <f:metadata>
@@ -23,17 +23,18 @@
 
                         <h3>Profile</h3>
 
-
                         <div class="form-group">
                             <label for="firstName-itxt">First Name:</label>
                             <h:inputText id="firstName-itxt" value="#{profileBacking.user.firstName}"
-                                         class="form-control"/>
+                                         class="form-control" required="true"
+                                         requiredMessage="Bitte geben Sie Ihren Vornamen ein"/>
                         </div>
 
                         <div class="form-group">
                             <label for="lastName-itxt">Last Name:</label>
                             <h:inputText id="lastName-itxt" value="#{profileBacking.user.lastName}"
-                                         class="form-control"/>
+                                         class="form-control" required="true"
+                                         requiredMessage="Bitte geben Sie Ihren Nachnamen ein"/>
                         </div>
 
                         <div class="form-group">
@@ -54,34 +55,81 @@
                         <div class="form-group">
                             <label for="birthDate-itxt">Birth Date:</label>
                             <h:inputText id="birthDate-itxt" type="localdate" value="#{profileBacking.user.birthDate}"
-                                         class="form-control">
+                                         class="form-control" required="true"
+                                         requiredMessage="Bitte geben Sie Ihren Vornamen ein">
                                 <f:convertDateTime type="localDate"/>
                             </h:inputText>
                             <h:message for="birthDate-itxt" styleClass="message"/>
                         </div>
 
-                        <!--set user state select one menu -->
+                        <div>
+                            <label for="faculty-table" >User faculties:</label>
+                            <p:dataTable id="faculty-table" value="#{profileBacking.user.userState.entrySet()}"
+                                         styleClass="table table-bordered"
+                                         var="entry">
+                                <p:column headerText="Faculty">
+                                    #{entry.key.name}
+                                </p:column>
+                                <p:column headerText="User State">
+                                    #{entry.value}
+                                </p:column>
+                            </p:dataTable>
+
+                        </div>
+
 
                         <div>
-                            <h:outputLabel for="user-states-slcom" value="Set user state: "
-                                           rendered="#{sessionInfo.deanery or sessionInfo.admin}"/>
+                            <h:outputLabel for="user-states-slcom" value="Select user state: "
+                                           rendered="#{(sessionInfo.deanery or sessionInfo.admin) and
+                                             !profileBacking.ownProfile}"/>
 
                             <h:selectOneMenu id="user-states-slcom" value="#{profileBacking.currentUserState}"
-                                             rendered="#{sessionInfo.deanery or sessionInfo.admin}">
+                                             rendered="#{(sessionInfo.deanery or sessionInfo.admin) and
+                                             !profileBacking.ownProfile}">
                                 <f:selectItems value="#{profileBacking.userStates}" var="state"
                                                itemValue="#{state}"/>
                             </h:selectOneMenu>
+
+
+                            <!--set faculty select one menu -->
+
+                            <h:outputLabel for="faculty-slcom" value="Select faculty: "
+                                           rendered="#{sessionInfo.admin and !profileBacking.ownProfile}"/>
+
+                            <h:selectOneMenu id="faculty-slcom" value="#{profileBacking.currentFaculty}"
+                                             converter="facultyConverter"
+                                             rendered="#{sessionInfo.admin and !profileBacking.ownProfile}">
+                                <f:selectItems value="#{profileBacking.faculties}" var="currentFaculty"
+                                               itemValue="#{currentFaculty}" itemLabel="#{currentFaculty.name}"/>
+                            </h:selectOneMenu>
+                            <!--add or update Authentication button -->
+
+                            <h:commandButton id="updateAuth-cbtn" value="Add/Update authentication"
+                                             action="#{profileBacking.addOrUpdateAuth()}"
+                                             class="btn btn-success"
+                                             rendered="#{(sessionInfo.admin or sessionInfo.deaneryInCurrentFaculty()) and !profileBacking.ownProfile}"/>
+
+                            <!--delete Authentication button -->
+
+                            <h:commandButton id="deleteAuth-cbtn" value="Remove authentication"
+                                             action="#{profileBacking.removeAuth()}"
+                                             class="btn btn-danger"
+                                             rendered="#{sessionInfo.admin and !profileBacking.ownProfile}"
+                                             onclick="return confirm('Are you sure you want to remove authentication?');"/>
                         </div>
+
 
                         <!--save button -->
 
                         <h:commandButton id="save-cbtn" value="Save" action="#{profileBacking.save()}"
                                          class="btn btn-primary"/>
 
-                        <!--delete button -->
+                        <!--delete profile button -->
 
-                        <h:commandButton id="delete-cbtn" value="Delete" action="#{profileBacking.deleteProfile()}"
-                                         class="btn btn-danger"/>
+                        <h:commandButton id="delete-cbtn" value="Delete Profile"
+                                         action="#{profileBacking.deleteProfile()}"
+                                         class="btn btn-danger"
+                                         onclick="return confirm('Are you sure you want to delete profile?')"/>
 
                     </h:form>
                 </div>

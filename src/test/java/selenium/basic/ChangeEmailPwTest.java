@@ -3,17 +3,22 @@ package selenium.basic;
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.After;
-import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
-import java.util.*;
 
 
 public class ChangeEmailPwTest {
+
+    private final static String localhost = "http://localhost:9999/docthesistracker_war_exploded/";
     private WebDriver driver;
     private Map<String, Object> vars;
     JavascriptExecutor js;
@@ -30,9 +35,10 @@ public class ChangeEmailPwTest {
         driver.quit();
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void changeEmailPw() {
-        driver.get("http://localhost:8080/DocThesisTracker/");
+        driver.get(localhost);
         driver.manage().window().setSize(new Dimension(1299, 692));
         driver.findElement(By.id("login-form:email-itxt")).click();
         driver.findElement(By.id("login-form:password-iscrt"))

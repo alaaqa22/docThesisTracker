@@ -94,6 +94,7 @@ public class SetNewPasswordBacking implements Serializable {
                 userDAO.add(user, transaction);
             }
             transaction.commit();
+            tokenManager.deleteTokenForUser(user);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException
                 | InvalidInputException | DataNotFoundException
                 | DataNotCompleteException e) {

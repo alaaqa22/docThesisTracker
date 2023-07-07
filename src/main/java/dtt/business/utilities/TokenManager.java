@@ -122,7 +122,7 @@ public class TokenManager {
      * Deletes the token out of the tokenstore if the user has a token.
      * @param user the user whose token should be deleted.
      */
-    private void deleteTokenForUser(User user) {
+    public void deleteTokenForUser(User user) {
         for (Map.Entry<String, TokenData> entry: tokenStore.entrySet()) {
             String token = entry.getKey();
             TokenData value = entry.getValue();

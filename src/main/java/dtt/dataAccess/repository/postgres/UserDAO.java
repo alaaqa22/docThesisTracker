@@ -745,7 +745,11 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
                         .entrySet()) {
                     int i = 1;
                     statement.setInt(i++, user.getId());
-                    statement.setInt(i++, entry.getKey().getId());
+                    if (entry.getKey().getId() != 0) {
+                        statement.setInt(i++, entry.getKey().getId());
+                    } else {
+                        statement.setNull(i++, java.sql.Types.NULL);
+                    }
                     statement.setObject(i++, entry.getValue(),
                             java.sql.Types.OTHER);
                     statement.executeUpdate();

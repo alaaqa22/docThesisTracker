@@ -34,7 +34,9 @@ public class TokenManager {
      */
     public String generateToken(User user) {
         // Remove any existing tokens associated with the user.
-        deleteTokenForUser(user);
+        if (user.getEmail() != null) {
+            deleteTokenForUser(user);
+        }
         // Generate a new unique token.
         String token = generateUniqueToken();
         LOGGER.debug("TOKEN: " + token);

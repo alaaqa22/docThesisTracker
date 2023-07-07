@@ -52,6 +52,8 @@ public class TrespassListener implements PhaseListener {
                     fctx.responseComplete();
                 }
             }
+        }  else {
+           redirectToLoginPage(ctx, "View root is null, 404 not found.");
         }
     }
 

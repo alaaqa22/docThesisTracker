@@ -46,12 +46,17 @@
 						<h:form>
 							<h:inputText value="#{faculty.name}" required="true"
 								validator="UniqueFacultyNameValidator" />
-							<h:commandButton update="facultyTable" value="Löschen"
-								action="#{facultyBacking.remove(faculty)}"
-								class="btn btn-danger" />
 							<h:commandButton update="facultyTable" value="Umbenennen"
 								action="#{facultyBacking.update(faculty)}"
 								class="btn btn-primary" />
+						</h:form>
+					</h:column>
+					<h:column>
+						<h:form>
+							<h:commandButton update="facultyTable" value="Löschen"
+							    onclick="return confirm('Sind sie sicher, dass sie diese Fakultät löschen wollen?')"
+								action="#{facultyBacking.remove(faculty)}"
+								class="btn btn-danger" />
 						</h:form>
 					</h:column>
 				</h:dataTable>

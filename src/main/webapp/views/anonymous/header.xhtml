@@ -120,9 +120,9 @@
 
 
                             <li class="nav-item right-align">
-                                <h:selectOneMenu value="#{navigationBacking.selectedFaculty}"
+                                <h:selectOneMenu id="selected-faculty-slom" value="#{navigationBacking.selectedFaculty}"
                                                  rendered="#{!sessionInfo.admin}" styleClass="custom-select">
-                                    <f:selectItems value="#{sessionInfo.user.userFaculties}" var="state"
+                                    <f:selectItems id="faculty-item" value="#{sessionInfo.user.userFaculties}" var="state"
                                                    itemValue="#{state}" itemLabel="#{state}"/>
                                     <f:ajax event="change" execute="@all" listener="#{navigationBacking.changeUserState}" render="@form :dataForm" />
 

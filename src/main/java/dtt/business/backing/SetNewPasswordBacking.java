@@ -68,7 +68,7 @@ public class SetNewPasswordBacking implements Serializable {
     public String setup() {
         LOGGER.debug("setup called.");
         if (!tokenManager.lookupToken(token)) {
-            return "/views/anonymous/login";
+            return "/views/anonymous/token";
         }
         user = tokenManager.getUserForToken(token);
         return null;

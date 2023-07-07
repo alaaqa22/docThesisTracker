@@ -38,6 +38,7 @@ public class LoginBacking implements Serializable {
     @Inject
     private UserDAO userDAO;
     private User user;
+    private String token;
 
     /**
      * Initializes the login backing bean.
@@ -145,5 +146,16 @@ public class LoginBacking implements Serializable {
         UserState userState = userStateMap.get(faculty);
 
         return userState;
+    }
+
+    public void setToken (String token) {
+        this.token = token;
+    }
+
+    public String getToken () {
+        return token;
+    }
+    public String updateToken() {
+        return "setNew?faces-redirect=true&token=" +token;
     }
 }

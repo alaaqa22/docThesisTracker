@@ -83,7 +83,7 @@ public class RegistrationBacking implements Serializable {
 
 
         EmailSender.sendEmail(user.getEmail(),"Set a new password!", tokenManager.generateToken(user));
-        return "/views/anonymous/login.xthml?faces-redirect=true";
+        return "/views/anonymous/token?faces-redirect=true";
         /*
         try (Transaction transaction = new Transaction()) {
             userDAO.add(user, transaction);

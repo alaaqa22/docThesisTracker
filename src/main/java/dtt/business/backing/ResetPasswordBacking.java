@@ -42,7 +42,7 @@ public class ResetPasswordBacking implements Serializable {
      * will be found.
      */
 
-    public void sendResetPasswordEmail() {
+    public String sendResetPasswordEmail() {
 
         try (Transaction transaction = new Transaction()) {
             boolean found = userDAO.findUserByEmail(user, transaction);
@@ -52,6 +52,7 @@ public class ResetPasswordBacking implements Serializable {
         }
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Email was sent", null);
         FacesContext.getCurrentInstance().addMessage(null, message);
+        return "/views/anonymous/token";
     }
 
     public User getUser() {

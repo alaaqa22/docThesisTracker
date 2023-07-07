@@ -13,47 +13,56 @@ import jakarta.faces.validator.ValidatorException;
 import jakarta.inject.Inject;
 
 /**
- *  @author Hadi Abou Hassoun
+ * @author Hadi Abou Hassoun
  */
-@FacesValidator("UniqueFacultyNameValidator")
+@FacesValidator(value = "UniqueFacultyNameValidator", managed = true)
 public class UniqueFacultyNameValidator implements Validator {
 
-    @Inject
+
     private FacultyDAO facultyDAO; // facultyDAO object for database access.
 
 
     /**
-     *
-     * @param context FacesContext for the request we are processing
+     * @param context   FacesContext for the request we are processing
      * @param component UIComponent we are checking for correctness
-     * @param value the value to validate
+     * @param value     the value to validate
      * @throws ValidatorException
      */
     @Override
     public void validate (FacesContext context, UIComponent component, Object value) throws ValidatorException {
         String facultyName = (String) value;
-        if (!isValueUnique (facultyName)){
-            FacesMessage msg = new FacesMessage(
+        if (!isValueUnique (context, facultyName)) {
+            FacesMessage msg = new FacesMessage (
                     "A faculty with the same title "
                             + "already exists in the Database.");
-            msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+            msg.setSeverity (FacesMessage.SEVERITY_ERROR);
 
-            throw new ValidatorException(msg);
+            throw new ValidatorException (msg);
         }
     }
+
     /**
      * check if the Faculty name is unique
+     * @param context   FacesContext for the request we are processing
      * @param facultyName : The Name of the Faculty.
-     * @return  {@code true} if the faculty name is unique, {@code false} otherwise.
+     * @return {@code true} if the faculty name is unique, {@code false} otherwise.
      */
-    private boolean isValueUnique (String facultyName) {
+    private boolean isValueUnique (final FacesContext context, String facultyName) {
 
         Faculty faculty = new Faculty ();
         faculty.setName (facultyName);
-        try(Transaction transaction = new Transaction ()){
-            return !facultyDAO.findFacultyByName (faculty,transaction);
+        facultyDAO = getFacultyDAO (context);
+        try (Transaction transaction = new Transaction ()) {
+            System.out.println (facultyDAO.findFacultyByName (faculty, transaction));
+            System.out.println (facultyName);
+            return !facultyDAO.findFacultyByName (faculty, transaction);
 
         }
 
+    }
+
+    private FacultyDAO getFacultyDAO (final FacesContext context) {
+        return context.getApplication ().evaluateExpressionGet (context,
+                "#{facultyDAO}", FacultyDAO.class);
     }
 }

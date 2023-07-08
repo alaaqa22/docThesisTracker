@@ -30,7 +30,7 @@ public class EndDateValidator implements Validator {
 
         // Perform the date validation
         if (endDate.isBefore(startDate)) {
-            throw new ValidatorException(new FacesMessage("End date should be after the start date"));
+            throw new ValidatorException(new FacesMessage("End date must be after the start date"));
         }
     }
 }

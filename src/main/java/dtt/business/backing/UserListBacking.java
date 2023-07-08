@@ -71,8 +71,7 @@ public class UserListBacking implements Serializable {
 
                 isValidCurrent ();
                 int currentPage = this.getCurrentPage ();
-                System.out.println ("total is"+totalOfPages);
-                System.out.println ("currnt "+currentPage);
+
 
                 int offset = (currentPage - 1) * maxItems;
                 int count = maxItems;

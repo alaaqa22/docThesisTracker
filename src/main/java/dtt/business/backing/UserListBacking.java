@@ -62,15 +62,17 @@ public class UserListBacking implements Serializable {
         return new Pagination<User> () {
             @Override
             public void loadData () {
-                int currentPage = this.getCurrentPage ();
 
                 int maxItems = getMaxItems ();
-                if (currentPage <= 0 || maxItems <= 0) {
+                if (getCurrentPage () <= 0 || maxItems <= 0) {
                     logger.error ("Invalid currentPage or maxItems value.");
                 }
                 faculty = getFacultyByName (facultyName);
 
                 isValidCurrent ();
+                int currentPage = this.getCurrentPage ();
+                System.out.println ("total is"+totalOfPages);
+                System.out.println ("currnt "+currentPage);
 
                 int offset = (currentPage - 1) * maxItems;
                 int count = maxItems;
@@ -85,6 +87,7 @@ public class UserListBacking implements Serializable {
                     users = userDAO.getUsers (filter, faculty ,userState, transaction, offset, count);
                     transaction.commit ();
                 }
+
             }
 
             @Override
@@ -94,6 +97,7 @@ public class UserListBacking implements Serializable {
                     int totalNumOfPages = (int) Math.ceil ((double) (userDAO.getTotalUserNumber (filter,faculty ,userState , t))
                             / maxItems);
                     this.totalOfPages = totalNumOfPages;
+
 
                     return totalNumOfPages;
                 }

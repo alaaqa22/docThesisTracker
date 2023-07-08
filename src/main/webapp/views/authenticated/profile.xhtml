@@ -92,7 +92,7 @@
                             <h:selectOneMenu id="user-states-slcom" value="#{profileBacking.currentUserState}"
                                              rendered="#{(sessionInfo.deanery or sessionInfo.admin) and
                                              !profileBacking.ownProfile}">
-                                <f:selectItems value="#{profileBacking.userStates}" var="state"
+                                <f:selectItems id="userstate-item" value="#{profileBacking.userStates}" var="state"
                                                itemValue="#{state}"/>
                             </h:selectOneMenu>
 

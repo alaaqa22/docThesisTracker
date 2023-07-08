@@ -208,7 +208,6 @@ public class CirculationDetailsBacking implements Serializable {
     public List<Vote> getTotalVotes() {
         try (Transaction transaction = new Transaction()) {
             totalVotes = voteDAO.getVotes(vote, transaction);
-            System.out.println(totalVotes.size());
             for (Vote voteFromList : totalVotes) {
                 User user = new User();
                 if (voteFromList.getSelection() == Options.STIMME_ZU) {

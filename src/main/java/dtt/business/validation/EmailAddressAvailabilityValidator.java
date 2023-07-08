@@ -37,7 +37,7 @@ public class EmailAddressAvailabilityValidator implements Validator {
      * check email availability
      *
      * @param email The email address to check.
-     * @return Return {@code true} if the email address is available, {@code false} otherwise.
+     * @return Return {@code true} if the email address is already in use, {@code false} otherwise.
      */
     private boolean isEmailAddressAvailable(final FacesContext context, final String email) {
         User user = new User();

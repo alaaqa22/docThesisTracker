@@ -27,8 +27,8 @@
 
                 <!--Table of the votes -->
 
-                <h:dataTable value="#{circulationDetailsBacking.totalVotes}" var="vote"
-                             rendered="#{!sessionInfo.examiner}" class="table table-bordered">
+                <h:dataTable  value="#{circulationDetailsBacking.totalVotes}" var="vote"
+                             rendered="#{!sessionInfo.examinerInCurrentFaculty()}" class="table table-bordered">
                     <h:column>
                         <f:facet name="header">Voted by</f:facet>
                         #{vote.votedByName}

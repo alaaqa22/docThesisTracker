@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:p="http://primefaces.org/ui"
 >
 
 <f:view>
@@ -22,51 +22,60 @@
     <h:body>
         <ui:composition template="../anonymous/template.xhtml">
             <ui:define name="mainContent">
-                <h:form>
+                <h:form id="circulationDetails">
                     <div class="container">
                         <h2>Circulation Details</h2>
                         <div class="form-group">
                             <label for="title-itxt">Title:</label>
                             <h:inputText id="title-itxt" value="#{circulationDetailsBacking.circulation.title}"
-                                         readonly="#{sessionInfo.examiner}" class="form-control"/>
+                                         readonly="#{sessionInfo.examiner}" required="true"
+                                         class="form-control">
+                            </h:inputText>
+                            <h:message for="title-itxt" styleClass="message"/>
                         </div>
 
                         <div class="form-group">
                             <label for="doctoralcandidatename-itxt">Doctoral Candidate Name:</label>
                             <h:inputText id="doctoralcandidatename-itxt"
                                          value="#{circulationDetailsBacking.circulation.doctoralCandidateName}"
-                                         readonly="#{sessionInfo.examiner}" class="form-control"/>
+                                         readonly="#{sessionInfo.examiner}" required="true" class="form-control"/>
                         </div>
 
                         <div class="form-group">
                             <label for="doctoralsupervisoror-itxt">Doctoral Supervisor:</label>
                             <h:inputText id="doctoralsupervisoror-itxt"
                                          value="#{circulationDetailsBacking.circulation.doctoralSupervisor}"
-                                         readonly="#{sessionInfo.examiner}" class="form-control"/>
+                                         readonly="#{sessionInfo.examiner}" required="true" class="form-control"/>
                         </div>
 
                         <div class="form-group">
                             <label for="description-itxt">Description:</label>
                             <h:inputText id="description-itxt"
                                          value="#{circulationDetailsBacking.circulation.description}"
-                                         readonly="#{sessionInfo.examiner}" class="form-control"/>
+                                         readonly="#{sessionInfo.examinerInCurrentFaculty()}" required="true"
+                                         class="form-control"/>
                         </div>
 
                         <div class="form-group">
                             <label for="start-date-itxt">Start Date:</label>
                             <h:inputText id="start-date-itxt" value="#{circulationDetailsBacking.startDate}"
-                                         readonly="#{sessionInfo.examiner}" class="form-control">
+                                         readonly="#{sessionInfo.examinerInCurrentFaculty()}"
+                                         class="form-control" immediate="true" required="true">
+
                                 <f:convertDateTime type="localDate"/>
+
                             </h:inputText>
+                            <h:messages for="start-date-itxt" styleClass="message"/>
+
                         </div>
 
                         <div class="form-group">
                             <label for="end-date-itxt">End Date:</label>
                             <h:inputText id="end-date-itxt" value="#{circulationDetailsBacking.endDate}" required="true"
-                                         readonly="#{sessionInfo.examiner}" class="form-control">
-                                <f:validator validatorId="EndDateValidator"/>
-                                <f:attribute name="startDate" value="#{circulationDetailsBacking.startDate}"/>
+                                         readonly="#{sessionInfo.examinerInCurrentFaculty()}" immediate="true"
+                                         class="form-control">
                                 <f:convertDateTime type="localDate"/>
+
                             </h:inputText>
                         </div>
 
@@ -93,34 +102,48 @@
                                 <f:selectItems value="#{circulationDetailsBacking.options}" var="option"
                                                itemValue="#{option}" itemLabel="#{option.label}"/>
                             </h:selectOneMenu>
+
+                            <div>
+                                <label for="reason-itxt">Erklärung:</label>
+                                <h:inputText id="reason-itxt" value="#{circulationDetailsBacking.reason}"
+                                             class="form-control"/>
+                            </div>
+
+                            <!-- Vote button -->
+
+                            <div>
+                                <h:commandButton id="vote-btn" action="#{circulationDetailsBacking.submitVote()}"
+                                                 value="Vote"
+                                                 class="btn btn-primary"/>
+                                <h:messages for="vote-btn"/>
+                            </div>
+
+
                         </div>
 
-                        <div class="form-group">
-                            <label for="reason-itxt">Erklärung:</label>
-                            <h:inputText id="reason-itxt" value="#{circulationDetailsBacking.reason}"
-                                         class="form-control"/>
-                        </div>
-
-                        <h:commandButton id="vote-btn" action="#{circulationDetailsBacking.submitVote()}" value="Vote"
-                                         class="btn btn-primary"/>
 
                         <h:commandButton id="modify-cbtn" action="#{circulationDetailsBacking.modify()}"
                                          value="Modify circulation"
-                                         update="circulationDetailsPanel" rendered="#{!sessionInfo.examiner}"
+                                         rendered="#{!sessionInfo.examinerInCurrentFaculty()}"
                                          class="btn btn-primary"/>
 
                         <h:link id="voteList-link"
                                 outcome="/views/authenticated/voteList.xhtml?id=#{circulationDetailsBacking.circulation.id}"
-                                rendered="#{!sessionInfo.examiner}" value="Display votes" class="btn btn-success"/>
+                                rendered="#{!sessionInfo.examinerInCurrentFaculty()}" value="Display votes"
+                                class="btn btn-success"/>
 
                         <h:commandButton id="remove-cbtn" action="#{circulationDetailsBacking.remove()}"
-                                         value="Remove Circulation" rendered="#{!sessionInfo.examiner}"
-                                         class="btn btn-danger"/>
+                                         value="Remove Circulation"
+                                         rendered="#{!sessionInfo.examinerInCurrentFaculty()}"
+                                         class="btn btn-danger"
+                                         onclick="return confirm('Sind sie sicher, dass sie dieses Umlauf löschen wollen?')"/>
                         <div>
                             <h:outputText id="votes-otxt"
                                           value="Total votes: #{circulationDetailsBacking.totalVotes.size()}"
-                                          rendered="#{!sessionInfo.examiner}"/>
+                                          rendered="#{!sessionInfo.examinerInCurrentFaculty()}"/>
                         </div>
+
+
                     </div>
                 </h:form>
             </ui:define>

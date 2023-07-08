@@ -19,7 +19,7 @@
         <ui:composition template="../anonymous/template.xhtml">
             <ui:define name="mainContent">
                 <div class="container">
-                    <h:form>
+                    <h:form id="profile">
 
                         <h3>Profile</h3>
 
@@ -28,6 +28,8 @@
                             <h:inputText id="firstName-itxt" value="#{profileBacking.user.firstName}"
                                          class="form-control" required="true"
                                          requiredMessage="Bitte geben Sie Ihren Vornamen ein"/>
+                            <h:message for="firstName-itxt"></h:message>
+
                         </div>
 
                         <div class="form-group">
@@ -35,6 +37,8 @@
                             <h:inputText id="lastName-itxt" value="#{profileBacking.user.lastName}"
                                          class="form-control" required="true"
                                          requiredMessage="Bitte geben Sie Ihren Nachnamen ein"/>
+                            <h:message for="lastName-itxt"></h:message>
+
                         </div>
 
                         <div class="form-group">
@@ -43,12 +47,14 @@
                                 <f:validator validatorId="EmailAddressAvailabilityValidator"/>
                                 <f:validator validatorId="EmailAddressSyntaxValidator"/>
                             </h:inputText>
+                            <h:message for="email-itxt"></h:message>
                         </div>
 
                         <div class="form-group">
                             <label for="password-iscrt">Password:</label>
                             <h:inputSecret id="password-iscrt" value="#{profileBacking.user.password}"
                                            validator="PasswordValidator" class="form-control"/>
+                            <h:message for="password-iscrt"></h:message>
                         </div>
 
 
@@ -56,7 +62,7 @@
                             <label for="birthDate-itxt">Birth Date:</label>
                             <h:inputText id="birthDate-itxt" type="localdate" value="#{profileBacking.user.birthDate}"
                                          class="form-control" required="true"
-                                         requiredMessage="Bitte geben Sie Ihren Vornamen ein">
+                                         requiredMessage="Bitte geben Sie Ihr Geburtsdatum ein">
                                 <f:convertDateTime type="localDate"/>
                             </h:inputText>
                             <h:message for="birthDate-itxt" styleClass="message"/>
@@ -115,7 +121,7 @@
                                              action="#{profileBacking.removeAuth()}"
                                              class="btn btn-danger"
                                              rendered="#{sessionInfo.admin and !profileBacking.ownProfile}"
-                                             onclick="return confirm('Are you sure you want to remove authentication?');"/>
+                                             onclick="return confirm('Sind sie sicher, dass sie diese Benutzer-Authentifizierung entfernen wollen?');"/>
                         </div>
 
 
@@ -129,7 +135,7 @@
                         <h:commandButton id="delete-cbtn" value="Delete Profile"
                                          action="#{profileBacking.deleteProfile()}"
                                          class="btn btn-danger"
-                                         onclick="return confirm('Are you sure you want to delete profile?')"/>
+                                         onclick="return confirm('Sind sie sicher, dass sie dieses Profil löschen wollen?')"/>
 
                     </h:form>
                 </div>

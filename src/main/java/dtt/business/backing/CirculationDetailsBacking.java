@@ -16,12 +16,23 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.primefaces.model.charts.ChartData;
+import org.primefaces.model.charts.axes.cartesian.CartesianScales;
+import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearAxes;
+import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearTicks;
+import org.primefaces.model.charts.bar.BarChartDataSet;
+import org.primefaces.model.charts.bar.BarChartModel;
+import org.primefaces.model.charts.bar.BarChartOptions;
+import org.primefaces.model.charts.optionconfig.legend.Legend;
+import org.primefaces.model.charts.optionconfig.legend.LegendLabel;
 
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Backing bean for the circulation details.
@@ -52,6 +63,11 @@ public class CirculationDetailsBacking implements Serializable {
     private String reason;
     private String createdBy;
     private String facultyName;
+    private int numberOfAcceptVotes;
+    private int numberOfDeclineVotes;
+    private int numberOfAbstainVotes;
+    private BarChartModel barModel;
+
 
     /**
      * Initialize circulation und vote dto objects.
@@ -60,6 +76,8 @@ public class CirculationDetailsBacking implements Serializable {
     public void init() {
         circulation = new Circulation();
         vote = new Vote();
+        barModel = new BarChartModel();
+
     }
 
     /**
@@ -81,19 +99,8 @@ public class CirculationDetailsBacking implements Serializable {
 
     }
 
-
     /**
-     * Download the pdf belonging to a specific circulation.
-     *
-     * @param circulation The circulation to download.
-     * @throws IOException If the download fails.
-     */
-    public void download(Circulation circulation) {
-
-    }
-
-    /**
-     * Delete a circulation.
+     * Removes a circulation from the system.
      */
     public String remove() {
         try (Transaction transaction = new Transaction()) {
@@ -152,8 +159,6 @@ public class CirculationDetailsBacking implements Serializable {
                 vote.setDescription(reason);
                 voteDAO.add(vote, transaction);
                 LOGGER.info("New vote was added to circulation id" + circulation.getId() + " by " + getSessionInfo().getUser().getId());
-
-
                 FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
                         "Stimme " + "(" + vote.getSelection().getLabel() + ")" + " wurde erfolgreich gespeichert.", null);
                 FacesContext.getCurrentInstance().addMessage(null, message);
@@ -168,11 +173,10 @@ public class CirculationDetailsBacking implements Serializable {
 
             }
             transaction.commit();
-
-        } catch (DataNotCompleteException  e) {
+        } catch (DataNotCompleteException e) {
             LOGGER.error("Failed to cast the vote.");
             throw new IllegalStateException(e);
-        } catch ( InvalidInputException | DataNotFoundException e){
+        } catch (InvalidInputException | DataNotFoundException e) {
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "Stimme konnte nicht gespeichert.", null);
             FacesContext.getCurrentInstance().addMessage(null, message);
@@ -190,26 +194,36 @@ public class CirculationDetailsBacking implements Serializable {
             vote.setCirculation(circulation.getId());
             vote.setUser(sessionInfo.getUser().getId());
             voteDAO.findVote(vote, transaction);
+            getTotalVotes();
+            createBarChart();
             transaction.commit();
         }
     }
 
     /**
-     * Get all the votes for a circulation.
+     * Get all the votes for a circulation and count the number of each vote to represent them on bar chart.
      *
      * @return List of votes.
      */
     public List<Vote> getTotalVotes() {
         try (Transaction transaction = new Transaction()) {
             totalVotes = voteDAO.getVotes(vote, transaction);
-            for (Vote vote : totalVotes) {
+            System.out.println(totalVotes.size());
+            for (Vote voteFromList : totalVotes) {
                 User user = new User();
-                if (vote.getUserId() != 0) {
-                    user.setId(vote.getUserId());
-                    userDAO.getUserById(user, transaction);
-                    vote.setVotedByName(user.getFirstName().concat(" " + user.getLastName()));
-                    transaction.commit();
+                if (voteFromList.getSelection() == Options.STIMME_ZU) {
+                    numberOfAcceptVotes++;
+                } else if (voteFromList.getSelection() == Options.LEHNE_AB) {
+                    numberOfDeclineVotes++;
+                } else if (voteFromList.getSelection() == Options.ENTHALTE_MICH) {
+                    numberOfAbstainVotes++;
                 }
+                if (voteFromList.getUserId() != 0) {
+                    user.setId(voteFromList.getUserId());
+                    userDAO.getUserById(user, transaction);
+                    voteFromList.setVotedByName(user.getFirstName().concat(" " + user.getLastName()));
+                }
+                transaction.commit();
             }
         } catch (DataNotFoundException e) {
             throw new IllegalStateException(e);
@@ -220,6 +234,65 @@ public class CirculationDetailsBacking implements Serializable {
 
     public void setTotalVotes(List<Vote> totalVotes) {
         this.totalVotes = totalVotes;
+    }
+
+    private void createBarChart() {
+        ChartData data = new ChartData();
+
+        BarChartDataSet barDataSet = new BarChartDataSet();
+        barDataSet.setLabel("Ergebnis");
+
+        List<Number> values = new ArrayList<>();
+        values.add(numberOfAcceptVotes);
+        values.add(numberOfDeclineVotes);
+        values.add(numberOfAbstainVotes);
+        barDataSet.setData(values);
+
+        List<Options> labels = new ArrayList<>(Arrays.asList(Options.values()));
+        List<String> stringList = labels.stream()
+                .map(Options::getLabel)
+                .collect(Collectors.toList());
+
+        data.setLabels(stringList);
+        //Data
+        barModel.setData(data);
+
+        //Options
+        BarChartOptions options = new BarChartOptions();
+        CartesianScales cScales = new CartesianScales();
+        CartesianLinearAxes linearAxes = new CartesianLinearAxes();
+        CartesianLinearTicks ticks = new CartesianLinearTicks();
+        ticks.setMirror(true);
+        cScales.addYAxesData(linearAxes);
+        options.setScales(cScales);
+
+        Legend legend = new Legend();
+        legend.setDisplay(true);
+        legend.setPosition("top");
+        LegendLabel legendLabels = new LegendLabel();
+        legendLabels.setFontStyle("bold");
+        legendLabels.setFontColor("#2980B9");
+        legendLabels.setFontSize(28);
+        legend.setLabels(legendLabels);
+        options.setLegend(legend);
+        barModel.setOptions(options);
+
+
+        List<String> bgColor = new ArrayList<>();
+        bgColor.add("rgba(0, 128, 0, 0.2)"); //Red
+        bgColor.add("rgba(255, 0, 0, 0.2)"); //Green
+        bgColor.add("rgba(255, 205, 86, 0.2)"); //Yellow
+
+        barDataSet.setBackgroundColor(bgColor);
+        List<String> borderColor = new ArrayList<>();
+        borderColor.add("rgb(0, 128, 0)");
+        borderColor.add("rgb(255, 0, 0)");
+        borderColor.add("rgb(255, 205, 86)");
+
+        barDataSet.setBorderColor(borderColor);
+        barDataSet.setBorderWidth(1);
+        data.addChartDataSet(barDataSet);
+
     }
 
     public Circulation getCirculation() {
@@ -310,13 +383,16 @@ public class CirculationDetailsBacking implements Serializable {
         return createdBy;
     }
 
-
     public String getFacultyName() {
         try (Transaction transaction = new Transaction()) {
             Faculty faculty = facultyDAO.getFacultyById(circulation.getFacultyId(), transaction);
             facultyName = faculty.getName();
         }
         return facultyName;
+    }
+
+    public BarChartModel getBarModel() {
+        return barModel;
     }
 
 

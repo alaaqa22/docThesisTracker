@@ -35,6 +35,12 @@ public class UniqueCirculationNameValidator implements Validator<String> {
             final UIComponent component, final String value)
             throws ValidatorException {
         String circTitle = value;
+
+        String originalTitle = (String) component.getAttributes().get("originalValue");
+        if (circTitle.equals(originalTitle)) {
+            return;
+        }
+
         if (!isValueUnique(context, circTitle)) {
             FacesMessage msg = new FacesMessage(
                     "A circulation with the same title "

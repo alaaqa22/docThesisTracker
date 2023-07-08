@@ -31,6 +31,9 @@ public class ResetPasswordBacking implements Serializable {
     private User user;
 
 
+    /**
+     * Initializes user DTO.
+     */
     @PostConstruct
     public void init() {
         user = new User();
@@ -48,9 +51,11 @@ public class ResetPasswordBacking implements Serializable {
             boolean found = userDAO.findUserByEmail(user, transaction);
             if (found) {
                 tokenManager.generateToken(user);
+                LOGGER.debug("New token was generated for email" + user.getEmail());
+
             }
         }
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Email was sent", null);
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Die E-Mail wurde verschickt", null);
         FacesContext.getCurrentInstance().addMessage(null, message);
         return "/views/anonymous/token";
     }

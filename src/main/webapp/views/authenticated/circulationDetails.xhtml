@@ -28,8 +28,12 @@
                         <div class="form-group">
                             <label for="title-itxt">Title:</label>
                             <h:inputText id="title-itxt" value="#{circulationDetailsBacking.circulation.title}"
-                                         readonly="#{sessionInfo.examiner}" required="true"
+                                         readonly="#{sessionInfo.examinerInCurrentFaculty()}" required="true"
+                                         requiredMessage="Bitte füllen Sie dieses Feld aus!"
+                                         validator="UniqueCirculationNameValidator"
                                          class="form-control">
+                                <f:attribute name="originalValue"
+                                             value="#{circulationDetailsBacking.circulation.title}"/>
                             </h:inputText>
                             <h:message for="title-itxt" styleClass="message"/>
                         </div>
@@ -38,14 +42,20 @@
                             <label for="doctoralcandidatename-itxt">Doctoral Candidate Name:</label>
                             <h:inputText id="doctoralcandidatename-itxt"
                                          value="#{circulationDetailsBacking.circulation.doctoralCandidateName}"
-                                         readonly="#{sessionInfo.examiner}" required="true" class="form-control"/>
+                                         readonly="#{sessionInfo.examinerInCurrentFaculty()}" required="true"
+                                         class="form-control" requiredMessage="Bitte füllen Sie dieses Feld aus!">
+                            </h:inputText>
+                            <h:messages for="doctoralcandidatename-itxt" styleClass="message"/>
                         </div>
 
                         <div class="form-group">
                             <label for="doctoralsupervisoror-itxt">Doctoral Supervisor:</label>
                             <h:inputText id="doctoralsupervisoror-itxt"
                                          value="#{circulationDetailsBacking.circulation.doctoralSupervisor}"
-                                         readonly="#{sessionInfo.examiner}" required="true" class="form-control"/>
+                                         readonly="#{sessionInfo.examinerInCurrentFaculty()}" required="true"
+                                         class="form-control" requiredMessage="Bitte füllen Sie dieses Feld aus!">
+                            </h:inputText>
+                            <h:messages for="doctoralsupervisoror-itxt" styleClass="message"/>
                         </div>
 
                         <div class="form-group">
@@ -53,17 +63,19 @@
                             <h:inputText id="description-itxt"
                                          value="#{circulationDetailsBacking.circulation.description}"
                                          readonly="#{sessionInfo.examinerInCurrentFaculty()}" required="true"
-                                         class="form-control"/>
+                                         requiredMessage="Bitte füllen Sie dieses Feld aus!"
+                                         class="form-control">
+                            </h:inputText>
+                            <h:messages for="description-itxt" styleClass="message"/>
                         </div>
 
                         <div class="form-group">
                             <label for="start-date-itxt">Start Date:</label>
                             <h:inputText id="start-date-itxt" value="#{circulationDetailsBacking.startDate}"
                                          readonly="#{sessionInfo.examinerInCurrentFaculty()}"
-                                         class="form-control" immediate="true" required="true">
-
-                                <f:convertDateTime type="localDate"/>
-
+                                         class="form-control" requiredMessage="Bitte füllen Sie dieses Feld aus!"
+                                         immediate="true" required="true">
+                                <f:convertDateTime pattern="dd.MM.yyyy" type="localDate"/>
                             </h:inputText>
                             <h:messages for="start-date-itxt" styleClass="message"/>
 
@@ -72,27 +84,29 @@
                         <div class="form-group">
                             <label for="end-date-itxt">End Date:</label>
                             <h:inputText id="end-date-itxt" value="#{circulationDetailsBacking.endDate}" required="true"
-                                         readonly="#{sessionInfo.examinerInCurrentFaculty()}" immediate="true"
-                                         class="form-control">
+                                         readonly="#{sessionInfo.examinerInCurrentFaculty()}"
+                                         requiredMessage="Bitte füllen Sie dieses Feld aus!"
+                                         immediate="true" class="form-control">
                                 <f:convertDateTime type="localDate"/>
-
                             </h:inputText>
+                            <h:messages for="end-date-itxt" styleClass="message"/>
+
                         </div>
 
                         <div class="form-group">
                             <h:outputLabel for="created-by-otxt" value="Created By:"
-                                           rendered="#{!sessionInfo.examiner}"/>
+                                           rendered="#{!sessionInfo.examinerInCurrentFaculty()}"/>
                             <h:outputText id="created-by-otxt"
                                           value="#{circulationDetailsBacking.createdBy}"
-                                          class="form-control" rendered="#{!sessionInfo.examiner}"/>
+                                          class="form-control" rendered="#{!sessionInfo.examinerInCurrentFaculty()}"/>
                         </div>
 
                         <div class="form-group">
                             <h:outputLabel for="faculty-id-otxt" value="Faculty :"
-                                           rendered="#{!sessionInfo.examiner}"/>
+                                           rendered="#{!sessionInfo.examinerInCurrentFaculty()}"/>
                             <h:outputText id="faculty-id-otxt"
                                           value="#{circulationDetailsBacking.facultyName}"
-                                          class="form-control" rendered="#{!sessionInfo.examiner}"/>
+                                          class="form-control" rendered="#{!sessionInfo.examinerInCurrentFaculty()}"/>
                         </div>
 
                         <div class="form-group">
@@ -115,13 +129,9 @@
                                 <h:commandButton id="vote-btn" action="#{circulationDetailsBacking.submitVote()}"
                                                  value="Vote"
                                                  class="btn btn-primary"/>
-                                <h:messages for="vote-btn"/>
                             </div>
 
-
                         </div>
-
-
                         <h:commandButton id="modify-cbtn" action="#{circulationDetailsBacking.modify()}"
                                          value="Modify circulation"
                                          rendered="#{!sessionInfo.examinerInCurrentFaculty()}"
@@ -142,6 +152,7 @@
                                           value="Total votes: #{circulationDetailsBacking.totalVotes.size()}"
                                           rendered="#{!sessionInfo.examinerInCurrentFaculty()}"/>
                         </div>
+
 
 
                     </div>

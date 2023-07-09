@@ -69,9 +69,11 @@
                         </div>
 
                         <div>
-                            <label for="faculty-table" >User faculties:</label>
+                            <h:outputLabel for="faculty-table" value="User faculties:"
+                                           rendered="#{sessionInfo.admin or profileBacking.ownProfile}"/>
                             <p:dataTable id="faculty-table" value="#{profileBacking.user.userState.entrySet()}"
                                          styleClass="table table-bordered"
+                                         rendered="#{sessionInfo.admin or profileBacking.ownProfile}"
                                          var="entry">
                                 <p:column headerText="Faculty">
                                     #{entry.key.name}
@@ -120,7 +122,7 @@
                             <h:commandButton id="deleteAuth-cbtn" value="Remove authentication"
                                              action="#{profileBacking.removeAuth()}"
                                              class="btn btn-danger"
-                                             rendered="#{sessionInfo.admin and !profileBacking.ownProfile}"
+                                             rendered="#{(sessionInfo.admin or sessionInfo.deaneryInCurrentFaculty())and !profileBacking.ownProfile}"
                                              onclick="return confirm('Sind sie sicher, dass sie diese Benutzer-Authentifizierung entfernen wollen?');"/>
                         </div>
 

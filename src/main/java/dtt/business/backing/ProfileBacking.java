@@ -61,8 +61,15 @@ public class ProfileBacking implements Serializable {
      * Load the user's information.
      */
     public void load() {
+
         try (Transaction transaction = new Transaction()) {
             userDAO.getUserById(user, transaction);
+            if (!(sessionInfo.isAdmin() || isOwnProfile() ||
+                    (sessionInfo.deaneryInCurrentFaculty() && user.getUserState().containsKey(sessionInfo.getCurrentFaculty())))) {
+
+                // User does not meet the conditions.
+                throw new IllegalStateException();
+            }
             transaction.commit();
         } catch (DataNotFoundException e) {
             LOGGER.info("Failed to load user information.");
@@ -77,16 +84,22 @@ public class ProfileBacking implements Serializable {
      * Remove authentication from a user on a certain faculty.
      */
     public void removeAuth() {
-        if (sessionInfo.isAdmin() && !isOwnProfile()) {
+        if ((sessionInfo.isAdmin() || sessionInfo.deaneryInCurrentFaculty()) && !isOwnProfile()) {
             try (Transaction transaction = new Transaction()) {
-                //check if the selected faculty to remove, is actually the user belong to.
+                if (sessionInfo.deaneryInCurrentFaculty()) {
+                    currentFaculty = sessionInfo.getCurrentFaculty();
+                }
+
+                //check if the selected faculty to remove from admin, is actually the user belong to.
                 if (!user.getUserState().containsKey(currentFaculty)) {
                     throw new InvalidInputException();
                 }
+
                 User userToDelete = new User();
                 userToDelete.setId(user.getId());
-                userToDelete.getUserState().put(currentFaculty,null);
-                userDAO.removeAuth(userToDelete,transaction);
+                userToDelete.getUserState().put(currentFaculty, null);
+
+                userDAO.removeAuth(userToDelete, transaction);
                 user.getUserState().remove(currentFaculty);
 
                 userDAO.update(user, transaction);
@@ -205,6 +218,7 @@ public class ProfileBacking implements Serializable {
     /**
      * Deletes the user from the system.
      * Only the logged-in user, admin, and deanery members have the permission to delete the profile.
+     *
      * @return redirect to the login page if the user delete his profile or redirect to userlist page if an admin or deanery
      * deleted the profile.
      */
@@ -227,7 +241,6 @@ public class ProfileBacking implements Serializable {
             return null;
         }
     }
-
 
 
     public List<Faculty> getFaculties() {

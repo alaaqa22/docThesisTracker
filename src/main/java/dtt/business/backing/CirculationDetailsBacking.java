@@ -90,6 +90,13 @@ public class CirculationDetailsBacking implements Serializable {
     public void loadCirculation() {
         try (Transaction transaction = new Transaction()) {
             circulationDAO.getCirculationById(circulation, transaction);
+
+            if (!sessionInfo.isAdmin() && circulation.getFacultyId() != sessionInfo.getCurrentFaculty().getId()) {
+
+                // Circulation does not meet the conditions.
+                throw new IllegalStateException();
+            }
+
             transaction.commit();
 
         } catch (DataNotFoundException e) {

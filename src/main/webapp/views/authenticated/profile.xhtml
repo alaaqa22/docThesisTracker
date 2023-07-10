@@ -26,7 +26,7 @@
                         <div class="form-group">
                             <label for="firstName-itxt">First Name:</label>
                             <h:inputText id="firstName-itxt" value="#{profileBacking.user.firstName}"
-                                         class="form-control" required="true"
+                                         class="form-control" readonly="#{profileBacking.sameLevel}" required="true"
                                          requiredMessage="Bitte geben Sie Ihren Vornamen ein"/>
                             <h:message for="firstName-itxt"></h:message>
 
@@ -35,7 +35,7 @@
                         <div class="form-group">
                             <label for="lastName-itxt">Last Name:</label>
                             <h:inputText id="lastName-itxt" value="#{profileBacking.user.lastName}"
-                                         class="form-control" required="true"
+                                         class="form-control" readonly="#{profileBacking.sameLevel}" required="true"
                                          requiredMessage="Bitte geben Sie Ihren Nachnamen ein"/>
                             <h:message for="lastName-itxt"></h:message>
 
@@ -43,7 +43,7 @@
 
                         <div class="form-group">
                             <label for="email-itxt">Email:</label>
-                            <h:inputText id="email-itxt" value="#{profileBacking.newEmail}" class="form-control">
+                            <h:inputText id="email-itxt" value="#{profileBacking.newEmail}" readonly="#{profileBacking.sameLevel}" class="form-control">
                                 <f:validator validatorId="EmailAddressAvailabilityValidator"/>
                                 <f:validator validatorId="EmailAddressSyntaxValidator"/>
                             </h:inputText>
@@ -52,8 +52,9 @@
 
                         <div class="form-group">
                             <label for="password-iscrt">Password:</label>
-                            <h:inputSecret id="password-iscrt" value="#{profileBacking.user.password}"
+                            <h:inputSecret id="password-iscrt" value="#{profileBacking.user.password}" readonly="#{profileBacking.sameLevel}"
                                            validator="PasswordValidator" class="form-control"/>
+
                             <h:message for="password-iscrt"></h:message>
                         </div>
 
@@ -61,12 +62,14 @@
                         <div class="form-group">
                             <label for="birthDate-itxt">Birth Date:</label>
                             <h:inputText id="birthDate-itxt" type="localdate" value="#{profileBacking.user.birthDate}"
-                                         class="form-control" required="true"
+                                         class="form-control" required="true" readonly="#{profileBacking.sameLevel}"
                                          requiredMessage="Bitte geben Sie Ihr Geburtsdatum ein">
                                 <f:convertDateTime type="localDate"/>
                             </h:inputText>
                             <h:message for="birthDate-itxt" styleClass="message"/>
                         </div>
+
+                        <!--faculty table, faculties the user belongs to -->
 
                         <div>
                             <h:outputLabel for="faculty-table" value="User faculties:"
@@ -85,15 +88,16 @@
 
                         </div>
 
+                        <!--set user state -->
 
                         <div>
                             <h:outputLabel for="user-states-slcom" value="Select user state: "
                                            rendered="#{(sessionInfo.deanery or sessionInfo.admin) and
-                                             !profileBacking.ownProfile}"/>
+                                             !profileBacking.ownProfile and !profileBacking.sameLevel}"/>
 
                             <h:selectOneMenu id="user-states-slcom" value="#{profileBacking.currentUserState}"
                                              rendered="#{(sessionInfo.deanery or sessionInfo.admin) and
-                                             !profileBacking.ownProfile}">
+                                             !profileBacking.ownProfile and !profileBacking.sameLevel}">
                                 <f:selectItems id="userstate-item" value="#{profileBacking.userStates}" var="state"
                                                itemValue="#{state}"/>
                             </h:selectOneMenu>
@@ -115,14 +119,16 @@
                             <h:commandButton id="updateAuth-cbtn" value="Add/Update authentication"
                                              action="#{profileBacking.addOrUpdateAuth()}"
                                              class="btn btn-success"
-                                             rendered="#{(sessionInfo.admin or sessionInfo.deaneryInCurrentFaculty()) and !profileBacking.ownProfile}"/>
+                                             rendered="#{(sessionInfo.admin or sessionInfo.deaneryInCurrentFaculty())
+                                             and !profileBacking.sameLevel and !profileBacking.ownProfile}"/>
 
                             <!--delete Authentication button -->
 
                             <h:commandButton id="deleteAuth-cbtn" value="Remove authentication"
                                              action="#{profileBacking.removeAuth()}"
                                              class="btn btn-danger"
-                                             rendered="#{(sessionInfo.admin or sessionInfo.deaneryInCurrentFaculty())and !profileBacking.ownProfile}"
+                                             rendered="#{(sessionInfo.admin or sessionInfo.deaneryInCurrentFaculty())
+                                             and !profileBacking.sameLevel and !profileBacking.ownProfile}"
                                              onclick="return confirm('Sind sie sicher, dass sie diese Benutzer-Authentifizierung entfernen wollen?');"/>
                         </div>
 
@@ -130,13 +136,14 @@
                         <!--save button -->
 
                         <h:commandButton id="save-cbtn" value="Save" action="#{profileBacking.save()}"
-                                         class="btn btn-primary"/>
+                                         rendered="#{!profileBacking.sameLevel}" class="btn btn-primary"/>
 
                         <!--delete profile button -->
 
                         <h:commandButton id="delete-cbtn" value="Delete Profile"
                                          action="#{profileBacking.deleteProfile()}"
                                          class="btn btn-danger"
+                                         rendered="#{!profileBacking.sameLevel}"
                                          onclick="return confirm('Sind sie sicher, dass sie dieses Profil löschen wollen?')"/>
 
                     </h:form>

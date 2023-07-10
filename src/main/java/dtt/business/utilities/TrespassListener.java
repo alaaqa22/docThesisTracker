@@ -4,7 +4,6 @@ import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.context.Flash;
 import jakarta.faces.event.PhaseEvent;
 import jakarta.faces.event.PhaseId;
 import jakarta.faces.event.PhaseListener;
@@ -52,8 +51,6 @@ public class TrespassListener implements PhaseListener {
                     fctx.responseComplete();
                 }
             }
-        }  else {
-           redirectToLoginPage(ctx, "View root is null, 404 not found.");
         }
     }
 

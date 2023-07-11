@@ -36,39 +36,33 @@ public class PaginationTest {
 
     @Test
     public void testPaginationScenario () {
-        driver.get (TestSetup.getBaseUrl ());
-        driver.manage ().window ().setSize (new Dimension (1269, 813));
+        driver.get(TestSetup.getBaseUrl());
+        driver.manage().window().setSize(new Dimension(1269, 813));
 
-        // Perform login
-        driver.findElement (By.id ("login-form:email-itxt")).click ();
-        driver.findElement (By.id ("login-form:email-itxt")).sendKeys ("test@test.com");
-        driver.findElement (By.id ("login-form:password-iscrt")).click ();
-        driver.findElement (By.id ("login-form:password-iscrt")).sendKeys ("password123");
-        driver.findElement (By.id ("login-form:login-cbtn")).click ();
+        driver.manage().window().setSize(new Dimension(1269, 815));
+        WebElement emailInput = driver.findElement(By.id("login-form:email-itxt"));
+        emailInput.click();
+        emailInput.sendKeys("test@test.com");
 
-        // Perform pagination actions
-        WebDriverWait wait = new WebDriverWait (driver, Duration.ofSeconds (10));
+        WebElement passwordInput = driver.findElement(By.id("login-form:password-iscrt"));
+        passwordInput.click();
+        passwordInput.sendKeys("password123");
 
-        wait.until (ExpectedConditions.elementToBeClickable (By.id ("dataForm:nextpage-link"))).click ();
-        wait.until (ExpectedConditions.elementToBeClickable (By.id ("dataForm:nextpage-link"))).click ();
-        wait.until (ExpectedConditions.elementToBeClickable (By.id ("dataForm:nextpage-link"))).click ();
-        wait.until (ExpectedConditions.elementToBeClickable (By.id ("dataForm:firstpage-link"))).click ();
-        driver.findElement (By.id ("j_idt48:aktiv-cir-btn")).click ();
-        wait.until (ExpectedConditions.elementToBeClickable (By.id ("dataForm:nextpage-link"))).click ();
-        wait.until (ExpectedConditions.elementToBeClickable (By.id ("dataForm:nextpage-link"))).click ();
-        wait.until (ExpectedConditions.elementToBeClickable (By.id ("dataForm:firstpage-link"))).click ();
-        driver.findElement (By.id ("j_idt48:old-cir-btn")).click ();
-        wait.until (ExpectedConditions.elementToBeClickable (By.id ("dataForm:nextpage-link"))).click ();
-        wait.until (ExpectedConditions.elementToBeClickable (By.id ("dataForm:firstpage-link"))).click ();
+        driver.findElement(By.id("login-form:login-cbtn")).click();
 
-        // Perform additional actions
-        Actions builder = new Actions (driver);
-        WebElement previousPageLink = driver.findElement (By.id ("dataForm:previouspage-link"));
-        builder.moveToElement (previousPageLink).perform ();
+        Duration maxWaitTime = Duration.ofSeconds(10);
+        WebDriverWait wait = new WebDriverWait(driver, maxWaitTime);
 
-        wait.until (ExpectedConditions.elementToBeClickable (By.id ("dataForm:lastpage-link"))).click ();
-        wait.until (ExpectedConditions.elementToBeClickable (By.id ("dataForm:firstpage-link"))).click ();
-        driver.findElement (By.id ("navbarForm:homepage-link")).click ();
-        driver.findElement (By.id ("navbarForm:logout-cbtn")).click ();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("dataForm:nextpage-link"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("dataForm:previouspage-link"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("dataForm:lastpage-link"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("dataForm:firstpage-link"))).click();
+
+        driver.findElement(By.id("j_idt48:aktiv-cir-btn")).click();
+
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("dataForm:nextpage-link"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("dataForm:firstpage-link"))).click();
+
+        driver.findElement(By.id("navbarForm:logout-cbtn")).click();
     }
 }

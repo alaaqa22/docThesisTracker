@@ -35,9 +35,9 @@ public class LoginTest {
         driver.get(TestSetup.getBaseUrl());
         driver.manage().window().setSize(new Dimension(1708, 960));
         driver.findElement(By.id("login-form:email-itxt")).click();
-        driver.findElement(By.id("login-form:email-itxt")).sendKeys("test@test.com");
+        driver.findElement(By.id("login-form:email-itxt")).sendKeys("johannes.test@email.com");
         driver.findElement(By.id("login-form:password-iscrt")).click();
-        driver.findElement(By.id("login-form:password-iscrt")).sendKeys("password123");
+        driver.findElement(By.id("login-form:password-iscrt")).sendKeys("gdx7hMAeqD5AKtH*");
         driver.findElement(By.id("login-form:login-cbtn")).click();
         driver.findElement(By.id("navbarForm:logout-cbtn")).click();
     }

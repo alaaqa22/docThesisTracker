@@ -183,7 +183,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
      * @inheritDoc
      */
     @Override
-    public List<Circulation> getCirculations (Circulation circulation, Transaction transaction,
+    public List<Circulation> getCirculations(Circulation circulation, Transaction transaction,
                                               int offset, int count) {
         LOGGER.debug ("getCirculations() called.");
         List<Circulation> circulations = new ArrayList<> ();
@@ -293,7 +293,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
      * @inheritDoc
      */
     @Override
-    public int getTotalCirculationNumber (Circulation circulation, Transaction transaction) {
+    public int getTotalCirculationNumber(Circulation circulation, Transaction transaction) {
         LOGGER.debug ("getTotalCirculationNumber() called.");
         String query = "SELECT COUNT(*) FROM circulation WHERE 1=1";
         List<Object> parameters = new ArrayList<> ();
@@ -361,7 +361,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
      * @inheritDoc
      */
     @Override
-    public boolean findCirculationByTitle (Circulation circulation, Transaction transaction) {
+    public boolean findCirculationByTitle(Circulation circulation, Transaction transaction) {
         LOGGER.debug ("findCirculationByTitle() called.");
         String query = "SELECT * FROM circulation WHERE title = ?";
         try (PreparedStatement statement = transaction.getConnection ().prepareStatement (query)) {
@@ -387,7 +387,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
     }
 
     @Override
-    public List<Circulation> getAllCompletedCirculations (Circulation circulation, Transaction transaction, int offset, int count) {
+    public List<Circulation> getAllCompletedCirculations(Circulation circulation, Transaction transaction, int offset, int count) {
         LOGGER.debug ("getAllCompletedCirculations() called.");
         List<Circulation> completedCirculations = new ArrayList<> ();
 
@@ -498,7 +498,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
     }
 
     @Override
-    public List<Circulation> getAllCurrentCirculations (Circulation circulation, Transaction transaction, int offset, int count) {
+    public List<Circulation> getAllCurrentCirculations(Circulation circulation, Transaction transaction, int offset, int count) {
         LOGGER.debug ("getAllAktulleCirculations() called.");
         List<Circulation> aktulleCirculations = new ArrayList<> ();
 
@@ -609,7 +609,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 
 
     @Override
-    public int getTotalCurrentCirculationNumber (Circulation circulation, Transaction transaction) {
+    public int getTotalCurrentCirculationNumber(Circulation circulation, Transaction transaction) {
         LOGGER.debug ("getTotalCurrentCirculationNumber() called.");
         StringBuilder query = new StringBuilder ();
         query.append ("SELECT COUNT(*) FROM circulation WHERE DATE(end_date) > DATE(NOW())");
@@ -686,7 +686,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
     }
 
 
-    public int getTotalCompletedCirculationNumber (Circulation circulation, Transaction transaction) {
+    public int getTotalCompletedCirculationNumber(Circulation circulation, Transaction transaction) {
         LOGGER.debug ("getTotalCompletedCirculationNumber() called.");
         StringBuilder query = new StringBuilder ();
         query.append ("SELECT COUNT(*) FROM circulation WHERE DATE(end_date) < DATE(NOW())");

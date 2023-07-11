@@ -9,6 +9,8 @@ import dtt.dataAccess.exceptions.KeyExistsException;
 import dtt.dataAccess.repository.interfaces.UserDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.User;
+import dtt.global.tansport.UserState;
+import dtt.global.utilities.ConfigReader;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -91,6 +93,9 @@ public class SetNewPasswordBacking implements Serializable {
                 user.setPasswordSalt(Hashing.generateSalt());
                 user.setPasswordHashed(
                         Hashing.hashPassword(password, user.getPasswordSalt()));
+                if (user.getEmail().equalsIgnoreCase(ConfigReader.ROOT_ADMIN)) {
+                    user.getUserState().put(null, UserState.ADMIN);
+                }
                 userDAO.add(user, transaction);
             }
             transaction.commit();

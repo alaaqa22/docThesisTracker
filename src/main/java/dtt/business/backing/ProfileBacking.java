@@ -84,10 +84,17 @@ public class ProfileBacking implements Serializable {
      * Remove authentication from a user on a certain faculty.
      */
     public void removeAuth() {
+
         if ((sessionInfo.isAdmin() || sessionInfo.deaneryInCurrentFaculty()) && !isOwnProfile()) {
             try (Transaction transaction = new Transaction()) {
                 if (sessionInfo.deaneryInCurrentFaculty()) {
                     currentFaculty = sessionInfo.getCurrentFaculty();
+                }
+
+                //only the admin can see this user state
+                if (currentUserState == UserState.ADMIN) {
+                    currentFaculty = new Faculty();
+
                 }
 
                 //check if the selected faculty to remove from admin, is actually the user belong to.
@@ -131,6 +138,9 @@ public class ProfileBacking implements Serializable {
      */
     public void addOrUpdateAuth() {
         if (sessionInfo.isAdmin() && !isOwnProfile()) {
+            if (currentUserState == UserState.ADMIN) {
+                currentFaculty = new Faculty();
+            }
             user.getUserState().put(currentFaculty, currentUserState);
         } else if (sessionInfo.deaneryInCurrentFaculty() && !isOwnProfile()) {
             user.getUserState().put(sessionInfo.getCurrentFaculty(), currentUserState);
@@ -163,7 +173,7 @@ public class ProfileBacking implements Serializable {
     public void save() {
 
         //check if a new password was given,then new password salt will be generated and will be hashed with the given password.
-        if (!user.getPassword().isEmpty() || user.getPassword() != null) {
+        if (!user.getPassword().isEmpty()) {
             try {
                 user.setPasswordSalt(Hashing.generateSalt());
                 user.setPasswordHashed(Hashing.hashPassword(user.getPassword(), user.getPasswordSalt()));
@@ -212,6 +222,10 @@ public class ProfileBacking implements Serializable {
      */
     public boolean isOwnProfile() {
         return sessionInfo.getUser().getId() == user.getId();
+    }
+
+    public boolean isSameLevel() {
+        return !isOwnProfile() && sessionInfo.getCurrentUserState() == user.getUserState().get(sessionInfo.getCurrentFaculty());
     }
 
 

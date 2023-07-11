@@ -180,7 +180,6 @@ public class User {
      * @return The user state map
      */
     public Map<Faculty, UserState> getUserState() {
-        LOGGER.debug("getUserState() called.");
         return userState;
     }
 

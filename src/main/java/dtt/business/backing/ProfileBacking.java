@@ -173,7 +173,7 @@ public class ProfileBacking implements Serializable {
     public void save() {
 
         //check if a new password was given,then new password salt will be generated and will be hashed with the given password.
-        if (!user.getPassword().isEmpty() || user.getPassword() != null) {
+        if (!user.getPassword().isEmpty()) {
             try {
                 user.setPasswordSalt(Hashing.generateSalt());
                 user.setPasswordHashed(Hashing.hashPassword(user.getPassword(), user.getPasswordSalt()));

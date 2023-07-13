@@ -22,15 +22,15 @@
 
 			<div class="container">
 
-				<h:form id="facultyList">
 					<h2>Liste der Fakultäten</h2>
 
+                <h:form id="facultyNew">
 					<div class="form-group row">
 						<h:outputLabel for="newFaculty" value="Neue Fakultät:" />
 						<h:inputText id="newFaculty"
 							value="#{facultyBacking.newFacultyName}"
 							validator="UniqueFacultyNameValidator" />
-						<h:commandButton update="facultyTable" value="Hinzufügen"
+						<h:commandButton id="cbt-new" update="facultyTable" value="Hinzufügen"
 							action="#{facultyBacking.add}" />
 						<h:message for="newFaculty" styleClass="message" />
 					</div>
@@ -43,18 +43,18 @@
 						<h:outputText value="Fakultäten" styleClass="text-center" />
 					</f:facet>
 					<h:column>
-						<h:form>
-							<h:inputText value="#{faculty.name}" required="true"
+						<h:form id="facultyEdit">
+							<h:inputText id="it-edit" value="#{faculty.name}" required="true"
 								validator="UniqueFacultyNameValidator" />
-							<h:commandButton update="facultyTable" value="Umbenennen"
+							<h:commandButton id="cbt-edit" update="facultyTable" value="Umbenennen"
 								action="#{facultyBacking.update(faculty)}"
 								class="btn btn-primary" />
 						</h:form>
 					</h:column>
 					<h:column>
-						<h:form>
-							<h:commandButton update="facultyTable" value="Löschen"
-								onclick="return confirm('Sind sie sicher, dass sie die Fakultät #{faculty.name} ID: #{faculty.id} löschen wollen?')"
+						<h:form id="facultyDelete">
+							<h:commandButton id="cbt-delete" update="facultyTable" value="Löschen"
+								onclick="return confirm('Sind sie sicher, dass sie die Fakultät #{faculty.name} löschen wollen?')"
 								action="#{facultyBacking.remove(faculty)}"
 								class="btn btn-danger" />
 						</h:form>

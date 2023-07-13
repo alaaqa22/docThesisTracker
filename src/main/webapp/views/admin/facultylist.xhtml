@@ -54,7 +54,7 @@
 					<h:column>
 						<h:form>
 							<h:commandButton update="facultyTable" value="Löschen"
-							    onclick="return confirm('Sind sie sicher, dass sie diese Fakultät löschen wollen?')"
+								onclick="return confirm('Sind sie sicher, dass sie die Fakultät #{faculty.name} ID: #{faculty.id} löschen wollen?')"
 								action="#{facultyBacking.remove(faculty)}"
 								class="btn btn-danger" />
 						</h:form>

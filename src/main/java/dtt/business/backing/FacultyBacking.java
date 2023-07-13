@@ -72,8 +72,8 @@ public class FacultyBacking implements Serializable {
         newFaculty.setName(newFacultyName);
         try (Transaction transaction = new Transaction()) {
             facultyDAO.add(newFaculty, transaction);
+            faculties = facultyDAO.getFaculties(transaction);
             transaction.commit();
-            faculties.add(newFaculty);
             newFacultyName = "";
             final FacesMessage fmsg = new FacesMessage(
                     "Faculty created successfully");
@@ -110,7 +110,7 @@ public class FacultyBacking implements Serializable {
     public void remove(final Faculty faculty) {
         try (Transaction transaction = new Transaction()) {
             facultyDAO.remove(faculty, transaction);
-            faculties.remove(faculty);
+            faculties = facultyDAO.getFaculties(transaction);
             transaction.commit();
             final FacesMessage fmsg = new FacesMessage(
                     "Faculty " + faculty.getName() + " removed successfully");
@@ -140,6 +140,7 @@ public class FacultyBacking implements Serializable {
     public void update(final Faculty faculty) {
         try (Transaction transaction = new Transaction()) {
             facultyDAO.update(faculty, transaction);
+            faculties = facultyDAO.getFaculties(transaction);
             transaction.commit();
             final FacesMessage fmsg = new FacesMessage(
                     "Faculty " + faculty.getName() + " renamed successfully");

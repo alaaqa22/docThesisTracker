@@ -74,7 +74,7 @@
                             <h:inputText id="start-date-itxt" value="#{circulationDetailsBacking.startDate}"
                                          readonly="#{sessionInfo.examinerInCurrentFaculty()}"
                                          class="form-control" requiredMessage="Bitte füllen Sie dieses Feld aus!"
-                                         immediate="true" required="true">
+                                         validator="FutureDateTimeValidator" required="true">
                                 <f:convertDateTime pattern="dd.MM.yyyy" type="localDate"/>
                             </h:inputText>
                             <h:messages for="start-date-itxt" styleClass="message"/>
@@ -86,8 +86,8 @@
                             <h:inputText id="end-date-itxt" value="#{circulationDetailsBacking.endDate}" required="true"
                                          readonly="#{sessionInfo.examinerInCurrentFaculty()}"
                                          requiredMessage="Bitte füllen Sie dieses Feld aus!"
-                                         immediate="true" class="form-control">
-                                <f:convertDateTime type="localDate"/>
+                                         validator="FutureDateTimeValidator" class="form-control">
+                                <f:convertDateTime pattern="dd.MM.yyyy" type="localDate"/>
                             </h:inputText>
                             <h:messages for="end-date-itxt" styleClass="message"/>
 

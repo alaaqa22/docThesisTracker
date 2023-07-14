@@ -228,6 +228,8 @@ public class CirculationDetailsBacking implements Serializable {
                     user.setId(voteFromList.getUserId());
                     userDAO.getUserById(user, transaction);
                     voteFromList.setVotedByName(user.getFirstName().concat(" " + user.getLastName()));
+                } else {
+                    voteFromList.setVotedByName("Gelöschter Benutzer");
                 }
                 transaction.commit();
             }
@@ -379,6 +381,9 @@ public class CirculationDetailsBacking implements Serializable {
     public String getCreatedBy() {
         User user = new User();
         user.setId(circulation.getCreatedBy());
+        if (user.getId() == 0) {
+            return "Gelöschter Benutzer";
+        }
         try (Transaction transaction = new Transaction()) {
             userDAO.getUserById(user, transaction);
             createdBy = user.getFirstName().concat(" " + user.getLastName());

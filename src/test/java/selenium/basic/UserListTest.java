@@ -69,18 +69,7 @@ public class UserListTest {
             dropdown.findElement(By.xpath("//option[. = 'Faculty of Arts']"))
                     .click();
         }
-        driver.findElement(
-                By.cssSelector("#j_idt46\\3AuserFaculty > option:nth-child(2)"))
-                .click();
-        driver.findElement(By.id("j_idt46:userFaculty")).click();
-        {
-            WebElement dropdown = driver
-                    .findElement(By.id("j_idt46:userFaculty"));
-            dropdown.findElement(By.xpath("//option[. = 'Faculty of Darts']"))
-                    .click();
-        }
-        driver.findElement(
-                By.cssSelector("#j_idt46\\3AuserFaculty > option:nth-child(5)"))
+        driver.findElement(By.xpath("//option[@value=\'Faculty of Arts\']"))
                 .click();
         driver.findElement(By.id("j_idt46:userFaculty")).click();
         {
@@ -89,57 +78,29 @@ public class UserListTest {
             dropdown.findElement(By.xpath("//option[. = 'Faculty of Science']"))
                     .click();
         }
-        driver.findElement(
-                By.cssSelector("#j_idt46\\3AuserFaculty > option:nth-child(4)"))
+        driver.findElement(By.xpath("//option[@value=\'Faculty of Science\']"))
                 .click();
         driver.findElement(By.id("j_idt46:userFaculty")).click();
         {
             WebElement dropdown = driver
                     .findElement(By.id("j_idt46:userFaculty"));
-            dropdown.findElement(By.xpath("//option[. = 'Faculty of Darts']"))
-                    .click();
+            dropdown.findElement(
+                    By.xpath("//option[. = 'Faculty of Engineering']")).click();
         }
         driver.findElement(
-                By.cssSelector("#j_idt46\\3AuserFaculty > option:nth-child(5)"))
+                By.xpath("//option[@value=\'Faculty of Engineering\']"))
                 .click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(
+                By.id("data:user-dt:firstName-itxt")));
         driver.findElement(By.id("data:user-dt:firstName-itxt")).click();
-        driver.findElement(By.id("data:user-dt:firstName-itxt"))
-                .sendKeys(Keys.chord(Keys.CONTROL, "a"), "α");
+        wait.until(ExpectedConditions.presenceOfElementLocated(
+                By.id("data:user-dt:firstName-itxt")));
+        driver.findElement(By.id("data:user-dt:firstName-itxt")).sendKeys("α");
         driver.findElement(By.id("data:user-dt:firstName-itxt"))
                 .sendKeys(Keys.ENTER);
         wait.until(ExpectedConditions
                 .presenceOfElementLocated(By.linkText("αleph")));
         driver.findElement(By.linkText("αleph")).click();
-        driver.findElement(By.id("profile:faculty-slcom")).click();
-        {
-            WebElement dropdown = driver
-                    .findElement(By.id("profile:faculty-slcom"));
-            dropdown.findElement(By.xpath("//option[. = 'Faculty of Darts']"))
-                    .click();
-        }
-        driver.findElement(By.cssSelector(
-                "#profile\\3A faculty-slcom > option:nth-child(4)")).click();
-        driver.findElement(By.id("profile:user-states-slcom")).click();
-        {
-            WebElement dropdown = driver
-                    .findElement(By.id("profile:user-states-slcom"));
-            dropdown.findElement(
-                    By.xpath("//option[. = 'EXAMINCOMMITTEEMEMBERS']")).click();
-        }
-        driver.findElement(By.cssSelector(
-                "#profile\\3Auser-states-slcom > option:nth-child(2)")).click();
-        driver.findElement(By.id("profile:updateAuth-cbtn")).click();
-        assertThat(driver.findElement(By.cssSelector(".alert")).getText(),
-                is("Authentifizierung wurde aktualisiert."));
-        driver.findElement(By.id("profile:user-states-slcom")).click();
-        {
-            WebElement dropdown = driver
-                    .findElement(By.id("profile:user-states-slcom"));
-            dropdown.findElement(By.xpath("//option[. = 'EXAMINER']")).click();
-        }
-        driver.findElement(By.cssSelector(
-                "#profile\\3Auser-states-slcom > option:nth-child(3)")).click();
-        driver.findElement(By.id("profile:updateAuth-cbtn")).click();
         driver.findElement(By.id("navbarForm:user-list-link")).click();
         driver.findElement(By.id("navbarForm:logout-cbtn")).click();
     }

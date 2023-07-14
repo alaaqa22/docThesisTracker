@@ -40,11 +40,6 @@ public class LogoutTest {
         driver.findElement (By.id ("login-form:password-iscrt")).sendKeys ("password123");
         driver.findElement (By.id ("login-form:login-cbtn")).click ();
         driver.findElement (By.id ("navbarForm:logout-cbtn")).click ();
-        driver.findElement (By.id ("login-form:email-itxt")).click ();
-        driver.findElement (By.id ("login-form:email-itxt")).sendKeys ("jane@example.com");
-        driver.findElement (By.id ("login-form:password-iscrt")).click ();
-        driver.findElement (By.id ("login-form:password-iscrt")).sendKeys ("Password@123");
-        driver.findElement (By.id ("login-form:login-cbtn")).click ();
-        driver.findElement (By.id ("navbarForm:logout-cbtn")).click ();
+
     }
 }

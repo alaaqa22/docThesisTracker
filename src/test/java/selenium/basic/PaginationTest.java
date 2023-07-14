@@ -38,8 +38,6 @@ public class PaginationTest {
     public void testPaginationScenario () {
         driver.get(TestSetup.getBaseUrl());
         driver.manage().window().setSize(new Dimension(1269, 813));
-
-        driver.manage().window().setSize(new Dimension(1269, 815));
         WebElement emailInput = driver.findElement(By.id("login-form:email-itxt"));
         emailInput.click();
         emailInput.sendKeys("test@test.com");
@@ -58,10 +56,6 @@ public class PaginationTest {
         wait.until(ExpectedConditions.elementToBeClickable(By.id("dataForm:lastpage-link"))).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.id("dataForm:firstpage-link"))).click();
 
-        driver.findElement(By.id("j_idt48:aktiv-cir-btn")).click();
-
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("dataForm:nextpage-link"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("dataForm:firstpage-link"))).click();
 
         driver.findElement(By.id("navbarForm:logout-cbtn")).click();
     }

@@ -20,19 +20,21 @@
         <ui:composition template="../anonymous/template.xhtml">
             <ui:define name="mainContent">
 
-                <div class="container" >
+                <div class="container">
 
                     <h:form>
                         <div class="form-group">
                             <!--  Fakultät filter -->
 
 
-                            <h:selectOneMenu id="userFaculty" value="#{userListBacking.facultyName}" rendered="#{sessionInfo.admin}"
+                            <h:selectOneMenu id="userFaculty" value="#{userListBacking.facultyName}"
+                                             rendered="#{sessionInfo.admin}"
                                              class="form-control scones-style">
                                 <f:selectItem itemLabel="Alle Fakultäten" itemValue=""/>
                                 <f:selectItems value="#{userListBacking.getAllUserFaculties()}" var="faculty"
                                                itemLabel="#{faculty}" itemValue="#{faculty}"/>
-                                <f:ajax id="load" event="change" listener="#{userListBacking.loadUsers()}" render="data"/>
+                                <f:ajax id="load" event="change" listener="#{userListBacking.loadUsers()}"
+                                        render="data"/>
                             </h:selectOneMenu>
 
                             <!-- User State filter -->
@@ -42,7 +44,8 @@
                                 <f:selectItem itemLabel="Alle Benutzer" itemValue=""/>
                                 <f:selectItems value="#{userListBacking.getAllUserStates()}" var="state"
                                                itemLabel="#{state}" itemValue="#{state}"/>
-                                <f:ajax id="load" event="change" listener="#{userListBacking.loadUsers()}" render="data"/>
+                                <f:ajax id="load" event="change" listener="#{userListBacking.loadUsers()}"
+                                        render="data"/>
                             </h:selectOneMenu>
 
 
@@ -50,13 +53,13 @@
                     </h:form>
 
 
-                    <h:form id="data" rendered="#{sessionInfo.deaneryInCurrentFaculty() or sessionInfo.adminInCurrentFaculty()}">
-
+                    <h:form id="data"
+                            rendered="#{sessionInfo.deaneryInCurrentFaculty() or sessionInfo.adminInCurrentFaculty()}">
 
 
                         <!-- DataTable for a User List -->
                         <h:dataTable id="user-dt" value="#{userListBacking.users}" var="user"
-                                     styleClass="table table-bordered"  style="width: 112%; height: 500px;"
+                                     styleClass="table table-bordered" style="width: 112%; height: 500px;"
                                      border="4">
 
                             <f:facet name="header">
@@ -68,7 +71,8 @@
                             <h:column>
                                 <f:facet name="header">
                                     <h:outputText id="header-firstName-otxt" value="First Name"/>
-                                    <h:inputText id="firstName-itxt"  value="#{userListBacking.filter.firstName}" styleClass="form-control">
+                                    <h:inputText id="firstName-itxt" value="#{userListBacking.filter.firstName}"
+                                                 styleClass="form-control">
                                         <f:ajax id="load" event="change" listener="#{userListBacking.loadUsers()}"
                                                 render="@form"/>
                                     </h:inputText>
@@ -82,7 +86,8 @@
                             <h:column>
                                 <f:facet name="header">
                                     <h:outputText id="header-lastname-otxt" value="Last Name"/>
-                                    <h:inputText id="lastname-itxt" value="#{userListBacking.filter.lastName}" styleClass="form-control">
+                                    <h:inputText id="lastname-itxt" value="#{userListBacking.filter.lastName}"
+                                                 styleClass="form-control">
                                         <f:ajax id="load" event="change" listener="#{userListBacking.loadUsers()}"
                                                 render="@form"/>
                                     </h:inputText>
@@ -94,7 +99,8 @@
                             <h:column>
                                 <f:facet name="header">
                                     <h:outputText id="headre-email-otxt" value="Email"/>
-                                    <h:inputText id="email-itxt" value="#{userListBacking.filter.email}" styleClass="form-control">
+                                    <h:inputText id="email-itxt" value="#{userListBacking.filter.email}"
+                                                 styleClass="form-control">
                                         <f:ajax id="load" event="change" listener="#{userListBacking.loadUsers()}"
                                                 render="@form"/>
                                     </h:inputText>

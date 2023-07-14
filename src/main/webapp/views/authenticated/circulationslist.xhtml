@@ -23,196 +23,206 @@
                 <h:panelGroup rendered="#{!sessionInfo.pendingInCurrentFaculty()}">
 
 
-                    <div id ="result-container" class="container">
-                    <h:form  rendered="#{!sessionInfo.pendingInCurrentFaculty() and sessionInfo.user.userFaculties.size()>1}">
-                    <h:commandButton id="aktiv-all-cir-btn" value="aktualisieren" action="#{circulationListBacking.showAllCirculations}"
-                                     styleClass="btn btn-primary">
-                        <f:ajax render="dataForm"/>
-                    </h:commandButton>
-                    </h:form>
+                    <div id="result-container" class="container">
+                        <h:form rendered="#{!sessionInfo.pendingInCurrentFaculty() and sessionInfo.user.userFaculties.size()>1}">
+                            <h:commandButton id="aktiv-all-cir-btn" value="aktualisieren"
+                                             action="#{circulationListBacking.showAllCirculations}"
+                                             styleClass="btn btn-primary">
+                                <f:ajax render="dataForm"/>
+                            </h:commandButton>
+                        </h:form>
 
-                    <h:form >
-                        <h:panelGroup >
-                        <h:commandButton id="all-cir-btn" value="Alle Umläufe" action="#{circulationListBacking.showAllCirculations}"
-                                         styleClass="btn btn-primary">
-                            <f:ajax render="dataForm"/>
-                        </h:commandButton>
+                        <h:form>
+                            <h:panelGroup>
+                                <h:commandButton id="all-cir-btn" value="Alle Umläufe"
+                                                 action="#{circulationListBacking.showAllCirculations}"
+                                                 styleClass="btn btn-primary">
+                                    <f:ajax render="dataForm"/>
+                                </h:commandButton>
 
-                        <h:commandButton id="aktiv-cir-btn" value="Aktulle Umläufe"
-                                         action="#{circulationListBacking.showCurrentCirculations()}"
-                                         styleClass="btn btn-primary">
-                            <f:ajax render="dataForm"/>
-                        </h:commandButton>
-                        <h:commandButton id="old-cir-btn" value="Abgeschlossene Umläufe"
-                                         action="#{circulationListBacking.showCompletedCirculations()}"
-                                         styleClass="btn btn-secondary">
-                            <f:ajax render="dataForm"/>
-                        </h:commandButton>
-                        </h:panelGroup>
-                    </h:form>
+                                <h:commandButton id="aktiv-cir-btn" value="Aktulle Umläufe"
+                                                 action="#{circulationListBacking.showCurrentCirculations()}"
+                                                 styleClass="btn btn-primary">
+                                    <f:ajax render="dataForm"/>
+                                </h:commandButton>
+                                <h:commandButton id="old-cir-btn" value="Abgeschlossene Umläufe"
+                                                 action="#{circulationListBacking.showCompletedCirculations()}"
+                                                 styleClass="btn btn-secondary">
+                                    <f:ajax render="dataForm"/>
+                                </h:commandButton>
+                            </h:panelGroup>
+                        </h:form>
 
-                    <h:form id="dataForm">
-
-
-                        <!---  dataTable for a Circulation List -->
-                        <h:dataTable id="cir-dt"  value="#{circulationListBacking.circulations}" var="circulation"
-                                     styleClass="my-table table table-bordered"
-                                     border="2">
-
-                            <f:facet name="header">
-                                <h:outputText id="header-out" value="#{circulationListBacking.headerText}" styleClass="text-center"/>
-
-                            </f:facet>
+                        <h:form id="dataForm">
 
 
-                            <!--> Titel <!-->
-                            <h:column>
+                            <!---  dataTable for a Circulation List -->
+                            <h:dataTable id="cir-dt" value="#{circulationListBacking.circulations}" var="circulation"
+                                         styleClass="my-table table table-bordered"
+                                         border="2">
+
                                 <f:facet name="header">
-                                    <h:outputText id="headre-titel-otxt" value="Titel"/>
-                                    <h:inputText id="titel-itxt" value="#{circulationListBacking.filter.title}"
-                                                 styleClass="form-control">
-                                        <f:ajax id="load" event="change" listener="#{circulationListBacking.loadCirculations}"
-                                                render="@form"/>
-
-                                    </h:inputText>
+                                    <h:outputText id="header-out" value="#{circulationListBacking.headerText}"
+                                                  styleClass="text-center"/>
 
                                 </f:facet>
-                                <h:outputLink id="id-olink" value="circulationDetails.xhtml?id=#{circulation.id}">
-                                    <h:outputText id="titel-otxt" value="#{circulation.title}"/>
-                                </h:outputLink>
 
 
-                            </h:column>
+                                <!--> Titel <!-->
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText id="headre-titel-otxt" value="Titel"/>
+                                        <h:inputText id="titel-itxt" value="#{circulationListBacking.filter.title}"
+                                                     styleClass="form-control">
+                                            <f:ajax id="load" event="change"
+                                                    listener="#{circulationListBacking.loadCirculations}"
+                                                    render="@form"/>
+
+                                        </h:inputText>
+
+                                    </f:facet>
+                                    <h:outputLink id="id-olink" value="circulationDetails.xhtml?id=#{circulation.id}">
+                                        <h:outputText id="titel-otxt" value="#{circulation.title}"/>
+                                    </h:outputLink>
 
 
-                            <!---  Name des Doktoranden -->
-                            <h:column>
-                                <f:facet name="header">
-                                    <h:outputText id="header-doctoranden-otxt" value="Doktoranden"/>
-                                    <h:inputText id="doctoranden-itxt" value="#{circulationListBacking.filter.doctoralCandidateName}"
-                                                 styleClass="form-control">
-                                        <f:ajax id="load" event="change" listener="#{circulationListBacking.loadCirculations}"
-                                                render="@form"/>
-                                    </h:inputText>
-                                </f:facet>
-                                <h:outputText id="doctoranden-otxt" value="#{circulation.doctoralCandidateName}"/>
-
-                            </h:column>
-
-                            <!---  Doktorvater -->
-                            <h:column>
-                                <f:facet name="header">
-                                    <h:outputText id ="header-doctoralSupervisor-otxt" value="Doktorvater"/>
-                                    <h:inputText id ="doctoralSupervisor-itxt" value="#{circulationListBacking.filter.doctoralSupervisor}"
-                                                 styleClass="form-control">
-                                        <f:ajax id="load" event="change" listener="#{circulationListBacking.loadCirculations}"
-                                                render="@form"/>
-                                    </h:inputText>
-                                </f:facet>
-                                <h:outputText id ="doctoralSupervisor-otxt" value="#{circulation.doctoralSupervisor}"/>
-
-                            </h:column>
-
-                            <!-- Fakultät-->
-
-                            <h:column>
-                                <f:facet name="header" randerd="#{sessionInfo.admin}">
-                                    <h:outputText id="header-Faculty-otxt" value="Fakultät"/>
-
-                                </f:facet>
-                                <h:outputText id="Faculty-otxt" value="#{circulationListBacking.getFacultyName(circulation.facultyId)}"/>
-
-                            </h:column>
-
-                            <!-- Description -->
-                            <h:column>
-                                <f:facet name="header">
-                                    <h:outputText id="header-description-otxt" value="Description"/>
-
-                                </f:facet>
-                                <h:outputText id="description-otxt" value="#{circulation.description}"/>
-                            </h:column>
-
-                            <!-- Startzeit -->
-                            <h:column>
-                                <f:facet name="header">
-                                    <h:outputText value="Startzeit"/>
-
-                                </f:facet>
-                                <h:outputText id="startDate-otxt" value="#{circulation.startDate}"/>
-                            </h:column>
-
-                            <!-- Endzeit -->
-                            <h:column>
-                                <f:facet name="header">
-                                    <h:outputText value="Endzeit"/>
-
-                                </f:facet>
-                                <h:outputText id="endDate-otxt" value="#{circulation.endDate}"/>
-                            </h:column>
+                                </h:column>
 
 
-                        </h:dataTable>
+                                <!---  Name des Doktoranden -->
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText id="header-doctoranden-otxt" value="Doktoranden"/>
+                                        <h:inputText id="doctoranden-itxt"
+                                                     value="#{circulationListBacking.filter.doctoralCandidateName}"
+                                                     styleClass="form-control">
+                                            <f:ajax id="load" event="change"
+                                                    listener="#{circulationListBacking.loadCirculations}"
+                                                    render="@form"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                    <h:outputText id="doctoranden-otxt" value="#{circulation.doctoralCandidateName}"/>
 
-                        <ui:fragment rendered="#{empty circulationListBacking.circulations}">
-                            <div class="alert alert-warning alert-dismissible fade show" style="max-width: 980px;">
-                                <h4 class="alert-heading">Keine Ergebnisse gefunden.</h4>
-                                <p>Bitte ändern Sie Ihre Filtereinstellungen und versuchen Sie es erneut.</p>
+                                </h:column>
+
+                                <!---  Doktorvater -->
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText id="header-doctoralSupervisor-otxt" value="Doktorvater"/>
+                                        <h:inputText id="doctoralSupervisor-itxt"
+                                                     value="#{circulationListBacking.filter.doctoralSupervisor}"
+                                                     styleClass="form-control">
+                                            <f:ajax id="load" event="change"
+                                                    listener="#{circulationListBacking.loadCirculations}"
+                                                    render="@form"/>
+                                        </h:inputText>
+                                    </f:facet>
+                                    <h:outputText id="doctoralSupervisor-otxt"
+                                                  value="#{circulation.doctoralSupervisor}"/>
+
+                                </h:column>
+
+                                <!-- Fakultät-->
+
+                                <h:column>
+                                    <f:facet name="header" randerd="#{sessionInfo.admin}">
+                                        <h:outputText id="header-Faculty-otxt" value="Fakultät"/>
+
+                                    </f:facet>
+                                    <h:outputText id="Faculty-otxt"
+                                                  value="#{circulationListBacking.getFacultyName(circulation.facultyId)}"/>
+
+                                </h:column>
+
+                                <!-- Description -->
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText id="header-description-otxt" value="Description"/>
+
+                                    </f:facet>
+                                    <h:outputText id="description-otxt" value="#{circulation.description}"/>
+                                </h:column>
+
+                                <!-- Startzeit -->
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Startzeit"/>
+
+                                    </f:facet>
+                                    <h:outputText id="startDate-otxt" value="#{circulation.startDate}"/>
+                                </h:column>
+
+                                <!-- Endzeit -->
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Endzeit"/>
+
+                                    </f:facet>
+                                    <h:outputText id="endDate-otxt" value="#{circulation.endDate}"/>
+                                </h:column>
+
+
+                            </h:dataTable>
+
+                            <ui:fragment rendered="#{empty circulationListBacking.circulations}">
+                                <div class="alert alert-warning alert-dismissible fade show" style="max-width: 980px;">
+                                    <h4 class="alert-heading">Keine Ergebnisse gefunden.</h4>
+                                    <p>Bitte ändern Sie Ihre Filtereinstellungen und versuchen Sie es erneut.</p>
+                                </div>
+                            </ui:fragment>
+
+
+                            <!-- Pagination Controls -->
+                            <div class="d-flex justify-content-center">
+
+
+                                <ul class="pagination">
+                                    <h:panelGroup rendered="#{!empty circulationListBacking.circulations}">
+                                        <h:panelGroup layout="block" styleClass="page-item"
+                                                      rendered="#{!circulationListBacking.circPagination.isFirstPage()}">
+                                            <h:commandLink id="firstpage-link" value="First"
+                                                           action="#{circulationListBacking.circPagination.firstPage()}"
+                                                           styleClass="page-link">
+                                                <f:ajax execute="@this" render="@form"/>
+                                            </h:commandLink>
+                                        </h:panelGroup>
+
+                                        <h:panelGroup layout="block" styleClass="page-item"
+                                                      rendered="#{!circulationListBacking.circPagination.isFirstPage()}">
+                                            <h:commandLink id="previouspage-link" value="Previous"
+                                                           action="#{circulationListBacking.circPagination.previousPage()}"
+                                                           styleClass="page-link">
+                                                <f:ajax execute="@this" render="@form"/>
+                                            </h:commandLink>
+                                        </h:panelGroup>
+
+                                        <h:outputText styleClass="page-item"
+                                                      value="Page : #{circulationListBacking.circPagination.currentPage} of #{circulationListBacking.circPagination.totalNumOfPages}"/>
+
+                                        <h:panelGroup layout="block" styleClass="page-item"
+                                                      rendered="#{!circulationListBacking.circPagination.isLastPage()}">
+                                            <h:commandLink id="nextpage-link" value="Next"
+                                                           action="#{circulationListBacking.circPagination.nextPage()}"
+                                                           styleClass="page-link">
+                                                <f:ajax execute="@this" render="@form"/>
+                                            </h:commandLink>
+                                        </h:panelGroup>
+
+                                        <h:panelGroup layout="block" styleClass="page-item"
+                                                      rendered="#{!circulationListBacking.circPagination.isLastPage()}">
+                                            <h:commandLink id="lastpage-link" value="Last"
+                                                           action="#{circulationListBacking.circPagination.lastPage()}"
+                                                           styleClass="page-link">
+                                                <f:ajax execute="@this" render="@form"/>
+                                            </h:commandLink>
+                                        </h:panelGroup>
+                                    </h:panelGroup>
+                                </ul>
+
                             </div>
-                        </ui:fragment>
 
-
-                        <!-- Pagination Controls -->
-                        <div class="d-flex justify-content-center">
-
-
-                            <ul class="pagination">
-                                <h:panelGroup rendered="#{!empty circulationListBacking.circulations}">
-                                    <h:panelGroup layout="block" styleClass="page-item"
-                                                  rendered="#{!circulationListBacking.circPagination.isFirstPage()}">
-                                        <h:commandLink id="firstpage-link" value="First"
-                                                       action="#{circulationListBacking.circPagination.firstPage()}"
-                                                       styleClass="page-link">
-                                            <f:ajax execute="@this" render="@form"/>
-                                        </h:commandLink>
-                                    </h:panelGroup>
-
-                                    <h:panelGroup layout="block" styleClass="page-item"
-                                                  rendered="#{!circulationListBacking.circPagination.isFirstPage()}">
-                                        <h:commandLink id="previouspage-link" value="Previous"
-                                                       action="#{circulationListBacking.circPagination.previousPage()}"
-                                                       styleClass="page-link">
-                                            <f:ajax execute="@this" render="@form"/>
-                                        </h:commandLink>
-                                    </h:panelGroup>
-
-                                    <h:outputText styleClass="page-item"
-                                                  value="Page : #{circulationListBacking.circPagination.currentPage} of #{circulationListBacking.circPagination.totalNumOfPages}"/>
-
-                                    <h:panelGroup layout="block" styleClass="page-item"
-                                                  rendered="#{!circulationListBacking.circPagination.isLastPage()}">
-                                        <h:commandLink id="nextpage-link" value="Next"
-                                                       action="#{circulationListBacking.circPagination.nextPage()}"
-                                                       styleClass="page-link">
-                                            <f:ajax execute="@this" render="@form"/>
-                                        </h:commandLink>
-                                    </h:panelGroup>
-
-                                    <h:panelGroup layout="block" styleClass="page-item"
-                                                  rendered="#{!circulationListBacking.circPagination.isLastPage()}">
-                                        <h:commandLink id="lastpage-link" value="Last"
-                                                       action="#{circulationListBacking.circPagination.lastPage()}"
-                                                       styleClass="page-link">
-                                            <f:ajax execute="@this" render="@form"/>
-                                        </h:commandLink>
-                                    </h:panelGroup>
-                                </h:panelGroup>
-                            </ul>
-
-                        </div>
-
-                    </h:form>
-                </div>
+                        </h:form>
+                    </div>
                 </h:panelGroup>
             </ui:define>
         </ui:composition>

@@ -129,7 +129,7 @@ public class CirculationListBacking implements Serializable {
     public void init () {
         logger.fatal ("start init");
         filter = new Circulation ();
-        if(!sessionInfo.isAdmin ()) {
+        if (!sessionInfo.isAdmin ()) {
             filter.setFacultyId (sessionInfo.getCurrentFaculty ().getId ());
         }
         this.circPagination = createPagination ();
@@ -227,12 +227,11 @@ public class CirculationListBacking implements Serializable {
         }
         return "Alle Umläufe ";
     }
-    public String showAllCirculations() {
+
+    public String showAllCirculations () {
 
         return "/views/authenticated/circulationslist.xhtml";
     }
-
-
 
 
 }

@@ -35,36 +35,19 @@ public class NavigationBacking implements Serializable {
     @Inject
     SessionInfo sessionInfo;
     static String selectedFaculty;
-    private static final Logger LOGGER = LogManager.getLogger(NavigationBacking.class);
+    private static final Logger LOGGER = LogManager.getLogger (NavigationBacking.class);
     private UserState currentUserState;
     @Inject
     FacultyDAO facultyDAO;
+
     @PostConstruct
-    public void  init () {
-        if(!sessionInfo.isAdmin ()) {
+    public void init () {
+        if (!sessionInfo.isAdmin ()) {
             selectedFaculty = sessionInfo.getCurrentFaculty ().getName ();
             getUserStareOfCurrentFaculty (getFacultyByName (selectedFaculty));
-        }
-        else{
+        } else {
             currentUserState = UserState.ADMIN;
         }
-    }
-
-    /**
-     * Logs out the current user.
-     * <p>
-     * This method performs the necessary actions to log out the user,
-     * such as clearing session information and performing any required cleanup.
-     * After successful logout, the user will be redirected to the login page.
-     */
-    public String logout() {
-        LOGGER.debug("logout() called for user: " + sessionInfo.getUser().getId() + "logged out.");
-        sessionInfo.setUser(null);
-        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-        externalContext.invalidateSession();
-
-        return "/views/anonymous/login?faces-redirect=true";
-
     }
 
     public void setSessionInfo (SessionInfo sessionInfo) {
@@ -76,13 +59,13 @@ public class NavigationBacking implements Serializable {
         return sessionInfo;
     }
 
-    public void changeUserState() {
+    public void changeUserState () {
 
-        Map<Faculty, UserState> userStateMap = sessionInfo.getUser().getUserState();
+        Map<Faculty, UserState> userStateMap = sessionInfo.getUser ().getUserState ();
         Faculty selectedFacultyObj = null;
 
-        for (Faculty faculty : userStateMap.keySet()) {
-            if (faculty.getName().equals(selectedFaculty)) {
+        for (Faculty faculty : userStateMap.keySet ()) {
+            if (faculty.getName ().equals (selectedFaculty)) {
                 selectedFacultyObj = faculty;
                 break;
             }
@@ -90,7 +73,7 @@ public class NavigationBacking implements Serializable {
 
         if (selectedFacultyObj != null) {
             sessionInfo.setCurrentFaculty (getFacultyByName (selectedFaculty));
-            getUserStareOfCurrentFaculty(selectedFacultyObj);
+            getUserStareOfCurrentFaculty (selectedFacultyObj);
         }
 
     }
@@ -110,16 +93,17 @@ public class NavigationBacking implements Serializable {
     public UserState getCurrentUserState () {
         return currentUserState;
     }
-    private UserState getUserStareOfCurrentFaculty(Faculty faculty){
-        Map<Faculty, UserState> userStateMap = sessionInfo.getUser().getUserState();
-        UserState userState = userStateMap.get(faculty);
+
+    private UserState getUserStareOfCurrentFaculty (Faculty faculty) {
+        Map<Faculty, UserState> userStateMap = sessionInfo.getUser ().getUserState ();
+        UserState userState = userStateMap.get (faculty);
         sessionInfo.setCurrentUserState (userState);
-        currentUserState =userState;
+        currentUserState = userState;
 
         return userState;
     }
 
-    private Faculty getFacultyByName(String name) {
+    private Faculty getFacultyByName (String name) {
         Faculty faculty = new Faculty ();
         faculty.setName (name);
 

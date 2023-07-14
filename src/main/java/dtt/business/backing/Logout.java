@@ -14,12 +14,20 @@ import org.apache.logging.log4j.Logger;
 public class Logout {
     @Inject
     SessionInfo sessionInfo;
-    private static final Logger LOGGER = LogManager.getLogger(NavigationBacking.class);
-    public String logout() {
-        LOGGER.debug("logout() called for user: " + sessionInfo.getUser().getId() + "logged out.");
-        sessionInfo.setUser(null);
-        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-        externalContext.invalidateSession();
+    private static final Logger LOGGER = LogManager.getLogger (NavigationBacking.class);
+
+    /**
+     * Logs out the current user.
+     * <p>
+     * This method performs the necessary actions to log out the user,
+     * such as clearing session information and performing any required cleanup.
+     * After successful logout, the user will be redirected to the login page.
+     */
+    public String logout () {
+        LOGGER.debug ("logout() called for user: " + sessionInfo.getUser ().getId () + "logged out.");
+        sessionInfo.setUser (null);
+        ExternalContext externalContext = FacesContext.getCurrentInstance ().getExternalContext ();
+        externalContext.invalidateSession ();
 
         return "/views/anonymous/login?faces-redirect=true";
 

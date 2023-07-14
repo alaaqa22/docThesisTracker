@@ -36,40 +36,34 @@ public class ManyFacultyTest {
     @Test
     public void manyFacultyTeset () {
         driver.get (TestSetup.getBaseUrl ());
-        driver.manage ().window ().setSize (new Dimension (1269, 813));
-        driver.findElement (By.id ("login-form:email-itxt")).click ();
-        driver.findElement (By.id ("login-form:email-itxt")).sendKeys ("jane@example.com");
-        driver.findElement (By.id ("login-form:password-iscrt")).click ();
-        driver.findElement (By.id ("login-form:password-iscrt")).sendKeys ("Password@123");
-        driver.findElement (By.id ("login-form:login-cbtn")).click ();
-        driver.findElement (By.id ("navbarForm:selected-faculty-slom")).click ();
+        driver.manage().window().setSize(new Dimension(1269, 809));
+        driver.findElement(By.id("login-form:email-itxt")).click();
+        driver.findElement(By.id("login-form:email-itxt")).sendKeys("test2@test.com");
+        driver.findElement(By.id("login-form:password-iscrt")).click();
+        driver.findElement(By.id("login-form:password-iscrt")).sendKeys("password123");
+        driver.findElement(By.id("login-form:login-cbtn")).click();
+        driver.findElement(By.id("navbarForm:selected-faculty-slom")).click();
         {
-            WebElement dropdown = driver.findElement (By.id ("navbarForm:selected-faculty-slom"));
-            dropdown.findElement (By.xpath ("//option[. = 'Faculty of Engineering']")).click ();
+            WebElement dropdown = driver.findElement(By.id("navbarForm:selected-faculty-slom"));
+            dropdown.findElement(By.xpath("//option[. = 'Faculty of Engineering']")).click();
         }
-        driver.findElement (By.id ("j_idt47:aktiv-all-cir-btn")).click ();
-        driver.findElement (By.id ("navbarForm:selected-faculty-slom")).click ();
+        driver.findElement(By.id("j_idt47:aktiv-all-cir-btn")).click();
+        driver.findElement(By.id("navbarForm:selected-faculty-slom")).click();
         {
-            WebElement dropdown = driver.findElement (By.id ("navbarForm:selected-faculty-slom"));
-            dropdown.findElement (By.xpath ("//option[. = 'Faculty of Science']")).click ();
-        }
-        driver.findElement (By.id ("j_idt47:aktiv-all-cir-btn")).click ();
-        driver.findElement (By.id ("navbarForm:selected-faculty-slom")).click ();
-        {
-            WebElement dropdown = driver.findElement (By.id ("navbarForm:selected-faculty-slom"));
-            dropdown.findElement (By.xpath ("//option[. = 'Faculty of Arts']")).click ();
+            WebElement dropdown = driver.findElement(By.id("navbarForm:selected-faculty-slom"));
+            dropdown.findElement(By.xpath("//option[. = 'Faculty of Arts']")).click();
         }
         {
-            WebElement element = driver.findElement (By.id ("j_idt47:aktiv-all-cir-btn"));
-            Actions builder = new Actions (driver);
-            builder.moveToElement (element).perform ();
+            WebElement element = driver.findElement(By.id("j_idt48:old-cir-btn"));
+            Actions builder = new Actions(driver);
+            builder.moveToElement(element).perform();
         }
-        driver.findElement (By.id ("j_idt47:aktiv-all-cir-btn")).click ();
         {
-            WebElement element = driver.findElement (By.tagName ("body"));
-            Actions builder = new Actions (driver);
-            builder.moveToElement (element, 0, 0).perform ();
+            WebElement element = driver.findElement(By.tagName("body"));
+            Actions builder = new Actions(driver);
+            builder.moveToElement(element, 0, 0).perform();
         }
-        driver.findElement (By.id ("navbarForm:logout-cbtn")).click ();
+        driver.findElement(By.id("j_idt47:aktiv-all-cir-btn")).click();
+        driver.findElement(By.id("navbarForm:logout-cbtn")).click();
     }
 }

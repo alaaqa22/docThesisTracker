@@ -97,7 +97,8 @@
                         <!-- Admin -->
                         <h:panelGroup rendered="#{ sessionInfo.admin}">
                             <li class="nav-item">
-                                <h:link id="faculty-id" outcome="/views/admin/facultylist.xhtml" value="Fakultät erstellen"
+                                <h:link id="faculty-id" outcome="/views/admin/facultylist.xhtml"
+                                        value="Fakultät erstellen"
                                         styleClass="nav-link"/>
                             </li>
                         </h:panelGroup>
@@ -106,7 +107,7 @@
                         <!-- Logout button -->
                         <h:panelGroup rendered="#{ !sessionInfo.anonymous}">
 
-                            <li class="nav-item" >
+                            <li class="nav-item">
                                 <h:link id="help-authenticated-link" outcome="/views/help/help" value="Hilfeseite"
                                         styleClass="nav-link"/>
                             </li>
@@ -116,26 +117,28 @@
                                                  styleClass="nav-link btn btn-secondary"/>
                             </li>
 
-                            <h:outputText value="#{navigationBacking.currentUserState}" styleClass="nav-link disabled "/>
+                            <h:outputText value="#{navigationBacking.currentUserState}"
+                                          styleClass="nav-link disabled "/>
 
 
                             <li class="nav-item right-align">
                                 <h:selectOneMenu id="selected-faculty-slom" value="#{navigationBacking.selectedFaculty}"
                                                  rendered="#{!sessionInfo.admin}" styleClass="custom-select">
-                                    <f:selectItems id="faculty-item" value="#{sessionInfo.user.userFaculties}" var="state"
+                                    <f:selectItems id="faculty-item" value="#{sessionInfo.user.userFaculties}"
+                                                   var="state"
                                                    itemValue="#{state}" itemLabel="#{state}"/>
-                                    <f:ajax event="change" execute="@all" listener="#{navigationBacking.changeUserState}" render="@form :dataForm" />
+                                    <f:ajax event="change" execute="@all"
+                                            listener="#{navigationBacking.changeUserState}" render="@form :dataForm"/>
 
 
                                 </h:selectOneMenu>
 
                             </li>
-                            <h:messages id="errorMessages" globalOnly="true" infoClass="alert alert-info" errorClass="alert alert-danger"
-                                        render="errorMessages" />
+                            <h:messages id="errorMessages" globalOnly="true" infoClass="alert alert-info"
+                                        errorClass="alert alert-danger"
+                                        render="errorMessages"/>
 
                         </h:panelGroup>
-
-
 
 
                     </ul>

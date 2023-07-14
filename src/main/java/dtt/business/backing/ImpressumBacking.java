@@ -12,20 +12,20 @@ import java.io.Serializable;
 public class ImpressumBacking implements Serializable {
     private String impressumContent;
 
-    public ImpressumBacking() {
+    public ImpressumBacking () {
 
-        if(!ConfigReader.arePropertiesLoaded()){
-            ConfigReader.loadProperties();
+        if (!ConfigReader.arePropertiesLoaded ()) {
+            ConfigReader.loadProperties ();
         }
-        impressumContent = ConfigReader.getImpressumContent();
+        impressumContent = ConfigReader.getImpressumContent ();
     }
 
 
-    public String getImpressumContent() {
+    public String getImpressumContent () {
         return impressumContent;
     }
 
-    public void setImpressumContent(String impressumContent) {
+    public void setImpressumContent (String impressumContent) {
         this.impressumContent = impressumContent;
     }
 }

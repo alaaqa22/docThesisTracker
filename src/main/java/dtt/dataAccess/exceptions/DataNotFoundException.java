@@ -18,7 +18,7 @@ public class DataNotFoundException extends Exception {
      * Constructs an exception with a message.
      * @param message - Error massage.
      */
-    public DataNotFoundException(String message){}
+    public DataNotFoundException(String message){super(message);}
 
     /**
      * Constructs an exception with a message and a cause.

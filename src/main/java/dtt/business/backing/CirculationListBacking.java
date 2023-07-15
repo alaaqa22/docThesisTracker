@@ -8,10 +8,7 @@ import dtt.dataAccess.repository.postgres.FacultyDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Circulation;
 import dtt.global.tansport.Faculty;
-import jakarta.annotation.ManagedBean;
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.ConversationScoped;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -40,9 +37,8 @@ public class CirculationListBacking implements Serializable {
     private final Logger logger = LogManager.getLogger ();
     @Inject
     private FacultyDAO facultyDAO;
-    private static final Logger LOGGER = LogManager.getLogger (CirculationListBacking.class);
-    boolean timeButton = false;
-    boolean currentCirculation = false;
+    private boolean timeButton = false;
+    private boolean currentCirculation = false;
 
 
     /**

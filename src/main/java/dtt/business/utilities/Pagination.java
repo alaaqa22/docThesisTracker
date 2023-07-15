@@ -21,7 +21,7 @@ public abstract class Pagination<T> {
 
 
     public Pagination() {
-        setCurrentPage(1);
+        currentPage = 1 ;
     }
 
     /**

@@ -1,6 +1,5 @@
 package dtt.business.validation;
 
-import dtt.dataAccess.repository.interfaces.CirculationDAO;
 import dtt.dataAccess.repository.interfaces.FacultyDAO;
 import dtt.dataAccess.utilities.Transaction;
 import dtt.global.tansport.Faculty;
@@ -10,7 +9,6 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.validator.ValidatorException;
-import jakarta.inject.Inject;
 
 /**
  * @author Hadi Abou Hassoun
@@ -19,7 +17,6 @@ import jakarta.inject.Inject;
 public class UniqueFacultyNameValidator implements Validator {
 
 
-    private FacultyDAO facultyDAO; // facultyDAO object for database access.
 
 
     /**
@@ -49,6 +46,7 @@ public class UniqueFacultyNameValidator implements Validator {
      */
     private boolean isValueUnique (final FacesContext context, String facultyName) {
 
+        FacultyDAO facultyDAO; // facultyDAO object for database access.
         Faculty faculty = new Faculty ();
         faculty.setName (facultyName);
         facultyDAO = getFacultyDAO (context);

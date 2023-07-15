@@ -27,11 +27,11 @@ import org.apache.logging.log4j.Logger;
 @Default
 public class VoteDAO implements dtt.dataAccess.repository.interfaces.VoteDAO {
 
-	private final String VOTE_ID = "vote_id";
-	private final String USER_ID = "user_id";
-	private final String CIRCULATION_ID = "circulation_id";
-	private final String CHOICE = "choice";
-	private final String REASON = "reason";
+	private static final String VOTE_ID = "vote_id";
+	private static final String USER_ID = "user_id";
+	private static final String CIRCULATION_ID = "circulation_id";
+	private static final String CHOICE = "choice";
+	private static final String REASON = "reason";
 	private static final Logger LOGGER = LogManager.getLogger(VoteDAO.class);
 
 	/**
@@ -49,7 +49,7 @@ public class VoteDAO implements dtt.dataAccess.repository.interfaces.VoteDAO {
 	}
 
 	@Override
-	public void add(Vote vote, Transaction transaction) throws DataNotCompleteException, InvalidInputException {
+	public void add(Vote vote, Transaction transaction) throws DataNotCompleteException, InvalidInputException,DBConnectionFailedException {
 		LOGGER.debug("add() called.");
 		String query = "INSERT INTO vote (user_id, circulation_id, choice, reason) VALUES (?, ?, ?, ?)";
 		try (PreparedStatement statement = transaction.getConnection().prepareStatement(query)) {
@@ -64,7 +64,9 @@ public class VoteDAO implements dtt.dataAccess.repository.interfaces.VoteDAO {
 				case "23502": // The specific SQL error code for a not-null constraint violation
 					throw new DataNotCompleteException(e.getLocalizedMessage(), e);
 				default:
-					throw new DBConnectionFailedException ();
+					DBConnectionFailedException ex = new DBConnectionFailedException();
+					ex.initCause(e); // Preserve the original SQLException as the cause
+					throw ex;
 			}
 		}
 

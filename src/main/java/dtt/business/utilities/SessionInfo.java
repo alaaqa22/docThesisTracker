@@ -3,15 +3,12 @@ package dtt.business.utilities;
 import dtt.global.tansport.Faculty;
 import dtt.global.tansport.User;
 import dtt.global.tansport.UserState;
-import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**

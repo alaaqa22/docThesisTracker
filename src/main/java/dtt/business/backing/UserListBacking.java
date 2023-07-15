@@ -39,9 +39,9 @@ public class UserListBacking implements Serializable {
     @Inject
     private SessionInfo sessionInfo;
     private final Logger logger = LogManager.getLogger ();
-    Faculty faculty;
-    String facultyName;
-    UserState userState;
+    private Faculty faculty;
+    private String facultyName;
+    private UserState userState;
 
 
     /**

@@ -42,10 +42,12 @@ public class TrespassListener implements PhaseListener {
                 if (sessionInfo.isLoggedIn()) {
                     LOGGER.info("User found trespassing: " + sessionInfo.getUser().getEmail());
                     LOGGER.debug("Redirecting to circulation list.");
+                    // Message field for whoever wants to add a way to add the message in the header post redirect.
                     redirectToCirculationList(ctx, "Sie dürfen nicht auf die Seite zugreifen.");
                     fctx.responseComplete();
                 } else {
                     LOGGER.info("Anonymous user tried to trespass, redirecting to login page.");
+                    // Message field for whoever wants to add a way to add the message in the header post redirect.
                     redirectToLoginPage(ctx,
                             "Sie dürfen auf die angeforderte Seite nicht zugreifen, bitte melden Sie sich an.");
                     fctx.responseComplete();
@@ -112,7 +114,6 @@ public class TrespassListener implements PhaseListener {
      */
     private void redirectToCirculationList(ExternalContext ctx, String message) {
         try {
-            //ctx.getSessionMap().put("circulationListMessage", message);
             ctx.redirect(ctx.getRequestContextPath() + "/views/authenticated/circulationslist.xhtml");
         } catch (IOException e) {
             LOGGER.error("Error redirecting to CirculationList page: " + e.getMessage());
@@ -125,7 +126,6 @@ public class TrespassListener implements PhaseListener {
      */
     private void redirectToLoginPage(ExternalContext ctx, String message) {
         try {
-            //ctx.getSessionMap().put("loginMessage", message);
             ctx.redirect(ctx.getRequestContextPath() + "/views/anonymous/login.xhtml");
         } catch (IOException e) {
             LOGGER.error("Error redirecting to login page: " + e.getMessage());

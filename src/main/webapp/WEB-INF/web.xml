@@ -29,6 +29,10 @@
         <error-code>404</error-code>
         <location>/views/anonymous/errorPage.xhtml</location>
     </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/views/anonymous/errorPage.xhtml</location>
+    </error-page>
 
     <resource-env-ref>
         <description>Object factory for the CDI Bean Manager</description>

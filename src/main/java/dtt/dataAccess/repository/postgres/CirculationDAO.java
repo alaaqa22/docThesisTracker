@@ -23,6 +23,8 @@ import org.apache.logging.log4j.Logger;
 @ApplicationScoped
 public class CirculationDAO implements dtt.dataAccess.repository.interfaces.CirculationDAO {
     private static final Logger LOGGER = LogManager.getLogger (CirculationDAO.class);
+    // Table name
+    private static final String TABLE = "circulation";
     // Column names
     private static final String CIRCULATION_ID = "circulation_id";
     private static final String TITLE = "title";
@@ -47,19 +49,18 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
      * @inheritDoc
      */
     @Override
-    public void add (Circulation circulation, Transaction transaction)
+    public void add(Circulation circulation, Transaction transaction)
             throws DataNotCompleteException, InvalidInputException, KeyExistsException {
-        LOGGER.debug ("add() called.");
-        String query = "INSERT INTO circulation (title, doctoral_candidate_name, doctoral_supervisor_name, " +
-                "description, start_date, end_date, is_obligatory, created_by, faculty_id , is_valid) " +
+        String query = "INSERT INTO " + TABLE + " ("+ TITLE + ", "+ DOC_CANDIDATE + ", " + DOC_SUPERVISOR+", " +
+                DESCRIPTION + ", "+ START_DATE +", "+ END_DATE+", " + IS_OBLIGATORY + ","+ CREATED_BY +", " + FACULTY_ID +" , " + IS_VALID + ") " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statement = transaction.getConnection ().prepareStatement (query)) {
-            setCirculationStatement (circulation, statement);
+            setCirculationStatement(circulation, statement);
 
             int affectedRows = statement.executeUpdate ();
 
             if (affectedRows == 0) {
-                throw new InvalidInputException ("Creating circulation failed, no rows affected");
+                throw new InvalidInputException("Creating circulation failed, no rows affected");
             }
         } catch (SQLException e) {
             LOGGER.error ("SQL exception in add(): " + e.getMessage ());
@@ -68,39 +69,39 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
                     throw new DataNotCompleteException (e.getLocalizedMessage (), e);
                 case "23505":
                     throw new KeyExistsException ("unique_violation", e);
+                case "23514":
+                    throw new InvalidInputException("check_violation", e);
                 default:
-                    throw new DBConnectionFailedException (e.getMessage ());
+                    throw new DBConnectionFailedException(e.getMessage());
             }
         }
 
     }
 
     /**
-     * @inheritDoc
+     * Sets the parameters to the prepared statement. ID is has to be added separately as there is no ID when adding a
+     * new circulation.
      */
-    private void setCirculationStatement (Circulation circulation, PreparedStatement statement) throws SQLException {
-        statement.setString (1, circulation.getTitle ());
-        statement.setString (2, circulation.getDoctoralCandidateName ());
-        statement.setString (3, circulation.getDoctoralSupervisor ());
-        statement.setString (4, circulation.getDescription ());
-        statement.setTimestamp (5, circulation.getStartDate ());
-        LOGGER.debug ("Timestamp start date set: " + circulation.getStartDate ());
+    private void setCirculationStatement(Circulation circulation, PreparedStatement statement) throws SQLException {
+        statement.setString(1, circulation.getTitle ());
+        statement.setString(2, circulation.getDoctoralCandidateName ());
+        statement.setString(3, circulation.getDoctoralSupervisor ());
+        statement.setString(4, circulation.getDescription ());
+        statement.setTimestamp(5, circulation.getStartDate ());
 
-        statement.setTimestamp (6, circulation.getEndDate ());
-        LOGGER.debug ("Timestamp end date set: " + circulation.getEndDate ());
-        statement.setBoolean (7, circulation.isObligatory ());
-        statement.setInt (8, circulation.getCreatedBy ());
-        statement.setInt (9, circulation.getFacultyId ());
-        statement.setBoolean (10, circulation.isValid ());
+        statement.setTimestamp(6, circulation.getEndDate ());
+        statement.setBoolean(7, circulation.isObligatory ());
+        statement.setInt(8, circulation.getCreatedBy ());
+        statement.setInt(9, circulation.getFacultyId ());
+        statement.setBoolean(10, circulation.isValid ());
     }
 
     /**
      * @inheritDoc
      */
     @Override
-    public void remove (Circulation circulation, Transaction transaction) throws DataNotFoundException {
-        LOGGER.debug ("remove() called.");
-        String query = "DELETE FROM circulation WHERE circulation_id = ?";
+    public void remove(Circulation circulation, Transaction transaction) throws DataNotFoundException {
+        String query = "DELETE FROM " + TABLE + " WHERE " + CIRCULATION_ID + " = ?";
 
         try (PreparedStatement statement = transaction.getConnection ().prepareStatement (query)) {
             statement.setInt (1, circulation.getId ());
@@ -111,7 +112,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
                 throw new DataNotFoundException ("Circulation not found in the database");
             }
         } catch (SQLException e) {
-            LOGGER.error ("SQL exception in remove(): " + e.getMessage ());
+            LOGGER.error("SQL exception in remove(): " + e.getMessage ());
             throw new DataNotFoundException ("Circulation not found in the database.", e);
         }
 
@@ -121,15 +122,17 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
      * @inheritDoc
      */
     @Override
-    public void update (Circulation circulation, Transaction transaction)
+    public void update(Circulation circulation, Transaction transaction)
             throws DataNotFoundException, InvalidInputException, KeyExistsException {
         LOGGER.debug ("update() called.");
-        String query = "UPDATE circulation SET title = ?, doctoral_candidate_name = ?, doctoral_supervisor_name = ?," +
-                "description = ?, start_date = ?, end_date = ?, is_obligatory = ?, created_by = ?, faculty_id = ?, is_valid = ?" +
-                "WHERE circulation_id = ?";
+        String query = "UPDATE "+TABLE+" SET " + TITLE + " = ?, " + DOC_CANDIDATE + " = ?," + DOC_SUPERVISOR + "= ?," +
+                DESCRIPTION + " = ?, " + START_DATE + " = ?, " + END_DATE + " = ?, " + IS_OBLIGATORY + " = ?, " + CREATED_BY +
+                " = ?, " + FACULTY_ID + " = ?, " + IS_VALID + " = ?" +
+                "WHERE " + CIRCULATION_ID + " = ?";
 
         try (PreparedStatement statement = transaction.getConnection ().prepareStatement (query)) {
             setCirculationStatement (circulation, statement);
+            // Finally set ID.
             statement.setInt (11, circulation.getId ());
             statement.executeUpdate ();
 
@@ -137,11 +140,11 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
             LOGGER.error ("SQL exception in update(): " + e.getMessage ());
             switch (e.getSQLState ()) {
                 case "23514":
-                    throw new InvalidInputException ("check_violation", e);
+                    throw new InvalidInputException("check_violation", e);
                 case "23505":
-                    throw new KeyExistsException ("unique_violation", e);
+                    throw new KeyExistsException("unique_violation", e);
                 default:
-                    throw new DBConnectionFailedException ();
+                    throw new DBConnectionFailedException();
             }
         }
     }
@@ -150,9 +153,9 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
      * @inheritDoc
      */
     @Override
-    public void getCirculationById (Circulation circulation, Transaction transaction) throws DataNotFoundException {
+    public void getCirculationById(Circulation circulation, Transaction transaction) throws DataNotFoundException {
         LOGGER.debug ("getCirculationById() called.");
-        String query = "SELECT * FROM circulation WHERE circulation_id = ?";
+        String query = "SELECT * FROM " + TABLE + " WHERE " + CIRCULATION_ID + " = ?";
 
         try (PreparedStatement statement = transaction.getConnection ().prepareStatement (query)) {
             statement.setInt (1, circulation.getId ());
@@ -174,8 +177,8 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
                 }
             }
         } catch (SQLException e) {
-            LOGGER.error ("SQL exception in getCirculationById(): " + e.getMessage ());
-            throw new DataNotFoundException ("Failed to retrieve circulation data.");
+            LOGGER.error("SQL exception in getCirculationById(): " + e.getMessage ());
+            throw new DataNotFoundException("Failed to retrieve circulation data.");
         }
     }
 
@@ -185,74 +188,73 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
     @Override
     public List<Circulation> getCirculations(Circulation circulation, Transaction transaction,
                                               int offset, int count) {
-        LOGGER.debug ("getCirculations() called.");
-        List<Circulation> circulations = new ArrayList<> ();
+        List<Circulation> circulations = new ArrayList<>();
 
         // Build the SQL query string
-        StringBuilder query = new StringBuilder ();
-        query.append ("SELECT * FROM circulation WHERE 1=1");
+        StringBuilder query = new StringBuilder();
+        query.append ("SELECT * FROM " + TABLE + " WHERE 1=1");
 
         // Add filter conditions based on the provided properties
-        if (circulation.getTitle () != null) {
-            query.append (" AND title ILIKE ?");
+        if (circulation.getTitle() != null) {
+            query.append (" AND " + TITLE + " ILIKE ?");
         }
 
-        if (circulation.getDescription () != null) {
-            query.append (" AND description ILIKE ?");
+        if (circulation.getDescription() != null) {
+            query.append (" AND " + DESCRIPTION + " ILIKE ?");
         }
 
-        if (circulation.getDoctoralCandidateName () != null) {
-            query.append (" AND doctoral_candidate_name ILIKE ?");
+        if (circulation.getDoctoralCandidateName() != null) {
+            query.append (" AND " + DOC_CANDIDATE + " ILIKE ?");
         }
 
-        if (circulation.getDoctoralSupervisor () != null) {
-            query.append (" AND doctoral_supervisor_name ILIKE ?");
+        if (circulation.getDoctoralSupervisor() != null) {
+            query.append (" AND " + DOC_SUPERVISOR + " ILIKE ?");
         }
 
-        if (circulation.getStartDate () != null) {
-            query.append (" AND start_deadline = ?");
+        if (circulation.getStartDate() != null) {
+            query.append (" AND " + START_DATE + " = ?");
         }
 
-        if (circulation.getEndDate () != null) {
-            query.append (" AND end_deadline = ?");
+        if (circulation.getEndDate() != null) {
+            query.append (" AND " + END_DATE + " = ?");
         }
 
         if (circulation.getFacultyId() != 0) {
-            query.append(" AND faculty_id = ?");
+            query.append(" AND " + FACULTY_ID + " = ?");
         }
 
         query.append (" LIMIT ? OFFSET ?");
 
-        try (PreparedStatement statement = transaction.getConnection ().prepareStatement (query.toString ())) {
+        try (PreparedStatement statement = transaction.getConnection().prepareStatement(query.toString())) {
             int paramIndex = 1;
 
             // Set filter condition values
             if (circulation.getTitle () != null) {
-                statement.setString (paramIndex++, "%" + circulation.getTitle () + "%");
+                statement.setString (paramIndex++, "%" + circulation.getTitle() + "%");
             }
 
             if (circulation.getDescription () != null) {
-                statement.setString (paramIndex++, "%" + circulation.getDescription () + "%");
+                statement.setString (paramIndex++, "%" + circulation.getDescription() + "%");
             }
 
             if (circulation.getDoctoralCandidateName () != null) {
-                statement.setString (paramIndex++, "%" + circulation.getDoctoralCandidateName () + "%");
+                statement.setString (paramIndex++, "%" + circulation.getDoctoralCandidateName() + "%");
             }
 
             if (circulation.getDoctoralSupervisor () != null) {
-                statement.setString (paramIndex++, "%" + circulation.getDoctoralSupervisor () + "%");
+                statement.setString (paramIndex++, "%" + circulation.getDoctoralSupervisor() + "%");
             }
 
             if (circulation.isObligatory ()) {
-                statement.setBoolean (paramIndex++, circulation.isObligatory ());
+                statement.setBoolean (paramIndex++, circulation.isObligatory());
             }
 
-            if (circulation.getStartDate () != null) {
-                statement.setObject (paramIndex++, circulation.getStartDate ());
+            if (circulation.getStartDate() != null) {
+                statement.setObject (paramIndex++, circulation.getStartDate());
             }
 
-            if (circulation.getEndDate () != null) {
-                statement.setObject (paramIndex++, circulation.getEndDate ());
+            if (circulation.getEndDate() != null) {
+                statement.setObject (paramIndex++, circulation.getEndDate());
             }
             if (circulation.getFacultyId() != 0) {
                 statement.setInt(paramIndex++, circulation.getFacultyId());
@@ -262,28 +264,28 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
             statement.setInt (paramIndex++, count);
             statement.setInt (paramIndex, offset);
 
-            try (ResultSet resultSet = statement.executeQuery ()) {
+            try (ResultSet resultSet = statement.executeQuery()) {
                 // Iterate over the result set and populate the list of circulations
-                while (resultSet.next ()) {
-                    Circulation resultCirculation = new Circulation ();
+                while (resultSet.next()) {
+                    Circulation resultCirculation = new Circulation();
                     //Populate the circulation with data from the result set
-                    resultCirculation.setId (resultSet.getInt (CIRCULATION_ID));
-                    resultCirculation.setTitle (resultSet.getString (TITLE));
-                    resultCirculation.setDescription (resultSet.getString (DESCRIPTION));
-                    resultCirculation.setDoctoralCandidateName (resultSet.getString (DOC_CANDIDATE));
-                    resultCirculation.setDoctoralSupervisor (resultSet.getString (DOC_SUPERVISOR));
-                    resultCirculation.setObligatory (resultSet.getBoolean (IS_OBLIGATORY));
-                    resultCirculation.setStartDate (resultSet.getTimestamp (START_DATE));
-                    resultCirculation.setEndDate (resultSet.getTimestamp (END_DATE));
-                    resultCirculation.setFacultyId (resultSet.getInt (FACULTY_ID));
+                    resultCirculation.setId(resultSet.getInt (CIRCULATION_ID));
+                    resultCirculation.setTitle(resultSet.getString (TITLE));
+                    resultCirculation.setDescription(resultSet.getString (DESCRIPTION));
+                    resultCirculation.setDoctoralCandidateName(resultSet.getString (DOC_CANDIDATE));
+                    resultCirculation.setDoctoralSupervisor(resultSet.getString (DOC_SUPERVISOR));
+                    resultCirculation.setObligatory(resultSet.getBoolean (IS_OBLIGATORY));
+                    resultCirculation.setStartDate(resultSet.getTimestamp (START_DATE));
+                    resultCirculation.setEndDate(resultSet.getTimestamp (END_DATE));
+                    resultCirculation.setFacultyId(resultSet.getInt (FACULTY_ID));
 
                     circulations.add (resultCirculation);
                 }
             }
         } catch (SQLException e) {
-            LOGGER.error ("SQL exception in getCirculations(): " + e.getMessage ());
+            LOGGER.error ("Failed to retrieve circulations.", e);
             // Handle any exceptions that occur during the database operation
-            e.printStackTrace ();
+            throw new DBConnectionFailedException("Failed to retrieve users.");
         }
 
         return circulations;
@@ -294,39 +296,39 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
      */
     @Override
     public int getTotalCirculationNumber(Circulation circulation, Transaction transaction) {
-        LOGGER.debug ("getTotalCirculationNumber() called.");
-        String query = "SELECT COUNT(*) FROM circulation WHERE 1=1";
-        List<Object> parameters = new ArrayList<> ();
+        LOGGER.debug("getTotalCirculationNumber() called.");
+        String query = "SELECT COUNT(*) FROM " + TABLE + " WHERE 1=1";
+        List<Object> parameters = new ArrayList<>();
 
         if (circulation != null) {
             if (circulation.getId () > 0) {
-                query += " AND id ILIKE ?";
-                parameters.add ("%" + circulation.getId () + "%");
+                query += " AND " + CIRCULATION_ID + " ILIKE ?";
+                parameters.add ("%" + circulation.getId() + "%");
             }
 
             if (circulation.getTitle () != null) {
-                query += " AND title ILIKE ?";
+                query += " AND " + TITLE + " ILIKE ?";
                 parameters.add ("%" + circulation.getTitle () + "%");
             }
 
             if (circulation.getDoctoralCandidateName () != null) {
-                query += " AND doctoral_candidate_name ILIKE ?";
-                parameters.add ("%" + circulation.getDoctoralCandidateName () + "%");
+                query += " AND " + DOC_CANDIDATE + " ILIKE ?";
+                parameters.add ("%" + circulation.getDoctoralCandidateName() + "%");
             }
 
-            if (circulation.getDoctoralSupervisor () != null) {
-                query += " AND doctoral_supervisor_name ILIKE ?";
-                parameters.add ("%" + circulation.getDoctoralSupervisor () + "%");
+            if (circulation.getDoctoralSupervisor() != null) {
+                query += " AND " + DOC_SUPERVISOR + " ILIKE ?";
+                parameters.add ("%" + circulation.getDoctoralSupervisor() + "%");
             }
 
             if (circulation.getStartDate () != null) {
-                query += " AND start_deadline >= ?";
-                parameters.add (circulation.getStartDate ());
+                query += " AND " + START_DATE + " >= ?";
+                parameters.add (circulation.getStartDate());
             }
 
             if (circulation.getEndDate () != null) {
-                query += " AND end_deadline <= ?";
-                parameters.add (circulation.getEndDate ());
+                query += " AND " + END_DATE + " <= ?";
+                parameters.add (circulation.getEndDate());
             }
 			/*
 			if (circulation.isObligatory()) {
@@ -334,12 +336,12 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 			} Don't know if this works.
 			 */
             if (circulation.getFacultyId () > 0) {
-                query += " AND faculty_id = ?";
-                parameters.add (circulation.getFacultyId ());
+                query += " AND " + FACULTY_ID + " = ?";
+                parameters.add (circulation.getFacultyId());
             }
         }
 
-        try (PreparedStatement statement = transaction.getConnection ().prepareStatement (query)) {
+        try (PreparedStatement statement = transaction.getConnection().prepareStatement (query)) {
             for (int i = 0; i < parameters.size (); i++) {
                 statement.setObject (i + 1, parameters.get (i));
             }
@@ -362,26 +364,25 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
      */
     @Override
     public boolean findCirculationByTitle(Circulation circulation, Transaction transaction) {
-        LOGGER.debug ("findCirculationByTitle() called.");
-        String query = "SELECT * FROM circulation WHERE title = ?";
+        String query = "SELECT * FROM " + TABLE + " WHERE " + TITLE + " = ?";
         try (PreparedStatement statement = transaction.getConnection ().prepareStatement (query)) {
             statement.setString (1, circulation.getTitle ());
             ResultSet resultSet = statement.executeQuery ();
             if (resultSet.next ()) {
                 // Set the retrieved circulation details in the provided circulation object
-                circulation.setId (resultSet.getInt (CIRCULATION_ID));
-                circulation.setDescription (resultSet.getString (DESCRIPTION));
-                circulation.setDoctoralCandidateName (resultSet.getString (DOC_CANDIDATE));
-                circulation.setDoctoralSupervisor (resultSet.getString (DOC_SUPERVISOR));
-                circulation.setObligatory (resultSet.getBoolean (IS_OBLIGATORY));
-                circulation.setStartDate (resultSet.getTimestamp (START_DATE));
-                circulation.setEndDate (resultSet.getTimestamp (END_DATE));
-                circulation.setFacultyId (resultSet.getInt (FACULTY_ID));
+                circulation.setId(resultSet.getInt(CIRCULATION_ID));
+                circulation.setDescription(resultSet.getString (DESCRIPTION));
+                circulation.setDoctoralCandidateName(resultSet.getString (DOC_CANDIDATE));
+                circulation.setDoctoralSupervisor(resultSet.getString (DOC_SUPERVISOR));
+                circulation.setObligatory(resultSet.getBoolean (IS_OBLIGATORY));
+                circulation.setStartDate(resultSet.getTimestamp (START_DATE));
+                circulation.setEndDate(resultSet.getTimestamp (END_DATE));
+                circulation.setFacultyId(resultSet.getInt (FACULTY_ID));
                 return true; // Circulation with the title exists in the Database
             }
         } catch (SQLException e) {
-            LOGGER.error ("SQL exception in find CirculationByTitle(): " + e.getMessage ());
-            // Handle any SQL exceptions
+            LOGGER.error("Failed to find circulation by title.", e);
+            throw new DBConnectionFailedException("Failed to find circulation by title." , e);
         }
         return false;
     }
@@ -413,11 +414,11 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
         }
 
         if (circulation.getStartDate () != null) {
-            query.append (" AND start_deadline = ?");
+            query.append (" AND " + START_DATE + " = ?");
         }
 
         if (circulation.getEndDate () != null) {
-            query.append (" AND end_deadline = ?");
+            query.append (" AND " + END_DATE + " = ?");
         }
         if(circulation.getFacultyId () !=0){
             query.append(" AND faculty_id = ?");
@@ -524,11 +525,11 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
         }
 
         if (circulation.getStartDate () != null) {
-            query.append (" AND start_deadline = ?");
+            query.append (" AND " + START_DATE + " = ?");
         }
 
         if (circulation.getEndDate () != null) {
-            query.append (" AND end_deadline = ?");
+            query.append (" AND " + END_DATE + " = ?");
         }
         if(circulation.getFacultyId () != 0 ){
             query.append(" AND faculty_id = ?");
@@ -632,11 +633,11 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
         }
 
         if (circulation.getStartDate () != null) {
-            query.append (" AND start_deadline = ?");
+            query.append (" AND " + START_DATE + "= ?");
         }
 
         if (circulation.getEndDate () != null) {
-            query.append (" AND end_deadline = ?");
+            query.append (" AND " + END_DATE + " = ?");
         }
         if (circulation.getFacultyId() != 0) {
             query.append(" AND faculty_id = ?");
@@ -685,7 +686,6 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
         return -1;
     }
 
-
     public int getTotalCompletedCirculationNumber(Circulation circulation, Transaction transaction) {
         LOGGER.debug ("getTotalCompletedCirculationNumber() called.");
         StringBuilder query = new StringBuilder ();
@@ -709,12 +709,12 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
         }
 
         if (circulation.getStartDate () != null) {
-            query.append (" AND start_deadline = ?");
+        query.append (" AND " + START_DATE + "= ?");
         }
 
         if (circulation.getEndDate () != null) {
-            // Compare only the date part of the end_deadline column
-            query.append (" AND DATE(end_deadline) = DATE(?)");
+            // Compare only the date part of the end_ column
+            query.append (" AND DATE("+ END_DATE+") = DATE(?)");
         }
         if (circulation.getFacultyId() != 0) {
             query.append(" AND faculty_id = ?");
@@ -749,7 +749,7 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
                 statement.setObject (paramIndex++, circulation.getEndDate (), Types.DATE);
             }
             if (circulation.getFacultyId() != 0) {
-                statement.setInt(paramIndex++, circulation.getFacultyId());
+                statement.setInt(paramIndex, circulation.getFacultyId());
             }
 
             try (ResultSet resultSet = statement.executeQuery ()) {
@@ -763,6 +763,4 @@ public class CirculationDAO implements dtt.dataAccess.repository.interfaces.Circ
 
         return -1;
     }
-
-
 }

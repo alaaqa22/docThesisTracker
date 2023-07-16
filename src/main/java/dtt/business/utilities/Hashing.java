@@ -46,7 +46,8 @@ public final class Hashing {
             byte[] hashedBytes = factory.generateSecret(spec).getEncoded();
             return Base64.getEncoder().encodeToString(hashedBytes);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw e;
+            LOGGER.error("Error occurred while hashing password: " + e.getMessage());
+            throw new RuntimeException("Error occurred while hashing password.", e);
         }
     }
     /**
@@ -65,7 +66,8 @@ public final class Hashing {
             String computedHash = hashPassword(password, salt);
             return hashedPassword.equals(computedHash);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw e;
+            LOGGER.error("Error occurred while verifying password: " + e.getMessage());
+            return false;
         }
     }
 

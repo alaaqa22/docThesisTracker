@@ -13,6 +13,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -84,25 +85,6 @@ public class RegistrationBacking implements Serializable {
 
         EmailSender.sendEmail(user.getEmail(),"Set a new password!", tokenManager.generateToken(user));
         return "/views/anonymous/token?faces-redirect=true";
-        /*
-        try (Transaction transaction = new Transaction()) {
-            userDAO.add(user, transaction);
-            boolean success = userDAO.findUserByEmail(user, transaction);
-            transaction.commit();
-            if (success) {
-                tokenManager.generateToken(user);
-                return "/views/anonymous/login.xhtml?faces-redirect=true";
-            } else {
-                return null;
-            }
-
-
-
-        } catch (DataNotCompleteException | KeyExistsException | InvalidInputException e) {
-            LOGGER.error("Exceptions thrown");
-            throw new RuntimeException(e);
-        }
-        */
     }
 
     public User getUser() {
@@ -122,7 +104,6 @@ public class RegistrationBacking implements Serializable {
         LOGGER.debug("setFaculty() called: " + faculty.getName());
         this.faculty = faculty;
     }
-
     public List<Faculty> getListOfFacultiesFromDB() {
         LOGGER.debug("getListOfFaculties() called.");
         try (Transaction transaction = new Transaction()) {

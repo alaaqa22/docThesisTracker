@@ -52,9 +52,6 @@ public class CirculationTimeFilterTest {
         Assert.assertTrue("aktiv Circulation button is still clickable after click.", aktiv.isEnabled());
 
 
-        wait.until (ExpectedConditions.elementToBeClickable (By.id ("dataForm:nextpage-link"))).click ();
-        wait.until (ExpectedConditions.elementToBeClickable (By.id ("dataForm:nextpage-link"))).click ();
-
         WebElement oldCir = wait.until(ExpectedConditions.elementToBeClickable(By.id("j_idt48:old-cir-btn")));
         wait.until (ExpectedConditions.elementToBeClickable (By.id ("j_idt48:old-cir-btn"))).click ();
         Assert.assertTrue("old Circulation button is still clickable after click.", oldCir.isEnabled());

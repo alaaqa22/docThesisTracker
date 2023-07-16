@@ -354,8 +354,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
         }
 
         if (auth != null) {
-            query.append(
-                    " AND authentication.user_level = ?");
+            query.append(" AND authentication.user_level = ?");
         }
 
         query.append(" LIMIT ? OFFSET ?");
@@ -473,8 +472,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
         }
 
         if (auth != null) {
-            query.append(
-                    " AND authentication.user_level = ?");
+            query.append(" AND authentication.user_level = ?");
         }
 
         query.append(" LIMIT ? OFFSET ?");
@@ -573,8 +571,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
         }
 
         if (auth != null) {
-            query.append(
-                    " AND authentication.user_level = ?");
+            query.append(" AND authentication.user_level = ?");
         }
 
         try (PreparedStatement statement = transaction.getConnection()
@@ -650,8 +647,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
         // Building SQL
         StringBuilder query = new StringBuilder();
         query.append("SELECT COUNT (DISTINCT \\\"user\\\".user_id) "
-                + "FROM \"user\" "
-                + "INNER JOIN authentication "
+                + "FROM \"user\" " + "INNER JOIN authentication "
                 + "ON \"user\".user_id=authentication.user_id "
                 + "INNER JOIN faculty "
                 + "ON authentication.faculty_id=faculty.faculty_id WHERE 1=1");
@@ -678,8 +674,7 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
         }
 
         if (auth != null) {
-            query.append(
-                    " AND authentication.user_level = ?");
+            query.append(" AND authentication.user_level = ?");
         }
 
         try (PreparedStatement statement = transaction.getConnection()
@@ -732,12 +727,18 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
     @Override
     public void updateOrAddAuth(final User user, final Transaction transaction)
             throws DataNotCompleteException, InvalidInputException {
-        if (user.getUserState() != null || !user.getUserState().isEmpty()) {
-            LOGGER.debug("updateOrAddAuth() called for user: "
-                    + user.getFirstName());
+        LOGGER.debug(
+                "updateOrAddAuth() called for user: " + user.getFirstName());
+        Map<Faculty, UserState> states = user.getUserState();
+        if (states != null && !states.isEmpty() && !states.containsKey(null)) {
             String query = "INSERT INTO authentication (user_id, faculty_id, "
                     + "user_level) VALUES (?, ?, ?) "
                     + "ON CONFLICT (user_id, faculty_id) "
+                    + "DO UPDATE SET user_level = EXCLUDED.user_level";
+            String queryA = "INSERT INTO authentication (user_id, "
+                    + "user_level) VALUES (?, ?) "
+                    + "ON CONFLICT (user_id, (faculty_id IS NULL)) "
+                    + "WHERE faculty_id IS NULL "
                     + "DO UPDATE SET user_level = EXCLUDED.user_level";
             try (PreparedStatement statement = transaction.getConnection()
                     .prepareStatement(query)) {
@@ -748,7 +749,25 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
                     if (entry.getKey().getId() != 0) {
                         statement.setInt(i++, entry.getKey().getId());
                     } else {
-                        statement.setNull(i++, java.sql.Types.NULL);
+                        try (PreparedStatement statementA = transaction
+                                .getConnection().prepareStatement(queryA)) {
+                            int j = 1;
+                            statementA.setInt(j++, user.getId());
+                            statementA.setObject(i++, UserState.ADMIN,
+                                    java.sql.Types.OTHER);
+                            statementA.executeUpdate();
+                        } catch (SQLException e) {
+                            switch (e.getSQLState()) {
+                            case "23503":
+                                throw new InvalidInputException(
+                                        "foreign_key_violation", e);
+
+                            default:
+                                throw new DBConnectionFailedException(
+                                        "SQL Error", e);
+                            }
+                        }
+                        continue;
                     }
                     statement.setObject(i++, entry.getValue(),
                             java.sql.Types.OTHER);
@@ -798,91 +817,6 @@ public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
             throw new DataNotCompleteException();
         }
     }
-
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public void addAdmin(final User user, final Transaction transaction)
-//            throws KeyExistsException, InvalidInputException {
-//        String query = "INSERT INTO \"admin\" (user_id) VALUES (?)";
-//
-//        try (PreparedStatement statement = transaction.getConnection()
-//                .prepareStatement(query)) {
-//            statement.setInt(1, user.getId());
-//
-//            statement.executeUpdate();
-//        } catch (SQLException e) {
-//            switch (e.getSQLState()) {
-//            case "23503":
-//                throw new InvalidInputException(
-//                      "User with user ID " + user.getId() + " doesn't exist.",
-//                        e);
-//
-//            case "23505":
-//                throw new KeyExistsException("Admin with user ID "
-//                        + user.getId() + " already exists.", e);
-//
-//            default:
-//                throw new DBConnectionFailedException();
-//            }
-//        }
-//    }
-//
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public void removeAdmin(final User user, final Transaction transaction)
-//            throws DataNotFoundException {
-//        String query = "DELETE FROM \"admin\" WHERE user_id = ?";
-//
-//        try (PreparedStatement statement = transaction.getConnection()
-//                .prepareStatement(query)) {
-//            statement.setInt(1, user.getId());
-//
-//            int rowsAffected = statement.executeUpdate();
-//            if (rowsAffected == 0) {
-//                throw new DataNotFoundException(
-//                        "Admin with user ID " + user.getId() + " not found.");
-//            }
-//        } catch (SQLException e) {
-//          throw new DBConnectionFailedException("Failed to remove admin.", e);
-//        }
-//    }
-//
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public List<User> getAdmins(final Transaction transaction) {
-//        List<User> adminList = new ArrayList<>();
-//        String query = "SELECT u.user_id, u.email_address, "
-//                + "u.firstname, u.lastname, u.birthdate "
-//                + "FROM \"admin\" AS a "
-//                + "INNER JOIN \"user\" AS u ON a.user_id = u.user_id";
-//
-//        try (PreparedStatement statement = transaction.getConnection()
-//                .prepareStatement(query);
-//                ResultSet resultSet = statement.executeQuery()) {
-//
-//            while (resultSet.next()) {
-//                User admin = new User();
-//                admin.setId(resultSet.getInt("user_id"));
-//                admin.setEmail(resultSet.getString("email_address"));
-//                admin.setFirstName(resultSet.getString("firstname"));
-//                admin.setLastName(resultSet.getString("lastname"));
-//                admin.setBirthDate(
-//                        resultSet.getDate("birthdate").toLocalDate());
-//
-//                adminList.add(admin);
-//            }
-//        } catch (SQLException e) {
-//          throw new DBConnectionFailedException("Failed to retrieve admins.",
-//                    e);
-//        }
-//        return adminList;
-//    }
 
     private void setAuthentications(final User user,
             final Transaction transaction) {

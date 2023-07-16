@@ -28,12 +28,17 @@ public class FutureDateTimeValidator implements Validator {
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
 
         LocalDate input = (LocalDate) value;
+        LocalDate originalDate = (LocalDate) component.getAttributes().get("originalDate");
+        if (input.equals(originalDate)) {
+            return;
+        }
         LocalDateTime current = LocalDateTime.now();
 
         if (input.isBefore(current.toLocalDate())) {
             throw new ValidatorException(
                     new FacesMessage("Invalid date and time. Please enter a future date and time."));
         }
+
     }
 
 

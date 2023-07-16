@@ -34,7 +34,7 @@ import java.util.*;
 @ViewScoped
 @Named
 public class ProfileBacking implements Serializable {
-    private final static Logger LOGGER = LogManager.getLogger(ProfileBacking.class);
+    private static final Logger LOGGER = LogManager.getLogger(ProfileBacking.class);
     private User user;
     @Inject
     private UserDAO userDAO;

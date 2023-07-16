@@ -29,6 +29,7 @@ import org.primefaces.model.charts.optionconfig.legend.LegendLabel;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -400,6 +401,10 @@ public class CirculationDetailsBacking implements Serializable {
             facultyName = faculty.getName();
         }
         return facultyName;
+    }
+    public boolean isExpiredCirculation(){
+        LocalDate currentDate = LocalDateTime.now().toLocalDate();
+        return endDate.isAfter(currentDate);
     }
 
     public BarChartModel getBarModel() {

@@ -72,10 +72,12 @@
                         <div class="form-group">
                             <label for="start-date-itxt">Start Date:</label>
                             <h:inputText id="start-date-itxt" value="#{circulationDetailsBacking.startDate}"
-                                         readonly="#{sessionInfo.examinerInCurrentFaculty()}"
+                                         readonly="#{sessionInfo.examinerInCurrentFaculty()}" type="date"
                                          class="form-control" requiredMessage="Bitte füllen Sie dieses Feld aus!"
                                          validator="FutureDateTimeValidator" required="true">
-                                <f:convertDateTime pattern="dd.MM.yyyy" type="localDate"/>
+                                <f:attribute name="originalDate"
+                                             value="#{circulationDetailsBacking.startDate}"/>
+                                <f:convertDateTime pattern="yyyy-MM-dd" type="localDate"/>
                             </h:inputText>
                             <h:messages for="start-date-itxt" styleClass="message"/>
 
@@ -84,10 +86,10 @@
                         <div class="form-group">
                             <label for="end-date-itxt">End Date:</label>
                             <h:inputText id="end-date-itxt" value="#{circulationDetailsBacking.endDate}" required="true"
-                                         readonly="#{sessionInfo.examinerInCurrentFaculty()}"
+                                         readonly="#{sessionInfo.examinerInCurrentFaculty()}" type="date"
                                          requiredMessage="Bitte füllen Sie dieses Feld aus!"
                                          validator="FutureDateTimeValidator" class="form-control">
-                                <f:convertDateTime pattern="dd.MM.yyyy" type="localDate"/>
+                                <f:convertDateTime pattern="yyyy-MM-dd" type="localDate"/>
                             </h:inputText>
                             <h:messages for="end-date-itxt" styleClass="message"/>
 
@@ -128,6 +130,7 @@
                             <div>
                                 <h:commandButton id="vote-btn" action="#{circulationDetailsBacking.submitVote()}"
                                                  value="Vote"
+                                                 rendered="#{circulationDetailsBacking.expiredCirculation}"
                                                  class="btn btn-primary"/>
                             </div>
 

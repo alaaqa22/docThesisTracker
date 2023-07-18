@@ -91,12 +91,6 @@ public class ProfileBacking implements Serializable {
                     currentFaculty = sessionInfo.getCurrentFaculty();
                 }
 
-                //only the admin can see this user state
-                if (currentUserState == UserState.ADMIN) {
-                    currentFaculty = new Faculty();
-
-                }
-
                 //check if the selected faculty to remove from admin, is actually the user belong to.
                 if (!user.getUserState().containsKey(currentFaculty)) {
                     throw new InvalidInputException();

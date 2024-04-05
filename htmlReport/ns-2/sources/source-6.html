@@ -1,0 +1,248 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Pagination</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dtt.business.utilities</a>
+</div>
+
+<h1>Coverage Summary for Class: Pagination (dtt.business.utilities)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Pagination</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    47.4%
+  </span>
+  <span class="absValue">
+    (9/19)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (4/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    44.8%
+  </span>
+  <span class="absValue">
+    (13/29)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dtt.business.utilities;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;import dtt.global.utilities.ConfigReader;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * Abstract class which implements a list pagination.
+&nbsp; *
+&nbsp; * @author Alaa Qasem
+&nbsp; */
+&nbsp;public abstract class Pagination&lt;T&gt; {
+&nbsp;
+<b class="fc">&nbsp;    protected int maxItems = Integer.parseInt(ConfigReader.getProperty(ConfigReader.PAGINATION_MAX_ITEMS));</b>
+&nbsp;    protected int totalOfPages;
+&nbsp;    private int currentPage;
+&nbsp;    private List&lt;T&gt; entries;
+&nbsp;    private String sortColumn;
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    public Pagination() {</b>
+<b class="fc">&nbsp;        setCurrentPage(1);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Load data of next page, unless you are already on the last page.
+&nbsp;     */
+&nbsp;    public void nextPage() {
+<b class="nc">&nbsp;        if (currentPage &lt; totalOfPages) {</b>
+<b class="nc">&nbsp;            setCurrentPage(currentPage + 1);</b>
+<b class="nc">&nbsp;            loadData();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Needs to be overwritten to load the correct data items for the page.
+&nbsp;     */
+&nbsp;    public abstract void loadData();
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Load data on last page.
+&nbsp;     */
+&nbsp;    public void lastPage() {
+<b class="nc">&nbsp;        setCurrentPage(totalOfPages);</b>
+<b class="nc">&nbsp;        loadData();</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Load data on page 1.
+&nbsp;     */
+&nbsp;    public void firstPage() {
+<b class="nc">&nbsp;        setCurrentPage(1);</b>
+<b class="nc">&nbsp;        loadData();</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    public void previousPage() {
+<b class="nc">&nbsp;        if (currentPage &gt; 1) {</b>
+<b class="nc">&nbsp;            setCurrentPage(currentPage - 1);</b>
+<b class="nc">&nbsp;            this.loadData();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getCurrentPage() {
+<b class="fc">&nbsp;        return currentPage;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setCurrentPage(int currentPage) {
+<b class="fc">&nbsp;        this.currentPage = currentPage;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get the total number of needed pages.
+&nbsp;     *
+&nbsp;     */
+&nbsp;    public abstract int getTotalNumOfPages();
+&nbsp;
+&nbsp;    public void setTotalNumOfPages() {
+<b class="nc">&nbsp;        this.totalOfPages = totalOfPages;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;T&gt; getEntries() {
+<b class="nc">&nbsp;        return entries;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setEntries(List&lt;T&gt; entries) {
+<b class="fc">&nbsp;        this.entries = entries;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getSortColumn() {
+<b class="nc">&nbsp;        return sortColumn;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setSortColumn(String sortColumn) {
+<b class="nc">&nbsp;        this.sortColumn = sortColumn;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getMaxItems() {
+<b class="fc">&nbsp;        return maxItems;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean isFirstPage() {
+<b class="pc">&nbsp;        return currentPage == 1;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean isLastPage() {
+<b class="pc">&nbsp;        return currentPage == totalOfPages;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean isTotalNumberOfPagesOne() {
+<b class="nc">&nbsp;        return getTotalNumOfPages() == 1;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void isValidCurrent(){
+<b class="fc">&nbsp;        getTotalNumOfPages ();</b>
+<b class="fc">&nbsp;        if(currentPage&gt;totalOfPages){</b>
+<b class="fc">&nbsp;            setCurrentPage (1);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getTotalOfPages () {
+<b class="nc">&nbsp;        return totalOfPages;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setTotalOfPages (int totalOfPages) {
+<b class="fc">&nbsp;        this.totalOfPages = totalOfPages;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-11 11:47</div>
+</div>
+</body>
+</html>

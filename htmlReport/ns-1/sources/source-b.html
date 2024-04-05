@@ -1,0 +1,239 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > RegistrationBacking</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dtt.business.backing</a>
+</div>
+
+<h1>Coverage Summary for Class: RegistrationBacking (dtt.business.backing)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RegistrationBacking</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    58.3%
+  </span>
+  <span class="absValue">
+    (7/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    48.5%
+  </span>
+  <span class="absValue">
+    (16/33)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dtt.business.backing;
+&nbsp;
+&nbsp;import dtt.business.utilities.EmailSender;
+&nbsp;import dtt.business.utilities.TokenManager;
+&nbsp;import dtt.dataAccess.exceptions.DBConnectionFailedException;
+&nbsp;import dtt.dataAccess.repository.interfaces.FacultyDAO;
+&nbsp;import dtt.dataAccess.utilities.Transaction;
+&nbsp;import dtt.global.tansport.AccountState;
+&nbsp;import dtt.global.tansport.Faculty;
+&nbsp;import dtt.global.tansport.User;
+&nbsp;import dtt.global.tansport.UserState;
+&nbsp;import jakarta.annotation.PostConstruct;
+&nbsp;import jakarta.faces.view.ViewScoped;
+&nbsp;import jakarta.inject.Inject;
+&nbsp;import jakarta.inject.Named;
+&nbsp;import org.apache.logging.log4j.LogManager;
+&nbsp;import org.apache.logging.log4j.Logger;
+&nbsp;
+&nbsp;import java.io.Serializable;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * Backing bean for the registration page.
+&nbsp; * @author Alaa Qasem
+&nbsp; */
+&nbsp;@ViewScoped
+&nbsp;@Named(&quot;registrationBacking&quot;)
+<b class="fc">&nbsp;public class RegistrationBacking implements Serializable {</b>
+<b class="fc">&nbsp;    private static final Logger LOGGER = LogManager.getLogger(RegistrationBacking.class);</b>
+&nbsp;    @Inject
+&nbsp;    private TokenManager tokenManager;
+&nbsp;    @Inject
+&nbsp;    private FacultyDAO facultyDAO;
+&nbsp;    private User user;
+&nbsp;    private List&lt;Faculty&gt; listOfFaculties;
+&nbsp;    private Faculty faculty;
+&nbsp;    public List&lt;Faculty&gt; getListOfFaculties() {
+<b class="fc">&nbsp;        LOGGER.debug(&quot;getListOfFaculties() called.&quot;);</b>
+<b class="fc">&nbsp;        return listOfFaculties;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setListOfFaculties(List&lt;Faculty&gt; listOfFaculties) {
+<b class="nc">&nbsp;        LOGGER.debug(&quot;setListOfFaculties() called.&quot;);</b>
+<b class="nc">&nbsp;        this.listOfFaculties = listOfFaculties;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes the data transfer object for the new registered user.
+&nbsp;     */
+&nbsp;    @PostConstruct
+&nbsp;    public void init()
+&nbsp;    {
+<b class="fc">&nbsp;        LOGGER.debug(&quot;init() called.&quot;);</b>
+<b class="fc">&nbsp;        user = new User();</b>
+<b class="fc">&nbsp;        listOfFaculties = getListOfFacultiesFromDB();</b>
+<b class="fc">&nbsp;        faculty = listOfFaculties.get(0);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String goBack() {
+<b class="nc">&nbsp;        return &quot;/views/anonymous/login.xhtml?faces-redirect=true&quot;;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Register a new user, will send the verification link to the email
+&nbsp;     * that the user has specified.
+&nbsp;     *
+&nbsp;     * @return Login page.
+&nbsp;     */
+&nbsp;    public String register(){
+<b class="nc">&nbsp;        LOGGER.debug(&quot;register() called.&quot;);</b>
+&nbsp;        //Fill userDTO
+<b class="nc">&nbsp;        user.setAccountState(AccountState.PENDING_ACTIVATION);</b>
+&nbsp;
+<b class="nc">&nbsp;        LOGGER.debug(&quot;User: &quot; + user.getFirstName() + &quot; &quot; + user.getLastName());</b>
+<b class="nc">&nbsp;        LOGGER.debug(user.getEmail());</b>
+<b class="nc">&nbsp;        LOGGER.debug(user.getBirthDate());</b>
+&nbsp;
+<b class="nc">&nbsp;        user.getUserState().put(faculty, UserState.PENDING);</b>
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;        EmailSender.sendEmail(user.getEmail(),&quot;Set a new password!&quot;, tokenManager.generateToken(user));</b>
+<b class="nc">&nbsp;        return &quot;/views/anonymous/token?faces-redirect=true&quot;;</b>
+&nbsp;        /*
+&nbsp;        try (Transaction transaction = new Transaction()) {
+&nbsp;            userDAO.add(user, transaction);
+&nbsp;            boolean success = userDAO.findUserByEmail(user, transaction);
+&nbsp;            transaction.commit();
+&nbsp;            if (success) {
+&nbsp;                tokenManager.generateToken(user);
+&nbsp;                return &quot;/views/anonymous/login.xhtml?faces-redirect=true&quot;;
+&nbsp;            } else {
+&nbsp;                return null;
+&nbsp;            }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;        } catch (DataNotCompleteException | KeyExistsException | InvalidInputException e) {
+&nbsp;            LOGGER.error(&quot;Exceptions thrown&quot;);
+&nbsp;            throw new RuntimeException(e);
+&nbsp;        }
+&nbsp;        */
+&nbsp;    }
+&nbsp;
+&nbsp;    public User getUser() {
+<b class="fc">&nbsp;        LOGGER.debug(&quot;getUser() called: &quot; + user.getFirstName());</b>
+<b class="fc">&nbsp;        return user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setUser(User user) {
+<b class="nc">&nbsp;        LOGGER.debug(&quot;setUser() called: &quot; + user.getFirstName());</b>
+<b class="nc">&nbsp;        this.user = user;</b>
+&nbsp;    }
+&nbsp;    public Faculty getFaculty() {
+<b class="fc">&nbsp;        LOGGER.debug(&quot;getFaculty() called: &quot; + faculty.getName());</b>
+<b class="fc">&nbsp;        return faculty;</b>
+&nbsp;    }
+&nbsp;    public void setFaculty(Faculty faculty) {
+<b class="nc">&nbsp;        LOGGER.debug(&quot;setFaculty() called: &quot; + faculty.getName());</b>
+<b class="nc">&nbsp;        this.faculty = faculty;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;Faculty&gt; getListOfFacultiesFromDB() {
+<b class="fc">&nbsp;        LOGGER.debug(&quot;getListOfFaculties() called.&quot;);</b>
+<b class="fc">&nbsp;        try (Transaction transaction = new Transaction()) {</b>
+<b class="fc">&nbsp;            return facultyDAO.getFaculties(transaction);</b>
+<b class="fc">&nbsp;        } catch (DBConnectionFailedException e) {</b>
+<b class="nc">&nbsp;            LOGGER.error(&quot;DBConnectionFailedException :&quot; + e.getMessage());</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return new ArrayList&lt;&gt;(); // Return an empty list if an exception occurs</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-11 11:47</div>
+</div>
+</body>
+</html>

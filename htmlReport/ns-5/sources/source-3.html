@@ -1,0 +1,1052 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > UserDAO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dtt.dataAccess.repository.postgres</a>
+</div>
+
+<h1>Coverage Summary for Class: UserDAO (dtt.dataAccess.repository.postgres)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UserDAO</td>
+<td class="coverageStat">
+  <span class="percent">
+    64.3%
+  </span>
+  <span class="absValue">
+    (9/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    23.6%
+  </span>
+  <span class="absValue">
+    (84/356)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    44.3%
+  </span>
+  <span class="absValue">
+    (176/397)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">UserDAO$Proxy$_$$_WeldClientProxy</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    64.3%
+  </span>
+  <span class="absValue">
+    (9/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    23.6%
+  </span>
+  <span class="absValue">
+    (84/356)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    44.3%
+  </span>
+  <span class="absValue">
+    (176/397)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dtt.dataAccess.repository.postgres;
+&nbsp;
+&nbsp;import java.sql.Date;
+&nbsp;import java.sql.PreparedStatement;
+&nbsp;import java.sql.ResultSet;
+&nbsp;import java.sql.SQLException;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.HashMap;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;
+&nbsp;import jakarta.enterprise.inject.Default;
+&nbsp;
+&nbsp;import org.apache.logging.log4j.LogManager;
+&nbsp;import org.apache.logging.log4j.Logger;
+&nbsp;
+&nbsp;import dtt.dataAccess.exceptions.DBConnectionFailedException;
+&nbsp;import dtt.dataAccess.exceptions.DataNotCompleteException;
+&nbsp;import dtt.dataAccess.exceptions.DataNotFoundException;
+&nbsp;import dtt.dataAccess.exceptions.InvalidInputException;
+&nbsp;import dtt.dataAccess.exceptions.KeyExistsException;
+&nbsp;import dtt.dataAccess.utilities.Transaction;
+&nbsp;import dtt.global.tansport.Faculty;
+&nbsp;import dtt.global.tansport.User;
+&nbsp;import dtt.global.tansport.UserState;
+&nbsp;import jakarta.enterprise.context.ApplicationScoped;
+&nbsp;import jakarta.inject.Named;
+&nbsp;
+&nbsp;/**
+&nbsp; * A Postgres implementation for a class handling database access related to
+&nbsp; * users and user authorization.
+&nbsp; *
+&nbsp; * @author Stefan Witka
+&nbsp; *
+&nbsp; */
+&nbsp;
+&nbsp;@Default
+&nbsp;@Named
+&nbsp;@ApplicationScoped
+&nbsp;public class UserDAO implements dtt.dataAccess.repository.interfaces.UserDAO {
+&nbsp;
+&nbsp;    /** Initialize Logger. */
+<b class="fc">&nbsp;    private static final Logger LOGGER = LogManager.getLogger(UserDAO.class);</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructor for UserDAO.
+&nbsp;     */
+<b class="fc">&nbsp;    public UserDAO() {</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * {@inheritDoc}
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void add(final User user, final Transaction transaction)
+&nbsp;            throws DataNotCompleteException, KeyExistsException,
+&nbsp;            InvalidInputException {
+<b class="nc">&nbsp;        String query = &quot;INSERT INTO \&quot;user\&quot; (email_address, first_name,&quot;</b>
+&nbsp;                + &quot; last_name, birth_date, password_hash, password_salt) &quot;
+&nbsp;                + &quot;VALUES (?, ?, ?, ?, ?, ?)&quot;;
+<b class="nc">&nbsp;        if (user.getEmail() == null || user.getFirstName() == null</b>
+<b class="nc">&nbsp;                || user.getLastName() == null</b>
+<b class="nc">&nbsp;                || user.getEmail().trim().isEmpty()</b>
+<b class="nc">&nbsp;                || user.getFirstName().trim().isEmpty()</b>
+<b class="nc">&nbsp;                || user.getLastName().trim().isEmpty()) {</b>
+<b class="nc">&nbsp;            LOGGER.error(</b>
+&nbsp;                    &quot;Data not complete exception! An input was null or empty.&quot;);
+<b class="nc">&nbsp;            throw new DataNotCompleteException();</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (findUserByEmail(user, transaction)) {</b>
+<b class="nc">&nbsp;            LOGGER.error(&quot;Key exists exception! Email is taken.&quot;);</b>
+<b class="nc">&nbsp;            throw new KeyExistsException();</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        try (PreparedStatement statement = transaction.getConnection()</b>
+<b class="nc">&nbsp;                .prepareStatement(query,</b>
+&nbsp;                        PreparedStatement.RETURN_GENERATED_KEYS)) {
+&nbsp;
+<b class="nc">&nbsp;            int i = 1;</b>
+<b class="nc">&nbsp;            statement.setString(i++, user.getEmail());</b>
+<b class="nc">&nbsp;            statement.setString(i++, user.getFirstName());</b>
+<b class="nc">&nbsp;            statement.setString(i++, user.getLastName());</b>
+<b class="nc">&nbsp;            statement.setDate(i++, java.sql.Date.valueOf(user.getBirthDate()));</b>
+<b class="nc">&nbsp;            statement.setString(i++, user.getPasswordHashed());</b>
+<b class="nc">&nbsp;            statement.setString(i++, user.getPasswordSalt());</b>
+&nbsp;
+<b class="nc">&nbsp;            int affectedRows = statement.executeUpdate();</b>
+&nbsp;
+<b class="nc">&nbsp;            if (affectedRows == 0) {</b>
+<b class="nc">&nbsp;                LOGGER.error(</b>
+&nbsp;                        &quot;Invalid input exception! Zero rows were affected.&quot;);
+<b class="nc">&nbsp;                throw new InvalidInputException(</b>
+&nbsp;                        &quot;Creating user failed, no rows affected.&quot;);
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {</b>
+<b class="nc">&nbsp;                if (generatedKeys.next()) {</b>
+<b class="nc">&nbsp;                    user.setId(generatedKeys.getInt(1));</b>
+&nbsp;                } else {
+<b class="nc">&nbsp;                    LOGGER.error(&quot;Invalid input exception! &quot;</b>
+&nbsp;                            + &quot;Creating user failed, no ID obtained.&quot;);
+<b class="nc">&nbsp;                    throw new InvalidInputException(</b>
+&nbsp;                            &quot;Creating user failed, no ID obtained.&quot;);
+&nbsp;                }
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            if (!user.getUserState().isEmpty()) {</b>
+<b class="nc">&nbsp;                LOGGER.debug(&quot;User state is not empty &quot;</b>
+&nbsp;                        + &quot;trying to write into authentication.&quot;);
+<b class="nc">&nbsp;                updateOrAddAuth(user, transaction);</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            LOGGER.error(&quot;Prepared statement failed! SQL exception thrown: &quot;</b>
+<b class="nc">&nbsp;                    + e.getMessage());</b>
+<b class="nc">&nbsp;            switch (e.getSQLState()) {</b>
+&nbsp;            case &quot;23502&quot;:
+<b class="nc">&nbsp;                throw new DataNotCompleteException(e.getLocalizedMessage(), e);</b>
+&nbsp;
+&nbsp;            case &quot;23514&quot;:
+<b class="nc">&nbsp;                throw new InvalidInputException(&quot;check_violation&quot;, e);</b>
+&nbsp;
+&nbsp;            case &quot;23505&quot;:
+<b class="nc">&nbsp;                throw new KeyExistsException(&quot;unique_violation&quot;, e);</b>
+&nbsp;
+&nbsp;            default:
+<b class="nc">&nbsp;                throw new DBConnectionFailedException();</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * {@inheritDoc}
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void remove(final User user, final Transaction transaction)
+&nbsp;            throws DataNotFoundException {
+<b class="nc">&nbsp;        String query = &quot;DELETE FROM \&quot;user\&quot; WHERE user_id = ?&quot;;</b>
+&nbsp;
+<b class="nc">&nbsp;        try (PreparedStatement statement = transaction.getConnection()</b>
+<b class="nc">&nbsp;                .prepareStatement(query)) {</b>
+<b class="nc">&nbsp;            statement.setInt(1, user.getId());</b>
+&nbsp;
+<b class="nc">&nbsp;            int affectedRows = statement.executeUpdate();</b>
+&nbsp;
+<b class="nc">&nbsp;            if (affectedRows == 0) {</b>
+<b class="nc">&nbsp;                throw new DataNotFoundException(</b>
+&nbsp;                        &quot;User not found in the database.&quot;);
+&nbsp;            }
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            throw new DataNotFoundException(&quot;User not found in the database.&quot;,</b>
+&nbsp;                    e);
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * {@inheritDoc}
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void update(final User user, final Transaction transaction)
+&nbsp;            throws DataNotFoundException, InvalidInputException,
+&nbsp;            KeyExistsException {
+<b class="fc">&nbsp;        StringBuilder queryBuilder = new StringBuilder(&quot;UPDATE \&quot;user\&quot; SET&quot;);</b>
+<b class="fc">&nbsp;        List&lt;Object&gt; params = new ArrayList&lt;&gt;();</b>
+&nbsp;
+<b class="pc">&nbsp;        if (user.getEmail() != null) {</b>
+<b class="fc">&nbsp;            queryBuilder.append(&quot; email_address = ?,&quot;);</b>
+<b class="fc">&nbsp;            params.add(user.getEmail());</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (user.getFirstName() != null) {</b>
+<b class="fc">&nbsp;            queryBuilder.append(&quot; first_name = ?,&quot;);</b>
+<b class="fc">&nbsp;            params.add(user.getFirstName());</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (user.getLastName() != null) {</b>
+<b class="fc">&nbsp;            queryBuilder.append(&quot; last_name = ?,&quot;);</b>
+<b class="fc">&nbsp;            params.add(user.getLastName());</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (user.getBirthDate() != null) {</b>
+<b class="fc">&nbsp;            queryBuilder.append(&quot; birth_date = ?,&quot;);</b>
+<b class="fc">&nbsp;            params.add(user.getBirthDate());</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (user.getPasswordHashed() != null) {</b>
+<b class="fc">&nbsp;            queryBuilder.append(&quot; password_hash = ?,&quot;);</b>
+<b class="fc">&nbsp;            params.add(user.getPasswordHashed());</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (user.getPasswordSalt() != null) {</b>
+<b class="fc">&nbsp;            queryBuilder.append(&quot; password_salt = ?,&quot;);</b>
+<b class="fc">&nbsp;            params.add(user.getPasswordSalt());</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Remove the trailing comma
+<b class="fc">&nbsp;        queryBuilder.deleteCharAt(queryBuilder.length() - 1);</b>
+&nbsp;
+<b class="fc">&nbsp;        queryBuilder.append(&quot; WHERE user_id = ?&quot;);</b>
+<b class="fc">&nbsp;        params.add(user.getId());</b>
+&nbsp;
+<b class="fc">&nbsp;        String query = queryBuilder.toString();</b>
+&nbsp;
+<b class="pc">&nbsp;        try (PreparedStatement statement = transaction.getConnection()</b>
+<b class="fc">&nbsp;                .prepareStatement(query)) {</b>
+&nbsp;            // Set the parameter values
+<b class="fc">&nbsp;            for (int i = 0; i &lt; params.size(); i++) {</b>
+<b class="fc">&nbsp;                statement.setObject(i + 1, params.get(i));</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            int affectedRows = statement.executeUpdate();</b>
+&nbsp;
+<b class="pc">&nbsp;            if (affectedRows == 0) {</b>
+<b class="nc">&nbsp;                throw new DataNotFoundException(</b>
+&nbsp;                        &quot;User not found in the database.&quot;);
+&nbsp;            }
+<b class="pc">&nbsp;            if (user.getUserState() != null || !user.getUserState().isEmpty()) {</b>
+&nbsp;                try {
+<b class="fc">&nbsp;                    updateOrAddAuth(user, transaction);</b>
+<b class="nc">&nbsp;                } catch (DataNotCompleteException e) {</b>
+<b class="nc">&nbsp;                    LOGGER.error(</b>
+&nbsp;                            &quot;Vanished User state. This should be impossible&quot;,
+&nbsp;                            e);
+<b class="fc">&nbsp;                }</b>
+&nbsp;            }
+<b class="pc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            switch (e.getSQLState()) {</b>
+&nbsp;            case &quot;23514&quot;:
+<b class="nc">&nbsp;                throw new InvalidInputException(&quot;check_violation&quot;, e);</b>
+&nbsp;
+&nbsp;            case &quot;23505&quot;:
+<b class="nc">&nbsp;                throw new KeyExistsException(&quot;unique_violation&quot;, e);</b>
+&nbsp;
+&nbsp;            default:
+<b class="nc">&nbsp;                throw new DBConnectionFailedException();</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * {@inheritDoc}
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void getUserById(final User user, final Transaction transaction)
+&nbsp;            throws DataNotFoundException {
+<b class="fc">&nbsp;        String query = &quot;SELECT email_address, first_name, last_name,&quot;</b>
+&nbsp;                + &quot; birth_date, password_hash, password_salt &quot;
+&nbsp;                + &quot;FROM \&quot;user\&quot; WHERE user_id = ?&quot;;
+&nbsp;
+<b class="pc">&nbsp;        try (PreparedStatement statement = transaction.getConnection()</b>
+<b class="fc">&nbsp;                .prepareStatement(query)) {</b>
+<b class="fc">&nbsp;            statement.setInt(1, user.getId());</b>
+&nbsp;
+<b class="pc">&nbsp;            try (ResultSet resultSet = statement.executeQuery();) {</b>
+<b class="pc">&nbsp;                if (resultSet.next()) {</b>
+&nbsp;                    // Retrieve the user data from the result set
+<b class="fc">&nbsp;                    user.setEmail(resultSet.getString(&quot;email_address&quot;));</b>
+<b class="fc">&nbsp;                    user.setFirstName(resultSet.getString(&quot;first_name&quot;));</b>
+<b class="fc">&nbsp;                    user.setLastName(resultSet.getString(&quot;last_name&quot;));</b>
+<b class="fc">&nbsp;                    user.setBirthDate(</b>
+<b class="fc">&nbsp;                            resultSet.getDate(&quot;birth_date&quot;).toLocalDate());</b>
+<b class="fc">&nbsp;                    user.setPasswordHashed(</b>
+<b class="fc">&nbsp;                            resultSet.getString(&quot;password_hash&quot;));</b>
+<b class="fc">&nbsp;                    user.setPasswordSalt(resultSet.getString(&quot;password_salt&quot;));</b>
+&nbsp;                } else {
+<b class="nc">&nbsp;                    throw new DataNotFoundException(</b>
+&nbsp;                            &quot;User not found in the database.&quot;);
+&nbsp;                }
+<b class="fc">&nbsp;                setAuthentications(user, transaction);</b>
+<b class="pc">&nbsp;            }</b>
+<b class="pc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            throw new DataNotFoundException(&quot;Failed to retrieve user data.&quot;, e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * {@inheritDoc}
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public boolean findUserByEmail(final User user,
+&nbsp;            final Transaction transaction) {
+<b class="fc">&nbsp;        String query = &quot;SELECT user_id, first_name, last_name, birth_date, &quot;</b>
+&nbsp;                + &quot;password_hash, password_salt FROM \&quot;user\&quot; &quot;
+&nbsp;                + &quot;WHERE LOWER(email_address) = LOWER(?)&quot;;
+&nbsp;
+<b class="pc">&nbsp;        try (PreparedStatement statement = transaction.getConnection()</b>
+<b class="fc">&nbsp;                .prepareStatement(query)) {</b>
+<b class="fc">&nbsp;            statement.setString(1, user.getEmail());</b>
+&nbsp;
+<b class="pc">&nbsp;            try (ResultSet resultSet = statement.executeQuery()) {</b>
+<b class="fc">&nbsp;                if (resultSet.next()) {</b>
+&nbsp;                    // Retrieve the user data from the result set
+<b class="fc">&nbsp;                    user.setId(resultSet.getInt(&quot;user_id&quot;));</b>
+<b class="fc">&nbsp;                    user.setFirstName(resultSet.getString(&quot;first_name&quot;));</b>
+<b class="fc">&nbsp;                    user.setLastName(resultSet.getString(&quot;last_name&quot;));</b>
+<b class="fc">&nbsp;                    user.setBirthDate(</b>
+<b class="fc">&nbsp;                            resultSet.getDate(&quot;birth_date&quot;).toLocalDate());</b>
+<b class="fc">&nbsp;                    user.setPasswordHashed(</b>
+<b class="fc">&nbsp;                            resultSet.getString(&quot;password_hash&quot;));</b>
+<b class="fc">&nbsp;                    user.setPasswordSalt(resultSet.getString(&quot;password_salt&quot;));</b>
+&nbsp;
+<b class="fc">&nbsp;                    setAuthentications(user, transaction);</b>
+&nbsp;
+<b class="fc">&nbsp;                    return true; // User with the specified email found</b>
+&nbsp;                }
+<b class="pc">&nbsp;            }</b>
+<b class="pc">&nbsp;        } catch (SQLException e) {</b>
+&nbsp;            // Handle any specific exceptions or logging as needed
+<b class="nc">&nbsp;            throw new DBConnectionFailedException(</b>
+&nbsp;                    &quot;Failed to find user by email.&quot;, e);
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        return false; // User with the specified email not found in the database</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * {@inheritDoc}
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public List&lt;User&gt; getUsers(final User user, final Faculty faculty,
+&nbsp;            final UserState auth, final Transaction transaction,
+&nbsp;            final int offset, final int count) {
+<b class="fc">&nbsp;        LOGGER.debug(&quot;getUsers() called.&quot;);</b>
+<b class="fc">&nbsp;        List&lt;User&gt; userList = new ArrayList&lt;&gt;();</b>
+&nbsp;
+&nbsp;        // Building SQL
+<b class="fc">&nbsp;        StringBuilder query = new StringBuilder();</b>
+<b class="fc">&nbsp;        query.append(&quot;SELECT DISTINCT \&quot;user\&quot;.user_id FROM \&quot;user\&quot; &quot;</b>
+&nbsp;                + &quot;INNER JOIN authentication &quot;
+&nbsp;                + &quot;ON \&quot;user\&quot;.user_id=authentication.user_id &quot;
+&nbsp;                + &quot;INNER JOIN faculty &quot;
+&nbsp;                + &quot;ON authentication.faculty_id=faculty.faculty_id WHERE 1=1&quot;);
+&nbsp;
+&nbsp;        // Add filter conditions based on provided properties
+<b class="pc">&nbsp;        if (user != null &amp;&amp; user.getEmail() != null) {</b>
+<b class="nc">&nbsp;            query.append(&quot; AND \&quot;user\&quot;.email_address ILIKE &#39;%&#39; || ? || &#39;%&#39;&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (user != null &amp;&amp; user.getFirstName() != null) {</b>
+<b class="nc">&nbsp;            query.append(&quot; AND \&quot;user\&quot;.first_name ILIKE &#39;%&#39; || ? || &#39;%&#39;&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (user != null &amp;&amp; user.getLastName() != null) {</b>
+<b class="nc">&nbsp;            query.append(&quot; AND \&quot;user\&quot;.last_name ILIKE &#39;%&#39; || ? || &#39;%&#39;&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (user != null &amp;&amp; user.getBirthDate() != null) {</b>
+<b class="nc">&nbsp;            query.append(&quot; AND  \&quot;user\&quot;.birth_date ILIKE &#39;%&#39; || ? || &#39;%&#39;&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if (faculty != null) {</b>
+<b class="fc">&nbsp;            query.append(&quot; AND faculty.faculty_id = ?&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if (auth != null) {</b>
+<b class="fc">&nbsp;            query.append(</b>
+&nbsp;                    &quot; AND authentication.user_level = ?&quot;);
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        query.append(&quot; LIMIT ? OFFSET ?&quot;);</b>
+&nbsp;
+<b class="pc">&nbsp;        try (PreparedStatement statement = transaction.getConnection()</b>
+<b class="fc">&nbsp;                .prepareStatement(query.toString())) {</b>
+<b class="fc">&nbsp;            int paramIndex = 1;</b>
+&nbsp;
+&nbsp;            // Set filter condition values
+<b class="pc">&nbsp;            if (user != null &amp;&amp; user.getEmail() != null) {</b>
+<b class="nc">&nbsp;                statement.setString(paramIndex++, user.getEmail());</b>
+&nbsp;            }
+&nbsp;
+<b class="pc">&nbsp;            if (user != null &amp;&amp; user.getFirstName() != null) {</b>
+<b class="nc">&nbsp;                statement.setString(paramIndex++, user.getFirstName());</b>
+&nbsp;            }
+&nbsp;
+<b class="pc">&nbsp;            if (user != null &amp;&amp; user.getLastName() != null) {</b>
+<b class="nc">&nbsp;                statement.setString(paramIndex++, user.getLastName());</b>
+&nbsp;            }
+&nbsp;
+<b class="pc">&nbsp;            if (user != null &amp;&amp; user.getBirthDate() != null) {</b>
+<b class="nc">&nbsp;                statement.setDate(paramIndex++,</b>
+<b class="nc">&nbsp;                        Date.valueOf(user.getBirthDate()));</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            if (faculty != null) {</b>
+<b class="fc">&nbsp;                statement.setLong(paramIndex++, faculty.getId());</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            if (auth != null) {</b>
+<b class="fc">&nbsp;                statement.setObject(paramIndex++, auth.name(),</b>
+&nbsp;                        java.sql.Types.OTHER);
+&nbsp;            }
+&nbsp;
+&nbsp;            // Set pagination parameters
+<b class="fc">&nbsp;            statement.setInt(paramIndex++, count);</b>
+<b class="fc">&nbsp;            statement.setInt(paramIndex, offset);</b>
+&nbsp;
+<b class="pc">&nbsp;            try (ResultSet resultSet = statement.executeQuery()) {</b>
+<b class="fc">&nbsp;                while (resultSet.next()) {</b>
+<b class="fc">&nbsp;                    User fetchedUser = new User();</b>
+<b class="fc">&nbsp;                    fetchedUser.setId(resultSet.getInt(&quot;user_id&quot;));</b>
+&nbsp;                    try {
+<b class="fc">&nbsp;                        getUserById(fetchedUser, transaction);</b>
+<b class="fc">&nbsp;                        userList.add(fetchedUser);</b>
+<b class="nc">&nbsp;                    } catch (DataNotFoundException e) {</b>
+<b class="nc">&nbsp;                        LOGGER.error(&quot;Fetched User disappeared, skipping.&quot;, e);</b>
+<b class="fc">&nbsp;                    }</b>
+<b class="fc">&nbsp;                }</b>
+<b class="pc">&nbsp;            }</b>
+<b class="pc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            LOGGER.error(&quot;Failed to retrieve users.&quot;, e);</b>
+<b class="nc">&nbsp;            throw new DBConnectionFailedException(&quot;Failed to retrieve users.&quot;,</b>
+&nbsp;                    e);
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        return userList;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * {@inheritDoc}
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public List&lt;User&gt; getUsers(final User user, final Transaction transaction,
+&nbsp;            final int offset, final int count) throws InvalidInputException {
+<b class="nc">&nbsp;        LOGGER.debug(&quot;getUsers() called.&quot;);</b>
+&nbsp;
+&nbsp;        // initialize objects
+<b class="nc">&nbsp;        Faculty faculty = null;</b>
+<b class="nc">&nbsp;        UserState auth = null;</b>
+<b class="nc">&nbsp;        List&lt;User&gt; userList = new ArrayList&lt;&gt;();</b>
+&nbsp;
+&nbsp;        // set filter Values for faculty and authentication
+<b class="nc">&nbsp;        if (user.getUserState() != null) {</b>
+<b class="nc">&nbsp;            if (user.getUserState().entrySet().size() == 1) {</b>
+<b class="nc">&nbsp;                Map.Entry&lt;Faculty, UserState&gt; entry = user.getUserState()</b>
+<b class="nc">&nbsp;                        .entrySet().iterator().next();</b>
+<b class="nc">&nbsp;                faculty = entry.getKey();</b>
+<b class="nc">&nbsp;                auth = entry.getValue();</b>
+<b class="nc">&nbsp;            } else {</b>
+<b class="nc">&nbsp;                throw new InvalidInputException(</b>
+&nbsp;                        &quot;more than one filter entry for userState&quot;
+&nbsp;                                + &quot; and faculty, could not resolve&quot;);
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+&nbsp;        // Building SQL
+<b class="nc">&nbsp;        StringBuilder query = new StringBuilder();</b>
+<b class="nc">&nbsp;        query.append(&quot;SELECT DISTINCT \&quot;user\&quot;.user_id FROM \&quot;user\&quot; &quot;</b>
+&nbsp;                + &quot;INNER JOIN authentication &quot;
+&nbsp;                + &quot;ON \&quot;user\&quot;.user_id=authentication.user_id &quot;
+&nbsp;                + &quot;INNER JOIN faculty &quot;
+&nbsp;                + &quot;ON authentication.faculty_id=faculty.faculty_id WHERE 1=1&quot;);
+&nbsp;
+&nbsp;        // Add filter conditions based on provided properties
+<b class="nc">&nbsp;        if (user != null &amp;&amp; user.getEmail() != null) {</b>
+<b class="nc">&nbsp;            query.append(&quot; AND \&quot;user\&quot;.email_address ILIKE &#39;%&#39; || ? || &#39;%&#39;&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (user != null &amp;&amp; user.getFirstName() != null) {</b>
+<b class="nc">&nbsp;            query.append(&quot; AND \&quot;user\&quot;.first_name ILIKE &#39;%&#39; || ? || &#39;%&#39;&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (user != null &amp;&amp; user.getLastName() != null) {</b>
+<b class="nc">&nbsp;            query.append(&quot; AND \&quot;user\&quot;.last_name ILIKE &#39;%&#39; || ? || &#39;%&#39;&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (user != null &amp;&amp; user.getBirthDate() != null) {</b>
+<b class="nc">&nbsp;            query.append(&quot; AND  \&quot;user\&quot;.birth_date ILIKE &#39;%&#39; || ? || &#39;%&#39;&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (faculty != null) {</b>
+<b class="nc">&nbsp;            query.append(&quot; AND faculty.faculty_id = ?&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (auth != null) {</b>
+<b class="nc">&nbsp;            query.append(</b>
+&nbsp;                    &quot; AND authentication.user_level = ?&quot;);
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        query.append(&quot; LIMIT ? OFFSET ?&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        try (PreparedStatement statement = transaction.getConnection()</b>
+<b class="nc">&nbsp;                .prepareStatement(query.toString())) {</b>
+<b class="nc">&nbsp;            int paramIndex = 1;</b>
+&nbsp;
+&nbsp;            // Set filter condition values
+<b class="nc">&nbsp;            if (user != null &amp;&amp; user.getEmail() != null) {</b>
+<b class="nc">&nbsp;                statement.setString(paramIndex++, user.getEmail());</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            if (user != null &amp;&amp; user.getFirstName() != null) {</b>
+<b class="nc">&nbsp;                statement.setString(paramIndex++, user.getFirstName());</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            if (user != null &amp;&amp; user.getLastName() != null) {</b>
+<b class="nc">&nbsp;                statement.setString(paramIndex++, user.getLastName());</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            if (user != null &amp;&amp; user.getBirthDate() != null) {</b>
+<b class="nc">&nbsp;                statement.setDate(paramIndex++,</b>
+<b class="nc">&nbsp;                        Date.valueOf(user.getBirthDate()));</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            if (faculty != null) {</b>
+<b class="nc">&nbsp;                statement.setLong(paramIndex++, faculty.getId());</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            if (auth != null) {</b>
+<b class="nc">&nbsp;                statement.setObject(paramIndex++, auth.name(),</b>
+&nbsp;                        java.sql.Types.OTHER);
+&nbsp;            }
+&nbsp;
+&nbsp;            // Set pagination parameters
+<b class="nc">&nbsp;            statement.setInt(paramIndex++, count);</b>
+<b class="nc">&nbsp;            statement.setInt(paramIndex, offset);</b>
+&nbsp;
+<b class="nc">&nbsp;            try (ResultSet resultSet = statement.executeQuery()) {</b>
+<b class="nc">&nbsp;                while (resultSet.next()) {</b>
+<b class="nc">&nbsp;                    User fetchedUser = new User();</b>
+<b class="nc">&nbsp;                    fetchedUser.setId(resultSet.getInt(&quot;user_id&quot;));</b>
+&nbsp;                    try {
+<b class="nc">&nbsp;                        getUserById(fetchedUser, transaction);</b>
+<b class="nc">&nbsp;                        userList.add(fetchedUser);</b>
+<b class="nc">&nbsp;                    } catch (DataNotFoundException e) {</b>
+<b class="nc">&nbsp;                        LOGGER.error(&quot;Fetched User disappeared, skipping.&quot;, e);</b>
+<b class="nc">&nbsp;                    }</b>
+<b class="nc">&nbsp;                }</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+<b class="nc">&nbsp;            LOGGER.error(&quot;Failed to retrieve users.&quot;, e);</b>
+<b class="nc">&nbsp;            throw new DBConnectionFailedException(&quot;Failed to retrieve users.&quot;,</b>
+&nbsp;                    e);
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return userList;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * {@inheritDoc}
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public int getTotalUserNumber(final User user, final Faculty faculty,
+&nbsp;            final UserState auth, final Transaction transaction) {
+<b class="fc">&nbsp;        LOGGER.debug(&quot;getTotalUserNumber() called.&quot;);</b>
+&nbsp;
+&nbsp;        // Building SQL
+<b class="fc">&nbsp;        StringBuilder query = new StringBuilder();</b>
+<b class="fc">&nbsp;        query.append(&quot;SELECT COUNT (DISTINCT \&quot;user\&quot;.user_id) FROM \&quot;user\&quot; &quot;</b>
+&nbsp;                + &quot;INNER JOIN authentication &quot;
+&nbsp;                + &quot;ON \&quot;user\&quot;.user_id=authentication.user_id &quot;
+&nbsp;                + &quot;INNER JOIN faculty &quot;
+&nbsp;                + &quot;ON authentication.faculty_id=faculty.faculty_id WHERE 1=1&quot;);
+&nbsp;
+&nbsp;        // Add filter conditions based on provided properties
+<b class="pc">&nbsp;        if (user != null &amp;&amp; user.getEmail() != null) {</b>
+<b class="nc">&nbsp;            query.append(&quot; AND \&quot;user\&quot;.email_address ILIKE &#39;%&#39; || ? || &#39;%&#39;&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (user != null &amp;&amp; user.getFirstName() != null) {</b>
+<b class="nc">&nbsp;            query.append(&quot; AND \&quot;user\&quot;.first_name ILIKE &#39;%&#39; || ? || &#39;%&#39;&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (user != null &amp;&amp; user.getLastName() != null) {</b>
+<b class="nc">&nbsp;            query.append(&quot; AND \&quot;user\&quot;.last_name ILIKE &#39;%&#39; || ? || &#39;%&#39;&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (user != null &amp;&amp; user.getBirthDate() != null) {</b>
+<b class="nc">&nbsp;            query.append(&quot; AND  \&quot;user\&quot;.birth_date ILIKE &#39;%&#39; || ? || &#39;%&#39;&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if (faculty != null) {</b>
+<b class="fc">&nbsp;            query.append(&quot; AND faculty.faculty_id = ?&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if (auth != null) {</b>
+<b class="fc">&nbsp;            query.append(</b>
+&nbsp;                    &quot; AND authentication.user_level = ?&quot;);
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        try (PreparedStatement statement = transaction.getConnection()</b>
+<b class="fc">&nbsp;                .prepareStatement(query.toString())) {</b>
+<b class="fc">&nbsp;            int paramIndex = 1;</b>
+&nbsp;
+&nbsp;            // Set filter condition values
+<b class="pc">&nbsp;            if (user != null &amp;&amp; user.getEmail() != null) {</b>
+<b class="nc">&nbsp;                statement.setString(paramIndex++, user.getEmail());</b>
+&nbsp;            }
+&nbsp;
+<b class="pc">&nbsp;            if (user != null &amp;&amp; user.getFirstName() != null) {</b>
+<b class="nc">&nbsp;                statement.setString(paramIndex++, user.getFirstName());</b>
+&nbsp;            }
+&nbsp;
+<b class="pc">&nbsp;            if (user != null &amp;&amp; user.getLastName() != null) {</b>
+<b class="nc">&nbsp;                statement.setString(paramIndex++, user.getLastName());</b>
+&nbsp;            }
+&nbsp;
+<b class="pc">&nbsp;            if (user != null &amp;&amp; user.getBirthDate() != null) {</b>
+<b class="nc">&nbsp;                statement.setDate(paramIndex++,</b>
+<b class="nc">&nbsp;                        Date.valueOf(user.getBirthDate()));</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            if (faculty != null) {</b>
+<b class="fc">&nbsp;                statement.setLong(paramIndex++, faculty.getId());</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            if (auth != null) {</b>
+<b class="fc">&nbsp;                statement.setObject(paramIndex++, auth.name(),</b>
+&nbsp;                        java.sql.Types.OTHER);
+&nbsp;            }
+&nbsp;
+<b class="pc">&nbsp;            try (ResultSet resultSet = statement.executeQuery()) {</b>
+<b class="pc">&nbsp;                if (resultSet.next()) {</b>
+<b class="fc">&nbsp;                    return resultSet.getInt(1);</b>
+&nbsp;                }
+<b class="pc">&nbsp;            }</b>
+<b class="pc">&nbsp;        } catch (SQLException e) {</b>
+&nbsp;            // Handle any specific exceptions or logging as needed
+<b class="nc">&nbsp;            throw new DBConnectionFailedException(&quot;Failed to retrieve users.&quot;,</b>
+&nbsp;                    e);
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return -1;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * {@inheritDoc}
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public int getTotalUserNumber(final User user,
+&nbsp;            final Transaction transaction) throws InvalidInputException {
+<b class="nc">&nbsp;        LOGGER.debug(&quot;getTotalUserNumber() called.&quot;);</b>
+&nbsp;
+&nbsp;        // initialize objects
+<b class="nc">&nbsp;        Faculty faculty = null;</b>
+<b class="nc">&nbsp;        UserState auth = null;</b>
+&nbsp;
+&nbsp;        // set filter Values for faculty and authentication
+<b class="nc">&nbsp;        if (user.getUserState() != null) {</b>
+<b class="nc">&nbsp;            if (user.getUserState().entrySet().size() == 1) {</b>
+<b class="nc">&nbsp;                Map.Entry&lt;Faculty, UserState&gt; entry = user.getUserState()</b>
+<b class="nc">&nbsp;                        .entrySet().iterator().next();</b>
+<b class="nc">&nbsp;                faculty = entry.getKey();</b>
+<b class="nc">&nbsp;                auth = entry.getValue();</b>
+<b class="nc">&nbsp;            } else {</b>
+<b class="nc">&nbsp;                throw new InvalidInputException(</b>
+&nbsp;                        &quot;more than one filter entry for userState&quot;
+&nbsp;                                + &quot; and faculty, could not resolve&quot;);
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+&nbsp;        // Building SQL
+<b class="nc">&nbsp;        StringBuilder query = new StringBuilder();</b>
+<b class="nc">&nbsp;        query.append(&quot;SELECT COUNT (DISTINCT \\\&quot;user\\\&quot;.user_id) &quot;</b>
+&nbsp;                + &quot;FROM \&quot;user\&quot; &quot;
+&nbsp;                + &quot;INNER JOIN authentication &quot;
+&nbsp;                + &quot;ON \&quot;user\&quot;.user_id=authentication.user_id &quot;
+&nbsp;                + &quot;INNER JOIN faculty &quot;
+&nbsp;                + &quot;ON authentication.faculty_id=faculty.faculty_id WHERE 1=1&quot;);
+&nbsp;
+&nbsp;        // Add filter conditions based on provided properties
+<b class="nc">&nbsp;        if (user != null &amp;&amp; user.getEmail() != null) {</b>
+<b class="nc">&nbsp;            query.append(&quot; AND \&quot;user\&quot;.email_address ILIKE &#39;%&#39; || ? || &#39;%&#39;&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (user != null &amp;&amp; user.getFirstName() != null) {</b>
+<b class="nc">&nbsp;            query.append(&quot; AND \&quot;user\&quot;.first_name ILIKE &#39;%&#39; || ? || &#39;%&#39;&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (user != null &amp;&amp; user.getLastName() != null) {</b>
+<b class="nc">&nbsp;            query.append(&quot; AND \&quot;user\&quot;.last_name ILIKE &#39;%&#39; || ? || &#39;%&#39;&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (user != null &amp;&amp; user.getBirthDate() != null) {</b>
+<b class="nc">&nbsp;            query.append(&quot; AND  \&quot;user\&quot;.birth_date ILIKE &#39;%&#39; || ? || &#39;%&#39;&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (faculty != null) {</b>
+<b class="nc">&nbsp;            query.append(&quot; AND faculty.faculty_id = ?&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (auth != null) {</b>
+<b class="nc">&nbsp;            query.append(</b>
+&nbsp;                    &quot; AND authentication.user_level = ?&quot;);
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        try (PreparedStatement statement = transaction.getConnection()</b>
+<b class="nc">&nbsp;                .prepareStatement(query.toString())) {</b>
+<b class="nc">&nbsp;            int paramIndex = 1;</b>
+&nbsp;
+&nbsp;            // Set filter condition values
+<b class="nc">&nbsp;            if (user != null &amp;&amp; user.getEmail() != null) {</b>
+<b class="nc">&nbsp;                statement.setString(paramIndex++, user.getEmail());</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            if (user != null &amp;&amp; user.getFirstName() != null) {</b>
+<b class="nc">&nbsp;                statement.setString(paramIndex++, user.getFirstName());</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            if (user != null &amp;&amp; user.getLastName() != null) {</b>
+<b class="nc">&nbsp;                statement.setString(paramIndex++, user.getLastName());</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            if (user != null &amp;&amp; user.getBirthDate() != null) {</b>
+<b class="nc">&nbsp;                statement.setDate(paramIndex++,</b>
+<b class="nc">&nbsp;                        Date.valueOf(user.getBirthDate()));</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            if (faculty != null) {</b>
+<b class="nc">&nbsp;                statement.setLong(paramIndex++, faculty.getId());</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            if (auth != null) {</b>
+<b class="nc">&nbsp;                statement.setObject(paramIndex++, auth.name(),</b>
+&nbsp;                        java.sql.Types.OTHER);
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            try (ResultSet resultSet = statement.executeQuery()) {</b>
+<b class="nc">&nbsp;                if (resultSet.next()) {</b>
+<b class="nc">&nbsp;                    return resultSet.getInt(1);</b>
+&nbsp;                }
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;        } catch (SQLException e) {</b>
+&nbsp;            // Handle any specific exceptions or logging as needed
+<b class="nc">&nbsp;            throw new DBConnectionFailedException(&quot;Failed to retrieve users.&quot;,</b>
+&nbsp;                    e);
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return -1;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * {@inheritDoc}
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void updateOrAddAuth(final User user, final Transaction transaction)
+&nbsp;            throws DataNotCompleteException, InvalidInputException {
+<b class="pc">&nbsp;        if (user.getUserState() != null || !user.getUserState().isEmpty()) {</b>
+<b class="fc">&nbsp;            LOGGER.debug(&quot;updateOrAddAuth() called for user: &quot;</b>
+<b class="fc">&nbsp;                    + user.getFirstName());</b>
+<b class="fc">&nbsp;            String query = &quot;INSERT INTO authentication (user_id, faculty_id, &quot;</b>
+&nbsp;                    + &quot;user_level) VALUES (?, ?, ?) &quot;
+&nbsp;                    + &quot;ON CONFLICT (user_id, faculty_id) &quot;
+&nbsp;                    + &quot;DO UPDATE SET user_level = EXCLUDED.user_level&quot;;
+<b class="pc">&nbsp;            try (PreparedStatement statement = transaction.getConnection()</b>
+<b class="fc">&nbsp;                    .prepareStatement(query)) {</b>
+<b class="fc">&nbsp;                for (Map.Entry&lt;Faculty, UserState&gt; entry : user.getUserState()</b>
+<b class="fc">&nbsp;                        .entrySet()) {</b>
+<b class="fc">&nbsp;                    int i = 1;</b>
+<b class="fc">&nbsp;                    statement.setInt(i++, user.getId());</b>
+<b class="pc">&nbsp;                    if (entry.getKey().getId() != 0) {</b>
+<b class="fc">&nbsp;                        statement.setInt(i++, entry.getKey().getId());</b>
+&nbsp;                    } else {
+<b class="nc">&nbsp;                        statement.setNull(i++, java.sql.Types.NULL);</b>
+&nbsp;                    }
+<b class="fc">&nbsp;                    statement.setObject(i++, entry.getValue(),</b>
+&nbsp;                            java.sql.Types.OTHER);
+<b class="fc">&nbsp;                    statement.executeUpdate();</b>
+<b class="fc">&nbsp;                }</b>
+<b class="pc">&nbsp;            } catch (SQLException e) {</b>
+<b class="nc">&nbsp;                switch (e.getSQLState()) {</b>
+&nbsp;                case &quot;23503&quot;:
+<b class="nc">&nbsp;                    throw new InvalidInputException(&quot;foreign_key_violation&quot;, e);</b>
+&nbsp;
+&nbsp;                default:
+<b class="nc">&nbsp;                    throw new DBConnectionFailedException(&quot;SQL Error&quot;, e);</b>
+&nbsp;                }
+<b class="fc">&nbsp;            }</b>
+<b class="fc">&nbsp;        } else {</b>
+<b class="nc">&nbsp;            throw new DataNotCompleteException(&quot;Empty UserState to add&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * {@inheritDoc}
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void removeAuth(final User user, final Transaction transaction)
+&nbsp;            throws DataNotFoundException, DataNotCompleteException {
+<b class="nc">&nbsp;        if (user.getUserState() != null || !user.getUserState().isEmpty()) {</b>
+<b class="nc">&nbsp;            String query = &quot;DELETE FROM authentication &quot;</b>
+&nbsp;                    + &quot;WHERE user_id = ? AND faculty_id = ?&quot;;
+<b class="nc">&nbsp;            try (PreparedStatement statement = transaction.getConnection()</b>
+<b class="nc">&nbsp;                    .prepareStatement(query)) {</b>
+<b class="nc">&nbsp;                for (Map.Entry&lt;Faculty, UserState&gt; entry : user.getUserState()</b>
+<b class="nc">&nbsp;                        .entrySet()) {</b>
+<b class="nc">&nbsp;                    statement.setInt(1, user.getId());</b>
+<b class="nc">&nbsp;                    statement.setInt(2, entry.getKey().getId());</b>
+<b class="nc">&nbsp;                    int rowsAffected = statement.executeUpdate();</b>
+<b class="nc">&nbsp;                    if (rowsAffected == 0) {</b>
+<b class="nc">&nbsp;                        throw new DataNotFoundException(&quot;Admin with user ID &quot;</b>
+<b class="nc">&nbsp;                                + user.getId() + &quot; not found.&quot;);</b>
+&nbsp;                    }
+<b class="nc">&nbsp;                }</b>
+<b class="nc">&nbsp;            } catch (SQLException e) {</b>
+<b class="nc">&nbsp;                throw new DBConnectionFailedException(</b>
+&nbsp;                        &quot;Failed to remove authentications&quot;, e);
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;        } else {</b>
+<b class="nc">&nbsp;            throw new DataNotCompleteException();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;//    /**
+&nbsp;//     * {@inheritDoc}
+&nbsp;//     */
+&nbsp;//    @Override
+&nbsp;//    public void addAdmin(final User user, final Transaction transaction)
+&nbsp;//            throws KeyExistsException, InvalidInputException {
+&nbsp;//        String query = &quot;INSERT INTO \&quot;admin\&quot; (user_id) VALUES (?)&quot;;
+&nbsp;//
+&nbsp;//        try (PreparedStatement statement = transaction.getConnection()
+&nbsp;//                .prepareStatement(query)) {
+&nbsp;//            statement.setInt(1, user.getId());
+&nbsp;//
+&nbsp;//            statement.executeUpdate();
+&nbsp;//        } catch (SQLException e) {
+&nbsp;//            switch (e.getSQLState()) {
+&nbsp;//            case &quot;23503&quot;:
+&nbsp;//                throw new InvalidInputException(
+&nbsp;//                      &quot;User with user ID &quot; + user.getId() + &quot; doesn&#39;t exist.&quot;,
+&nbsp;//                        e);
+&nbsp;//
+&nbsp;//            case &quot;23505&quot;:
+&nbsp;//                throw new KeyExistsException(&quot;Admin with user ID &quot;
+&nbsp;//                        + user.getId() + &quot; already exists.&quot;, e);
+&nbsp;//
+&nbsp;//            default:
+&nbsp;//                throw new DBConnectionFailedException();
+&nbsp;//            }
+&nbsp;//        }
+&nbsp;//    }
+&nbsp;//
+&nbsp;//    /**
+&nbsp;//     * {@inheritDoc}
+&nbsp;//     */
+&nbsp;//    @Override
+&nbsp;//    public void removeAdmin(final User user, final Transaction transaction)
+&nbsp;//            throws DataNotFoundException {
+&nbsp;//        String query = &quot;DELETE FROM \&quot;admin\&quot; WHERE user_id = ?&quot;;
+&nbsp;//
+&nbsp;//        try (PreparedStatement statement = transaction.getConnection()
+&nbsp;//                .prepareStatement(query)) {
+&nbsp;//            statement.setInt(1, user.getId());
+&nbsp;//
+&nbsp;//            int rowsAffected = statement.executeUpdate();
+&nbsp;//            if (rowsAffected == 0) {
+&nbsp;//                throw new DataNotFoundException(
+&nbsp;//                        &quot;Admin with user ID &quot; + user.getId() + &quot; not found.&quot;);
+&nbsp;//            }
+&nbsp;//        } catch (SQLException e) {
+&nbsp;//          throw new DBConnectionFailedException(&quot;Failed to remove admin.&quot;, e);
+&nbsp;//        }
+&nbsp;//    }
+&nbsp;//
+&nbsp;//    /**
+&nbsp;//     * {@inheritDoc}
+&nbsp;//     */
+&nbsp;//    @Override
+&nbsp;//    public List&lt;User&gt; getAdmins(final Transaction transaction) {
+&nbsp;//        List&lt;User&gt; adminList = new ArrayList&lt;&gt;();
+&nbsp;//        String query = &quot;SELECT u.user_id, u.email_address, &quot;
+&nbsp;//                + &quot;u.firstname, u.lastname, u.birthdate &quot;
+&nbsp;//                + &quot;FROM \&quot;admin\&quot; AS a &quot;
+&nbsp;//                + &quot;INNER JOIN \&quot;user\&quot; AS u ON a.user_id = u.user_id&quot;;
+&nbsp;//
+&nbsp;//        try (PreparedStatement statement = transaction.getConnection()
+&nbsp;//                .prepareStatement(query);
+&nbsp;//                ResultSet resultSet = statement.executeQuery()) {
+&nbsp;//
+&nbsp;//            while (resultSet.next()) {
+&nbsp;//                User admin = new User();
+&nbsp;//                admin.setId(resultSet.getInt(&quot;user_id&quot;));
+&nbsp;//                admin.setEmail(resultSet.getString(&quot;email_address&quot;));
+&nbsp;//                admin.setFirstName(resultSet.getString(&quot;firstname&quot;));
+&nbsp;//                admin.setLastName(resultSet.getString(&quot;lastname&quot;));
+&nbsp;//                admin.setBirthDate(
+&nbsp;//                        resultSet.getDate(&quot;birthdate&quot;).toLocalDate());
+&nbsp;//
+&nbsp;//                adminList.add(admin);
+&nbsp;//            }
+&nbsp;//        } catch (SQLException e) {
+&nbsp;//          throw new DBConnectionFailedException(&quot;Failed to retrieve admins.&quot;,
+&nbsp;//                    e);
+&nbsp;//        }
+&nbsp;//        return adminList;
+&nbsp;//    }
+&nbsp;
+&nbsp;    private void setAuthentications(final User user,
+&nbsp;            final Transaction transaction) {
+<b class="fc">&nbsp;        LOGGER.debug(&quot;Loading authentications.&quot;);</b>
+<b class="fc">&nbsp;        String query = &quot;SELECT authentication.faculty_id, &quot;</b>
+&nbsp;                + &quot;authentication.user_level, faculty.faculty_name &quot;
+&nbsp;                + &quot;FROM authentication LEFT JOIN faculty &quot;
+&nbsp;                + &quot;ON authentication.faculty_id=faculty.faculty_id &quot;
+&nbsp;                + &quot;WHERE user_id = ?&quot;;
+<b class="pc">&nbsp;        try (PreparedStatement statement = transaction.getConnection()</b>
+<b class="fc">&nbsp;                .prepareStatement(query)) {</b>
+<b class="fc">&nbsp;            statement.setInt(1, user.getId());</b>
+&nbsp;
+<b class="pc">&nbsp;            try (ResultSet resultSet = statement.executeQuery()) {</b>
+<b class="fc">&nbsp;                Map&lt;Faculty, UserState&gt; stateMap =</b>
+&nbsp;                        new HashMap&lt;Faculty, UserState&gt;();
+<b class="fc">&nbsp;                while (resultSet.next()) {</b>
+<b class="fc">&nbsp;                    Faculty f = new Faculty();</b>
+<b class="fc">&nbsp;                    f.setId(resultSet.getInt(&quot;faculty_id&quot;));</b>
+<b class="fc">&nbsp;                    f.setName(resultSet.getString(&quot;faculty_name&quot;));</b>
+<b class="fc">&nbsp;                    stateMap.put(f, UserState</b>
+<b class="fc">&nbsp;                            .valueOf(resultSet.getString(&quot;user_level&quot;)));</b>
+<b class="fc">&nbsp;                }</b>
+<b class="fc">&nbsp;                user.setUserState(stateMap);</b>
+<b class="pc">&nbsp;            }</b>
+&nbsp;
+<b class="pc">&nbsp;        } catch (SQLException e) {</b>
+&nbsp;            // Handle any specific exceptions or logging as needed
+<b class="nc">&nbsp;            throw new DBConnectionFailedException(</b>
+&nbsp;                    &quot;Failed to load authentications.&quot;, e);
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-11 11:47</div>
+</div>
+</body>
+</html>

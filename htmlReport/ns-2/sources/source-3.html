@@ -1,0 +1,187 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Hashing</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dtt.business.utilities</a>
+</div>
+
+<h1>Coverage Summary for Class: Hashing (dtt.business.utilities)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Hashing</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    77.8%
+  </span>
+  <span class="absValue">
+    (14/18)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dtt.business.utilities;
+&nbsp;
+&nbsp;import org.apache.logging.log4j.LogManager;
+&nbsp;import org.apache.logging.log4j.Logger;
+&nbsp;
+&nbsp;import javax.crypto.SecretKeyFactory;
+&nbsp;import javax.crypto.spec.PBEKeySpec;
+&nbsp;import java.security.NoSuchAlgorithmException;
+&nbsp;import java.security.SecureRandom;
+&nbsp;import java.security.spec.InvalidKeySpecException;
+&nbsp;import java.security.spec.KeySpec;
+&nbsp;import java.util.Base64;
+&nbsp;
+&nbsp;
+&nbsp;/**
+&nbsp; * The Hashing class provides methods for hashing passwords using the PBKDF2 algorithm.
+&nbsp; * It ensures the secure storage of passwords by using a strong key derivation function
+&nbsp; * that performs multiple iterations and requires a salt.
+&nbsp; * @author Johannes Silvennoinen
+&nbsp; */
+&nbsp;public final class Hashing {
+<b class="fc">&nbsp;    private static final Logger LOGGER = LogManager.getLogger(Hashing.class);</b>
+&nbsp;    private static final int ITERATIONS = 10000;
+&nbsp;    private static final int KEY_LENGTH = 256;
+&nbsp;    private static final int SALT_LENGTH = 16;
+&nbsp;
+&nbsp;    private Hashing() {
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Hashes the provided password using the PBKDF2 algorithm.
+&nbsp;     *
+&nbsp;     * @param password the password to be hashed
+&nbsp;     * @param salt     the salt value for the hashing process
+&nbsp;     * @return the hashed password as a Base64-encoded string
+&nbsp;     * @throws NoSuchAlgorithmException if the PBKDF2 algorithm is not available
+&nbsp;     * @throws InvalidKeySpecException  if the provided key specification is invalid
+&nbsp;     */
+&nbsp;    public static String hashPassword(String password, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
+<b class="fc">&nbsp;        LOGGER.debug(&quot;hashPassword() called.&quot;);</b>
+&nbsp;
+&nbsp;        try {
+<b class="fc">&nbsp;            KeySpec spec = new PBEKeySpec(password.toCharArray(), salt.getBytes(), ITERATIONS, KEY_LENGTH);</b>
+<b class="fc">&nbsp;            SecretKeyFactory factory = SecretKeyFactory.getInstance(&quot;PBKDF2WithHmacSHA256&quot;);</b>
+<b class="fc">&nbsp;            byte[] hashedBytes = factory.generateSecret(spec).getEncoded();</b>
+<b class="fc">&nbsp;            return Base64.getEncoder().encodeToString(hashedBytes);</b>
+<b class="nc">&nbsp;        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {</b>
+<b class="nc">&nbsp;            throw e;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;    /**
+&nbsp;     * Verifies if the provided password matches the hashed password.
+&nbsp;     *
+&nbsp;     * @param password       the password to be verified
+&nbsp;     * @param salt           the salt value used during hashing
+&nbsp;     * @param hashedPassword the hashed password to compare against
+&nbsp;     * @return true if the password matches the hashed password, false otherwise
+&nbsp;     * @throws NoSuchAlgorithmException if the PBKDF2 algorithm is not available
+&nbsp;     * @throws InvalidKeySpecException  if the provided key specification is invalid
+&nbsp;     */
+&nbsp;    public static boolean verifyPassword(String password, String salt, String hashedPassword) throws NoSuchAlgorithmException, InvalidKeySpecException {
+<b class="fc">&nbsp;        LOGGER.debug(&quot;verifyPassword() called.&quot;);</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            String computedHash = hashPassword(password, salt);</b>
+<b class="fc">&nbsp;            return hashedPassword.equals(computedHash);</b>
+<b class="nc">&nbsp;        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {</b>
+<b class="nc">&nbsp;            throw e;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Generates a random salt.
+&nbsp;     *
+&nbsp;     * @return the generated salt as a Base64-encoded string
+&nbsp;     */
+&nbsp;    public static String generateSalt() {
+<b class="fc">&nbsp;        LOGGER.debug(&quot;generateSalt() called.&quot;);</b>
+<b class="fc">&nbsp;        SecureRandom random = new SecureRandom();</b>
+<b class="fc">&nbsp;        byte[] saltBytes = new byte[SALT_LENGTH];</b>
+<b class="fc">&nbsp;        random.nextBytes(saltBytes);</b>
+<b class="fc">&nbsp;        return Base64.getEncoder().encodeToString(saltBytes);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-11 11:47</div>
+</div>
+</body>
+</html>

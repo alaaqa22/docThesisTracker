@@ -1,0 +1,146 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > VoteDAO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dtt.dataAccess.repository.interfaces</a>
+</div>
+
+<h1>Coverage Summary for Class: VoteDAO (dtt.dataAccess.repository.interfaces)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">VoteDAO</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dtt.dataAccess.repository.interfaces;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;import dtt.dataAccess.exceptions.DataNotCompleteException;
+&nbsp;import dtt.dataAccess.exceptions.DataNotFoundException;
+&nbsp;import dtt.dataAccess.exceptions.InvalidInputException;
+&nbsp;import dtt.dataAccess.utilities.Transaction;
+&nbsp;import dtt.global.tansport.Vote;
+&nbsp;
+&nbsp;/**
+&nbsp; * This interface describes methods to handle database access related to votes.
+&nbsp; * 
+&nbsp; * @author Stefan Witka
+&nbsp; *
+&nbsp; */
+&nbsp;public interface VoteDAO {
+&nbsp;	/**
+&nbsp;	 * Add a new vote to the database for a specific circulation.
+&nbsp;	 * 
+&nbsp;	 * &lt;p&gt; {@code vote.user.id} and {@code vote.circulation.id} need to be set, as well as the {@code vote.selection} and optionally the {@code vote.description}.
+&nbsp;	 * 
+&nbsp;	 * @param vote The vote to be added to the database.
+&nbsp;	 * @param transaction The transaction associated with this operation.
+&nbsp;	 * @throws DataNotCompleteException if necessary values of the {@code vote} are not set
+&nbsp;	 * @throws InvalidInputException if input data is faulty
+&nbsp;	 */
+&nbsp;	void add(Vote vote, Transaction transaction) throws DataNotCompleteException, InvalidInputException;
+&nbsp;	
+&nbsp;	/**
+&nbsp;	 * Remove a vote from the database for a specific circulation.
+&nbsp;	 * 
+&nbsp;	 * &lt;p&gt; {@code vote.user.id} and {@code vote.circulation.id} need to be set to identify the vote.
+&nbsp;	 * 
+&nbsp;	 * @param vote The vote to be removed from the database.
+&nbsp;	 * @param transaction The transaction associated with this operation.
+&nbsp;	 * @throws DataNotFoundException if the {@code vote} is not found in the database
+&nbsp;	 * @throws InvalidInputException if input data is faulty
+&nbsp;	 */
+&nbsp;	void remove(Vote vote, Transaction transaction) throws DataNotFoundException, InvalidInputException;
+&nbsp;	
+&nbsp;	/**
+&nbsp;	 * Update a vote in the database for a specific circulation.
+&nbsp;	 * 
+&nbsp;	 * &lt;p&gt; {@code vote.user.id} and {@code vote.circulation.id} need to be set and existing in the database.
+&nbsp;	 * The {@code vote.selection} and the {@code vote.description} need to be set. If the {@code vote.description} is set to null, the value for the description will be set empty.
+&nbsp;	 * 
+&nbsp;	 * @param vote The vote to be updated in the database.
+&nbsp;	 * @param transaction The transaction associated with this operation.
+&nbsp;	 * @throws DataNotFoundException if the {@code vote} is not found in the database
+&nbsp;	 * @throws InvalidInputException if input data is faulty
+&nbsp;	 */
+&nbsp;	void update(Vote vote, Transaction transaction) throws DataNotFoundException, InvalidInputException;
+&nbsp;	
+&nbsp;	/**
+&nbsp;	 * Retrieve votes for a specific circulation from the database.
+&nbsp;	 * 
+&nbsp;	 * &lt;p&gt; {@code vote.circulation.id} needs to be set to specify the circulation.
+&nbsp;	 * 
+&nbsp;	 * 
+&nbsp;	 * @param vote The vote object used to specify the circulation.
+&nbsp;	 * @param transaction The transaction associated with this operation.
+&nbsp;	 * @return List of Votes belonging to the specified circulation. List can be empty if circulation doesn&#39;t exist or has no votes yet.
+&nbsp;	 */
+&nbsp;	List&lt;Vote&gt; getVotes(Vote vote, Transaction transaction);
+&nbsp;	
+&nbsp;	/**
+&nbsp;	 * Retrieve a specific Vote for a specific user-circulation pair.
+&nbsp;	 * 
+&nbsp;	 * &lt;p&gt; {@code vote.user.id} and {@code vote.circulation.id} need to be set.
+&nbsp;	 * If the user-circulation pair doesn&#39;t exist, {@code false} is returned.
+&nbsp;	 * Else the parameters of {@code vote} will be filled and {@code true} returned
+&nbsp;	 * 
+&nbsp;	 * @param vote The vote to be found in the database.
+&nbsp;	 * @param transaction The transaction associated with this operation.
+&nbsp;	 * @return {@code true} if the data was found; {@code false} if no entry was found in the database.
+&nbsp;	 */
+&nbsp;	boolean findVote(Vote vote, Transaction transaction);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-11 11:47</div>
+</div>
+</body>
+</html>

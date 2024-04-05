@@ -1,0 +1,341 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > UserDAO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dtt.dataAccess.repository.interfaces</a>
+</div>
+
+<h1>Coverage Summary for Class: UserDAO (dtt.dataAccess.repository.interfaces)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">UserDAO</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dtt.dataAccess.repository.interfaces;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;import dtt.dataAccess.exceptions.DataNotCompleteException;
+&nbsp;import dtt.dataAccess.exceptions.DataNotFoundException;
+&nbsp;import dtt.dataAccess.exceptions.InvalidInputException;
+&nbsp;import dtt.dataAccess.exceptions.KeyExistsException;
+&nbsp;import dtt.dataAccess.utilities.Transaction;
+&nbsp;import dtt.global.tansport.Faculty;
+&nbsp;import dtt.global.tansport.User;
+&nbsp;import dtt.global.tansport.UserState;
+&nbsp;
+&nbsp;/**
+&nbsp; * This interface describes methods to handle database access related to users
+&nbsp; * and user authorization.
+&nbsp; *
+&nbsp; * @author Stefan Witka
+&nbsp; *
+&nbsp; */
+&nbsp;public interface UserDAO {
+&nbsp;    /**
+&nbsp;     * Insert a new user into the database.
+&nbsp;     *
+&nbsp;     * &lt;p&gt;
+&nbsp;     * All properties of {@code user} have to be set except for {@code user.id}
+&nbsp;     * because the ID is automatically assigned. The generated ID is set in the
+&nbsp;     * given {@code user} object. The email address must be unique (i.e., not
+&nbsp;     * present in the database already). All entries in {@code user.userState}
+&nbsp;     * will be written into the Database.
+&nbsp;     *
+&nbsp;     * If the user cannot be added to the database (due to invalid input or
+&nbsp;     * other error), an exception is thrown.
+&nbsp;     *
+&nbsp;     * @param user        The user DTO to be added to the Database
+&nbsp;     * @param transaction The transaction associated with this operation.
+&nbsp;     * @throws DataNotCompleteException if necessary values of the {@code user}
+&nbsp;     *                                  are not set
+&nbsp;     * @throws KeyExistsException       if the email address of the {@code user}
+&nbsp;     *                                  is already present in the Database
+&nbsp;     * @throws InvalidInputException    if input data is faulty
+&nbsp;     */
+&nbsp;    void add(User user, Transaction transaction)
+&nbsp;            throws DataNotCompleteException, KeyExistsException,
+&nbsp;            InvalidInputException;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Remove a user from the database.
+&nbsp;     *
+&nbsp;     * &lt;p&gt;
+&nbsp;     * Only the {@code user.id} property of {@code user} needs to be set, all
+&nbsp;     * other values will be ignored. If the unique Identifier was not found in
+&nbsp;     * the Database, an exception is thrown.
+&nbsp;     *
+&nbsp;     * @param user        The user DTO to be removed from the Database
+&nbsp;     * @param transaction The transaction associated with this operation.
+&nbsp;     * @throws DataNotFoundException if the {@code user} is not found in the
+&nbsp;     *                               Database
+&nbsp;     */
+&nbsp;    void remove(User user, Transaction transaction)
+&nbsp;            throws DataNotFoundException;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Update a user in the database.
+&nbsp;     *
+&nbsp;     * &lt;p&gt;
+&nbsp;     * The {@code user.id} needs to be set correctly. All other User Properties
+&nbsp;     * will be overwritten unless set to {@code null}. The email address must be
+&nbsp;     * unique (i.e., not present in the database already). All entries in
+&nbsp;     * {@code user.userState} will update or create the table entries with the
+&nbsp;     * key specified by the faculty field of the userState map and the ID of the
+&nbsp;     * user.
+&nbsp;     *
+&nbsp;     * @param user        The user DTO to be updated in the Database
+&nbsp;     * @param transaction The transaction associated with this operation.
+&nbsp;     * @throws DataNotFoundException if the {@code user} is not found in the
+&nbsp;     *                               Database
+&nbsp;     * @throws InvalidInputException if input data is faulty
+&nbsp;     * @throws KeyExistsException    if the email address of the {@code user} is
+&nbsp;     *                               already present in the Database
+&nbsp;     */
+&nbsp;    void update(User user, Transaction transaction)
+&nbsp;            throws DataNotFoundException, InvalidInputException,
+&nbsp;            KeyExistsException;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieve a user from the database.
+&nbsp;     *
+&nbsp;     * &lt;p&gt;
+&nbsp;     * Only the {@code user.id} property of {@code user} needs to be set, all
+&nbsp;     * other values will be overwritten when retrieving the User from the
+&nbsp;     * Database. If the unique Identifier was not found in the Database, an
+&nbsp;     * exception is thrown.
+&nbsp;     *
+&nbsp;     * @param user        The user DTO to be retrieved from the Database
+&nbsp;     * @param transaction The transaction associated with this operation.
+&nbsp;     * @throws DataNotFoundException if the {@code user} is not found in the
+&nbsp;     *                               Database
+&nbsp;     */
+&nbsp;    void getUserById(User user, Transaction transaction)
+&nbsp;            throws DataNotFoundException;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Check if a User with a given Email exists and retrieve it from the
+&nbsp;     * Database.
+&nbsp;     *
+&nbsp;     * &lt;p&gt;
+&nbsp;     * Only the {@code user.email} property of {@code user} needs to be set, all
+&nbsp;     * other values will be overwritten when retrieving the User from the
+&nbsp;     * Database. If the unique Email was not found in the Database,
+&nbsp;     * {@code false} is returned.
+&nbsp;     *
+&nbsp;     * @param user        The user DTO with set email value to be retrieved from
+&nbsp;     *                    the Database
+&nbsp;     * @param transaction The transaction associated with this operation.
+&nbsp;     * @return {@code true} if user with that same email was found in the
+&nbsp;     *         Database; {@code false} if no user with that email was found
+&nbsp;     */
+&nbsp;    boolean findUserByEmail(User user, Transaction transaction);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieve a list of users from the database with pagination support.
+&nbsp;     *
+&nbsp;     * &lt;p&gt;
+&nbsp;     * Values set in User, except for {@code user.id} and {@code user.userState}
+&nbsp;     * are used to filter results if set. {@code user.id} and
+&nbsp;     * {@code user.userState} are ignored in the filter object. To filter for a
+&nbsp;     * specified faculty, {@code faculty.id} needs to be set in the faculty DTO.
+&nbsp;     *
+&nbsp;     * @param user        The user DTO used as a filter for retrieving users.
+&nbsp;     * @param faculty     can be {@code null}. Filter used for the Faculty. If
+&nbsp;     *                    {@code null}, no filter.
+&nbsp;     * @param auth        can be {@code null}. Filter used for authorization
+&nbsp;     *                    level. If {@code null}, not filtered.
+&nbsp;     * @param transaction The transaction associated with this operation.
+&nbsp;     * @param offset      The starting index of the user records to retrieve.
+&nbsp;     * @param count       The maximum number of user records to retrieve.
+&nbsp;     * @return A list of Users matching the filter criteria, or an empty list if
+&nbsp;     *         no matches were found.
+&nbsp;     */
+&nbsp;    List&lt;User&gt; getUsers(User user, Faculty faculty, UserState auth,
+&nbsp;            Transaction transaction, int offset, int count);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieve a list of users from the database with pagination support.
+&nbsp;     *
+&nbsp;     * &lt;p&gt;
+&nbsp;     * Values set in User, except for {@code user.id} and {@code user.userState}
+&nbsp;     * are used to filter results if set. {@code user.userState} needs to
+&nbsp;     * contain exactly one element to filter for faculty and userState, with
+&nbsp;     * null values if one of them is not filtered for. {@code user.id} is
+&nbsp;     * ignored in the filter object.
+&nbsp;     *
+&nbsp;     * @param user        The user DTO used as a filter for retrieving users.
+&nbsp;     * @param transaction The transaction associated with this operation.
+&nbsp;     * @param offset      The starting index of the user records to retrieve.
+&nbsp;     * @param count       The maximum number of user records to retrieve.
+&nbsp;     * @return A list of Users matching the filter criteria, or an empty list if
+&nbsp;     *         no matches were found.
+&nbsp;     * @throws InvalidInputException if {@code user.userState} contains more
+&nbsp;     *                               than one element
+&nbsp;     */
+&nbsp;    List&lt;User&gt; getUsers(User user, Transaction transaction, int offset,
+&nbsp;            int count) throws InvalidInputException;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get the Total Number of Users matching a given filter.
+&nbsp;     *
+&nbsp;     * @param user        The user DTO used as a filter for retrieving users.
+&nbsp;     * @param faculty     can be {@code null}. Filter used for the Faculty. If
+&nbsp;     *                    {@code null}, no filter.
+&nbsp;     * @param auth        can be {@code null}. Filter used for authorization
+&nbsp;     *                    level. If {@code null}, not filtered.
+&nbsp;     * @param transaction The transaction associated with this operation.
+&nbsp;     * @return the total number of Users found matching the filter.
+&nbsp;     */
+&nbsp;    int getTotalUserNumber(User user, Faculty faculty, UserState auth,
+&nbsp;            Transaction transaction);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get the Total Number of Users matching a given filter.
+&nbsp;     *
+&nbsp;     * @param user        The user DTO used as a filter for retrieving users.
+&nbsp;     * @param transaction The transaction associated with this operation.
+&nbsp;     * @return the total number of Users found matching the filter.
+&nbsp;     * @throws InvalidInputException if {@code user.userState} contains more
+&nbsp;     *                               than one element
+&nbsp;     */
+&nbsp;    int getTotalUserNumber(User user, Transaction transaction)
+&nbsp;            throws InvalidInputException;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds entries in the authorization table or updates entries if already
+&nbsp;     * there.
+&nbsp;     *
+&nbsp;     * &lt;p&gt;
+&nbsp;     * The {@code user.id} needs to exist and be set correctly, as well as the
+&nbsp;     * faculty ID in {@code user.userState}. All entries from the
+&nbsp;     * {@code user.userState} along with the {@code user.id} will be added to
+&nbsp;     * the database, or updated if existing.
+&nbsp;     *
+&nbsp;     * @param user        The user DTO containing the user ID and map of
+&nbsp;     *                    faculties with authorization levels.
+&nbsp;     * @param transaction The transaction associated with this operation.
+&nbsp;     * @throws DataNotCompleteException if necessary values of the {@code user}
+&nbsp;     *                                  are not set
+&nbsp;     * @throws InvalidInputException    if input data is faulty
+&nbsp;     */
+&nbsp;    void updateOrAddAuth(User user, Transaction transaction)
+&nbsp;            throws DataNotCompleteException, InvalidInputException;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Removes entries in the authorization table.
+&nbsp;     *
+&nbsp;     * &lt;p&gt;
+&nbsp;     * The {@code user.id} needs to exist and be set correctly, as well as the
+&nbsp;     * faculty IDs in {@code user.userState}. All user ID and faculty ID pairs
+&nbsp;     * need to exist in the authorization database. All entries from the
+&nbsp;     * {@code user.userState} along with the {@code user.id} will be removed
+&nbsp;     * from the database. TODO rmAuth consider changing input parameters to more
+&nbsp;     * usable ones.
+&nbsp;     *
+&nbsp;     * @param user        The user DTO containing the user ID and map of
+&nbsp;     *                    faculties with authorization levels.
+&nbsp;     * @param transaction The transaction associated with this operation.
+&nbsp;     * @throws DataNotFoundException    if not all given user ID and faculty ID
+&nbsp;     *                                  pairs exist in the database
+&nbsp;     * @throws InvalidInputException    if input data is faulty
+&nbsp;     * @throws DataNotCompleteException
+&nbsp;     */
+&nbsp;    void removeAuth(User user, Transaction transaction)
+&nbsp;            throws DataNotFoundException, InvalidInputException,
+&nbsp;            DataNotCompleteException;
+&nbsp;
+&nbsp;//    /**
+&nbsp;//     * Add user to admin table.
+&nbsp;//     *
+&nbsp;//     * &lt;p&gt;
+&nbsp;//   * The {@code user.id} needs to exist in the user table and be set correctly
+&nbsp;//     * and not yet in the admin database, all other fields will be ignored.
+&nbsp;//     *
+&nbsp;//     * @param user        The user DTO containing the ID to be added to the
+&nbsp;//     *                    admin table
+&nbsp;//     * @param transaction The transaction associated with this operation.
+&nbsp;//     * @throws KeyExistsException    if user is already in the table
+&nbsp;//     * @throws InvalidInputException
+&nbsp;//     */
+&nbsp;//    void addAdmin(User user, Transaction transaction)
+&nbsp;//            throws KeyExistsException, InvalidInputException;
+&nbsp;//
+&nbsp;//    /**
+&nbsp;//     * Remove a User from the admin Table.
+&nbsp;//     *
+&nbsp;//     * &lt;p&gt;
+&nbsp;//     * The {@code user.id} needs to exist in the user table and in the admin
+&nbsp;//     * database.
+&nbsp;//     *
+&nbsp;//   * @param user        The user DTO containing the ID to be removed from the
+&nbsp;//     *                    admin table
+&nbsp;//     * @param transaction The transaction associated with this operation.
+&nbsp;//     * @throws DataNotFoundException if the user doesn&#39;t exist in the database
+&nbsp;//     */
+&nbsp;//    void removeAdmin(User user, Transaction transaction)
+&nbsp;//            throws DataNotFoundException;
+&nbsp;//
+&nbsp;//    /**
+&nbsp;//     * Retrieves a list of administrators.
+&nbsp;//     *
+&nbsp;//     * @param transaction The transaction associated with this operation.
+&nbsp;//     * @return A list of administrators.
+&nbsp;//     */
+&nbsp;//    List&lt;User&gt; getAdmins(Transaction transaction);
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-11 11:47</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,212 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > ConfigReader</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dtt.global.utilities</a>
+</div>
+
+<h1>Coverage Summary for Class: ConfigReader (dtt.global.utilities)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ConfigReader</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (4/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (15/18)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dtt.global.utilities;
+&nbsp;
+&nbsp;import org.apache.logging.log4j.LogManager;
+&nbsp;import org.apache.logging.log4j.Logger;
+&nbsp;
+&nbsp;import java.io.IOException;
+&nbsp;import java.io.InputStream;
+&nbsp;
+&nbsp;import java.nio.charset.StandardCharsets;
+&nbsp;import java.util.Properties;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;/**
+&nbsp; * Utility class for reading configuration properties from a properties file.
+&nbsp; * @author Johannes Silvennoinen
+&nbsp; */
+&nbsp;public final class ConfigReader {
+&nbsp;
+&nbsp;    private ConfigReader() {}
+&nbsp;
+<b class="fc">&nbsp;    private static final Logger LOGGER = LogManager.getLogger(ConfigReader.class);</b>
+&nbsp;    private static final String PROPERTIES_FILE_PATH = &quot;/config/configuration.properties&quot;;
+&nbsp;    private static Properties properties;
+&nbsp;
+&nbsp;    public static final String PAGINATION_MAX_ITEMS = &quot;PAGINATION_MAX_ITEMS&quot;;
+&nbsp;    public static final String ROOT_ADMIN = &quot;ROOT_ADMIN&quot;;
+&nbsp;    public static final String COLOR_SCHEME = &quot;COLOR_SCHEME&quot;;
+&nbsp;    public static final String IMPRINT = &quot;IMPRINT&quot;;
+&nbsp;    public static final String LOGO_PATH = &quot;LOGO_PATH&quot;;
+&nbsp;    public static final String IMPRINT_FILE_PATH = &quot;/config/impressumContent.txt&quot;;
+&nbsp;
+&nbsp;    public static final String PRODUCTION_MODE = &quot;PRODUCTION_MODE&quot;;
+&nbsp;    public static final String EMAIL_PATTERN = &quot;EMAIL_PATTERN&quot;;
+&nbsp;    public static final String DATABASE_URL = &quot;DATABASE_URL&quot;;
+&nbsp;    public static final String DATABASE_USER = &quot;DATABASE_USER&quot;;
+&nbsp;    public static final String DATABASE_PASSWORD = &quot;DATABASE_PASSWORD&quot;;
+&nbsp;    public static final String DATABASE_DRIVER = &quot;DATABASE_DRIVER&quot;;
+&nbsp;    public static final String DATABASE_SIZE = &quot;DATABASE_SIZE&quot;;
+&nbsp;    public static final String SSL = &quot;SSL&quot;;
+&nbsp;    public static final String SSL_FACTORY = &quot;SSL_FACTORY&quot;;
+&nbsp;    public static final String PASSWORD_PATTERN = &quot;PASSWORD_PATTERN&quot;;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Reads the configuration properties from the properties file and assigns them
+&nbsp;     * to a static Properties object.
+&nbsp;     */
+&nbsp;    public static void loadProperties() {
+<b class="pc">&nbsp;        try (InputStream inputStream = ConfigReader.class.getResourceAsStream(PROPERTIES_FILE_PATH)) {</b>
+<b class="fc">&nbsp;            properties = new Properties();</b>
+<b class="fc">&nbsp;            properties.load(inputStream);</b>
+<b class="pc">&nbsp;        } catch (IOException e) {</b>
+<b class="nc">&nbsp;            LOGGER.fatal(&quot;Could not read configuration.properties, path is &quot; + PROPERTIES_FILE_PATH);</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;    /**
+&nbsp;     * Retrieves the value of the specified property key.
+&nbsp;     * The configuration properties must be loaded using {@link #loadProperties()} before calling this method.
+&nbsp;     *
+&nbsp;     * @param key The property key.
+&nbsp;     * @return The value associated with the key, or null if the key is not found.
+&nbsp;     */
+&nbsp;    public static String getProperty(String key) {
+<b class="fc">&nbsp;        return properties.getProperty(key);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks if properties are loaded.
+&nbsp;     *
+&nbsp;     * @return true if properties are loaded, i.e., the properties object is not null,
+&nbsp;     *         false otherwise.
+&nbsp;     */
+&nbsp;    public static boolean arePropertiesLoaded() {
+<b class="pc">&nbsp;        return properties != null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Reads and returns the contents of the Impressum file (impressum.txt) as a string.
+&nbsp;     * The file is expected to be found at the path defined by IMPRINT_FILE_PATH.
+&nbsp;     * If an IOException occurs during reading of the file, it logs a fatal error.
+&nbsp;     *
+&nbsp;     * @return The contents of the impressum file as a String, or null if the file does not exist, is empty or an IOException occurs.
+&nbsp;     */
+&nbsp;    public static String getImpressumContent(){
+<b class="fc">&nbsp;        String impressumContent = null;</b>
+<b class="pc">&nbsp;        try (InputStream inputStream = ConfigReader.class.getResourceAsStream(IMPRINT_FILE_PATH)) {</b>
+<b class="pc">&nbsp;            if (inputStream != null) {</b>
+<b class="fc">&nbsp;                impressumContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);</b>
+&nbsp;            }
+<b class="pc">&nbsp;        } catch (IOException e) {</b>
+<b class="nc">&nbsp;            LOGGER.fatal(&quot;Failed to read impressum.txt file.&quot;, e);</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return impressumContent;</b>
+&nbsp;    }
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-11 11:47</div>
+</div>
+</body>
+</html>

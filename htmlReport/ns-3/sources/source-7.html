@@ -1,0 +1,192 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > UniqueCirculationNameValidator</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dtt.business.validation</a>
+</div>
+
+<h1>Coverage Summary for Class: UniqueCirculationNameValidator (dtt.business.validation)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UniqueCirculationNameValidator</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (3/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (15/15)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dtt.business.validation;
+&nbsp;
+&nbsp;import dtt.dataAccess.repository.interfaces.CirculationDAO;
+&nbsp;import dtt.dataAccess.utilities.Transaction;
+&nbsp;import dtt.global.tansport.Circulation;
+&nbsp;import jakarta.faces.application.FacesMessage;
+&nbsp;import jakarta.faces.component.UIComponent;
+&nbsp;import jakarta.faces.context.FacesContext;
+&nbsp;import jakarta.faces.validator.FacesValidator;
+&nbsp;import jakarta.faces.validator.Validator;
+&nbsp;import jakarta.faces.validator.ValidatorException;
+&nbsp;
+&nbsp;/**
+&nbsp; * A validator that verifies the uniqueness of a given Circulation Name. It
+&nbsp; * checks whether the name is already present or used by another entity,
+&nbsp; * ensuring its uniqueness.
+&nbsp; *
+&nbsp; * @author Hadi Abou Hassoun
+&nbsp; */
+&nbsp;@FacesValidator(value = &quot;UniqueCirculationNameValidator&quot;, managed = true)
+<b class="fc">&nbsp;public class UniqueCirculationNameValidator implements Validator&lt;String&gt; {</b>
+&nbsp;
+&nbsp;    /** circulationDAO object for database access. */
+&nbsp;    private CirculationDAO circulationDAO;
+&nbsp;
+&nbsp;    /**
+&nbsp;     *
+&nbsp;     * @param context   FacesContext for the request we are processing
+&nbsp;     * @param component UIComponent we are checking for correctness
+&nbsp;     * @param value     the value to validate
+&nbsp;     * @throws ValidatorException
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void validate(final FacesContext context,
+&nbsp;            final UIComponent component, final String value)
+&nbsp;            throws ValidatorException {
+<b class="fc">&nbsp;        String circTitle = value;</b>
+&nbsp;
+<b class="fc">&nbsp;        String originalTitle = (String) component.getAttributes().get(&quot;originalValue&quot;);</b>
+<b class="fc">&nbsp;        if (circTitle.equals(originalTitle)) {</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (!isValueUnique(context, circTitle)) {</b>
+<b class="fc">&nbsp;            FacesMessage msg = new FacesMessage(</b>
+&nbsp;                    &quot;A circulation with the same title &quot;
+&nbsp;                            + &quot;already exists in the Database.&quot;);
+<b class="fc">&nbsp;            msg.setSeverity(FacesMessage.SEVERITY_ERROR);</b>
+&nbsp;
+<b class="fc">&nbsp;            throw new ValidatorException(msg);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * check if the CirculationName is unique.
+&nbsp;     *
+&nbsp;     * @param context FacesContext for the request we are processing.
+&nbsp;     * @param circulationName : The Name of the Circulation.
+&nbsp;     * @return {@code true} if the Circulation name is unique, {@code false}
+&nbsp;     *         otherwise.
+&nbsp;     */
+&nbsp;    private boolean isValueUnique(final FacesContext context,
+&nbsp;            final String circulationName) {
+<b class="fc">&nbsp;        Circulation circ = new Circulation();</b>
+<b class="fc">&nbsp;        circ.setTitle(circulationName);</b>
+<b class="fc">&nbsp;        circulationDAO = getCirculationDAO(context);</b>
+<b class="fc">&nbsp;        try (Transaction transaction = new Transaction()) {</b>
+<b class="fc">&nbsp;            return !circulationDAO.findCirculationByTitle(circ, transaction);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private CirculationDAO getCirculationDAO(final FacesContext context) {
+<b class="fc">&nbsp;        return context.getApplication().evaluateExpressionGet(context,</b>
+&nbsp;                &quot;#{circulationDAO}&quot;, CirculationDAO.class);
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-11 11:47</div>
+</div>
+</body>
+</html>

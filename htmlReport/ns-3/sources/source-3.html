@@ -1,0 +1,177 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > EmailAddressSyntaxValidator</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dtt.business.validation</a>
+</div>
+
+<h1>Coverage Summary for Class: EmailAddressSyntaxValidator (dtt.business.validation)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EmailAddressSyntaxValidator</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    85.7%
+  </span>
+  <span class="absValue">
+    (6/7)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dtt.business.validation;
+&nbsp;
+&nbsp;import dtt.global.utilities.ConfigReader;
+&nbsp;import jakarta.faces.application.FacesMessage;
+&nbsp;import jakarta.faces.component.UIComponent;
+&nbsp;import jakarta.faces.context.FacesContext;
+&nbsp;import jakarta.faces.validator.FacesValidator;
+&nbsp;import jakarta.faces.validator.Validator;
+&nbsp;import jakarta.faces.validator.ValidatorException;
+&nbsp;
+&nbsp;import java.util.Arrays;
+&nbsp;import java.util.regex.Pattern;
+&nbsp;
+&nbsp;/**
+&nbsp; * A FacesValidator implementation that validates email addresses.
+&nbsp; * This validator checks if the domain of the email address is included in a list of valid domains,
+&nbsp; * which are retrieved from a configuration file using the ConfigReader class.
+&nbsp; *
+&nbsp; * @author Hadi Abou Hassoun
+&nbsp; */
+&nbsp;@FacesValidator(&quot;EmailAddressSyntaxValidator&quot;)
+<b class="fc">&nbsp;public class EmailAddressSyntaxValidator implements Validator {</b>
+&nbsp;
+&nbsp;    private static Pattern pattern;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * An array of valid domains.
+&nbsp;     */
+&nbsp;    private static String[] validDomains;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Validates an email address.
+&nbsp;     * This method checks if the domain of the email address is included in the list of valid domains.
+&nbsp;     * If the email is not valid, a ValidatorException is thrown.
+&nbsp;     *
+&nbsp;     * @param context The FacesContext for the request being processed.
+&nbsp;     * @param component The UIComponent this validator is associated with.
+&nbsp;     * @param value The value to validate.
+&nbsp;     * @throws ValidatorException if the email is not valid.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
+<b class="fc">&nbsp;        String email = (String) value;</b>
+&nbsp;
+<b class="pc">&nbsp;        if (!isValidEmailAddress(email)) {</b>
+<b class="nc">&nbsp;            throw new ValidatorException(new FacesMessage(&quot;Invalid email address. Please enter a valid email address.&quot;));</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks if an email address is valid.
+&nbsp;     * An email is considered valid if its domain is included in the list of valid domains.
+&nbsp;     *
+&nbsp;     * @param email The email address to validate.
+&nbsp;     * @return true if the email is valid, false otherwise.
+&nbsp;     */
+&nbsp;    private boolean isValidEmailAddress(String email) {
+<b class="fc">&nbsp;      String emailPattern = ConfigReader.getProperty(ConfigReader.EMAIL_PATTERN);</b>
+<b class="fc">&nbsp;      pattern = Pattern.compile(emailPattern);</b>
+<b class="fc">&nbsp;      return pattern.matcher(email).matches();</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-11 11:47</div>
+</div>
+</body>
+</html>

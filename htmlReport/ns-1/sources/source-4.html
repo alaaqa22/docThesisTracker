@@ -1,0 +1,140 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > ErrorPageBacking</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dtt.business.backing</a>
+</div>
+
+<h1>Coverage Summary for Class: ErrorPageBacking (dtt.business.backing)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ErrorPageBacking</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dtt.business.backing;
+&nbsp;
+&nbsp;import jakarta.annotation.PostConstruct;
+&nbsp;import jakarta.enterprise.context.RequestScoped;
+&nbsp;import jakarta.inject.Named;
+&nbsp;
+&nbsp;import java.io.Serializable;
+&nbsp;
+&nbsp;/**
+&nbsp; * Backing bean for the error page.
+&nbsp; * @author Alaa Qasem
+&nbsp; */
+&nbsp;
+&nbsp;@RequestScoped
+&nbsp;@Named
+<b class="nc">&nbsp;public class ErrorPageBacking implements Serializable {</b>
+&nbsp;    private String errorMessage;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Return the error message.
+&nbsp;     *
+&nbsp;     * @return The error message.
+&nbsp;     */
+&nbsp;    public String getErrorMessage() {
+<b class="nc">&nbsp;        return errorMessage;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Set the error message.
+&nbsp;     *
+&nbsp;     * @param errorMessage
+&nbsp;     */
+&nbsp;    public void setErrorMessage(String errorMessage) {
+<b class="nc">&nbsp;        this.errorMessage = errorMessage;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-11 11:47</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,280 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > SetNewPasswordBacking</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dtt.business.backing</a>
+</div>
+
+<h1>Coverage Summary for Class: SetNewPasswordBacking (dtt.business.backing)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SetNewPasswordBacking</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/42)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dtt.business.backing;
+&nbsp;
+&nbsp;import dtt.business.utilities.Hashing;
+&nbsp;import dtt.business.utilities.TokenManager;
+&nbsp;import dtt.dataAccess.exceptions.DataNotCompleteException;
+&nbsp;import dtt.dataAccess.exceptions.DataNotFoundException;
+&nbsp;import dtt.dataAccess.exceptions.InvalidInputException;
+&nbsp;import dtt.dataAccess.exceptions.KeyExistsException;
+&nbsp;import dtt.dataAccess.repository.interfaces.UserDAO;
+&nbsp;import dtt.dataAccess.utilities.Transaction;
+&nbsp;import dtt.global.tansport.User;
+&nbsp;import dtt.global.tansport.UserState;
+&nbsp;import dtt.global.utilities.ConfigReader;
+&nbsp;import jakarta.annotation.PostConstruct;
+&nbsp;import jakarta.faces.application.FacesMessage;
+&nbsp;import jakarta.faces.context.FacesContext;
+&nbsp;import jakarta.faces.view.ViewScoped;
+&nbsp;import jakarta.inject.Inject;
+&nbsp;import jakarta.inject.Named;
+&nbsp;
+&nbsp;import java.io.Serializable;
+&nbsp;import java.security.NoSuchAlgorithmException;
+&nbsp;import java.security.spec.InvalidKeySpecException;
+&nbsp;
+&nbsp;import org.apache.logging.log4j.LogManager;
+&nbsp;import org.apache.logging.log4j.Logger;
+&nbsp;
+&nbsp;/**
+&nbsp; * Backing bean for the new password page.
+&nbsp; *
+&nbsp; * @author Alaa Qasem
+&nbsp; */
+&nbsp;@ViewScoped
+&nbsp;@Named
+<b class="nc">&nbsp;public class SetNewPasswordBacking implements Serializable {</b>
+&nbsp;    private static final long serialVersionUID = 3599044613046868659L;
+&nbsp;    /** Initialize Logger. */
+<b class="nc">&nbsp;    private static final Logger LOGGER = LogManager</b>
+<b class="nc">&nbsp;            .getLogger(SetNewPasswordBacking.class);</b>
+&nbsp;    /** The user being worked on. */
+&nbsp;    private User user;
+&nbsp;    /** The new password. */
+&nbsp;    private String password;
+&nbsp;    /** The Token provided. */
+&nbsp;    private String token;
+&nbsp;    /** Inject the DAO to access the User database. */
+&nbsp;    @Inject
+&nbsp;    private UserDAO userDAO;
+&nbsp;    /** Inject the Token Manager with a map of all Tokens. */
+&nbsp;    @Inject
+&nbsp;    private TokenManager tokenManager;
+&nbsp;    /** Inject faclet context. */
+&nbsp;    @Inject
+&nbsp;    private FacesContext fctx;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initialize Objects.
+&nbsp;     */
+&nbsp;    @PostConstruct
+&nbsp;    public void init() {
+<b class="nc">&nbsp;        token = &quot;&quot;;</b>
+<b class="nc">&nbsp;        user = new User();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Read token from the URL and setup objects.
+&nbsp;     *
+&nbsp;     * @return page redirect
+&nbsp;     */
+&nbsp;    public String setup() {
+<b class="nc">&nbsp;        LOGGER.debug(&quot;setup called.&quot;);</b>
+<b class="nc">&nbsp;        if (!tokenManager.lookupToken(token)) {</b>
+<b class="nc">&nbsp;            return &quot;/views/anonymous/token&quot;;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        user = tokenManager.getUserForToken(token);</b>
+<b class="nc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Save the new password/user.
+&nbsp;     * @return navigation
+&nbsp;     */
+&nbsp;    public String save() {
+<b class="nc">&nbsp;        try (Transaction transaction = new Transaction()) {</b>
+<b class="nc">&nbsp;            if (userDAO.findUserByEmail(user, transaction)) {</b>
+<b class="nc">&nbsp;                User tempUser = new User();</b>
+<b class="nc">&nbsp;                tempUser.setId(user.getId());</b>
+<b class="nc">&nbsp;                tempUser.setPasswordSalt(Hashing.generateSalt());</b>
+<b class="nc">&nbsp;                tempUser.setPasswordHashed(Hashing.hashPassword(password,</b>
+<b class="nc">&nbsp;                        tempUser.getPasswordSalt()));</b>
+<b class="nc">&nbsp;                userDAO.update(tempUser, transaction);</b>
+<b class="nc">&nbsp;            } else {</b>
+<b class="nc">&nbsp;                user.setPasswordSalt(Hashing.generateSalt());</b>
+<b class="nc">&nbsp;                user.setPasswordHashed(</b>
+<b class="nc">&nbsp;                        Hashing.hashPassword(password, user.getPasswordSalt()));</b>
+<b class="nc">&nbsp;                if (user.getEmail().equalsIgnoreCase(ConfigReader.ROOT_ADMIN)) {</b>
+<b class="nc">&nbsp;                    user.getUserState().put(null, UserState.ADMIN);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                userDAO.add(user, transaction);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            transaction.commit();</b>
+<b class="nc">&nbsp;            tokenManager.deleteTokenForUser(user);</b>
+<b class="nc">&nbsp;        } catch (NoSuchAlgorithmException | InvalidKeySpecException</b>
+&nbsp;                | InvalidInputException | DataNotFoundException
+&nbsp;                | DataNotCompleteException e) {
+<b class="nc">&nbsp;            LOGGER.error(&quot;Failed to change password &quot; + user.getId(), e);</b>
+<b class="nc">&nbsp;            throw new IllegalStateException(&quot;Failed to change password&quot;, e);</b>
+<b class="nc">&nbsp;        } catch (KeyExistsException e) {</b>
+<b class="nc">&nbsp;            LOGGER.error(&quot;Failed to change password &quot; + user.getEmail()</b>
+&nbsp;                    + &quot;key exists&quot;, e);
+<b class="nc">&nbsp;            final FacesMessage fmsg = new FacesMessage(</b>
+&nbsp;                    &quot;Registrierung fehlgeschlagen. Nutzer mit derselben &quot;
+&nbsp;                            + &quot;Email befindet sich bereits im System&quot;);
+<b class="nc">&nbsp;            fmsg.setSeverity(FacesMessage.SEVERITY_ERROR);</b>
+<b class="nc">&nbsp;            fctx.addMessage(&quot;setNew:generalMessage&quot;, fmsg);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return &quot;/views/anonymous/login&quot;;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Getter for token.
+&nbsp;     *
+&nbsp;     * @return the token.
+&nbsp;     */
+&nbsp;    public String getToken() {
+<b class="nc">&nbsp;        return token;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Setter for token.
+&nbsp;     *
+&nbsp;     * @param newToken the new Token
+&nbsp;     */
+&nbsp;    public void setToken(final String newToken) {
+<b class="nc">&nbsp;        this.token = newToken;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Getter for user.
+&nbsp;     *
+&nbsp;     * @return the user DTO
+&nbsp;     */
+&nbsp;    public User getUser() {
+<b class="nc">&nbsp;        return user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Getter for password.
+&nbsp;     *
+&nbsp;     * @return the password
+&nbsp;     */
+&nbsp;    public String getPassword() {
+<b class="nc">&nbsp;        return password;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Setter for password.
+&nbsp;     *
+&nbsp;     * @param newPassword the new password
+&nbsp;     */
+&nbsp;    public void setPassword(final String newPassword) {
+<b class="nc">&nbsp;        this.password = newPassword;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-11 11:47</div>
+</div>
+</body>
+</html>

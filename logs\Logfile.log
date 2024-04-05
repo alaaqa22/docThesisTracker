@@ -1,0 +1,20 @@
+15:38::48:911 [main]  INFO dtt.business.utilities.SessionInfo - User set:4
+15:38::48:916 [main]  INFO dtt.business.utilities.SessionInfo - User is a:{dtt.global.tansport.Faculty@62f87c44=DEANERY}
+15:39::06:722 [main]  INFO dtt.business.utilities.SessionInfo - User set:4
+15:39::06:727 [main]  INFO dtt.business.utilities.SessionInfo - User is a:{dtt.global.tansport.Faculty@62f87c44=DEANERY}
+15:40::39:801 [main]  INFO dtt.business.utilities.SessionInfo - User set:4
+15:40::39:807 [main]  INFO dtt.business.utilities.SessionInfo - User is a:{dtt.global.tansport.Faculty@62f87c44=DEANERY}
+15:41::03:147 [main]  INFO dtt.business.utilities.SessionInfo - User set:4
+15:41::03:152 [main]  INFO dtt.business.utilities.SessionInfo - User is a:{dtt.global.tansport.Faculty@62f87c44=DEANERY}
+15:41::51:668 [main]  INFO dtt.business.utilities.SessionInfo - User set:4
+15:41::51:674 [main]  INFO dtt.business.utilities.SessionInfo - User is a:{dtt.global.tansport.Faculty@62f87c44=DEANERY}
+20:52::11:027 [main] DEBUG dtt.business.utilities.Hashing - verifyPassword() called.
+20:52::11:034 [main] DEBUG dtt.business.utilities.Hashing - hashPassword() called.
+20:53::02:979 [main] DEBUG dtt.business.utilities.Hashing - verifyPassword() called.
+20:53::02:986 [main] DEBUG dtt.business.utilities.Hashing - hashPassword() called.
+20:53::03:009 [main] DEBUG dtt.business.utilities.SessionInfo - setUser() called.
+20:53::03:009 [main] DEBUG dtt.business.utilities.SessionInfo - setLoggedIn() called.
+20:53::25:699 [main] DEBUG dtt.business.utilities.Hashing - verifyPassword() called.
+20:53::25:705 [main] DEBUG dtt.business.utilities.Hashing - hashPassword() called.
+20:53::25:736 [main] DEBUG dtt.business.utilities.SessionInfo - setUser() called.
+20:53::25:736 [main] DEBUG dtt.business.utilities.SessionInfo - setLoggedIn() called.

@@ -1,0 +1,434 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > ProfileBacking</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dtt.business.backing</a>
+</div>
+
+<h1>Coverage Summary for Class: ProfileBacking (dtt.business.backing)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ProfileBacking</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    77.3%
+  </span>
+  <span class="absValue">
+    (17/22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    28%
+  </span>
+  <span class="absValue">
+    (14/50)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    44.4%
+  </span>
+  <span class="absValue">
+    (52/117)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dtt.business.backing;
+&nbsp;
+&nbsp;import dtt.business.utilities.Hashing;
+&nbsp;import dtt.business.utilities.SessionInfo;
+&nbsp;import dtt.dataAccess.exceptions.DataNotCompleteException;
+&nbsp;import dtt.dataAccess.exceptions.DataNotFoundException;
+&nbsp;import dtt.dataAccess.exceptions.InvalidInputException;
+&nbsp;import dtt.dataAccess.exceptions.KeyExistsException;
+&nbsp;import dtt.dataAccess.repository.interfaces.FacultyDAO;
+&nbsp;import dtt.dataAccess.repository.interfaces.UserDAO;
+&nbsp;import dtt.dataAccess.utilities.Transaction;
+&nbsp;import dtt.global.tansport.Faculty;
+&nbsp;import dtt.global.tansport.User;
+&nbsp;import dtt.global.tansport.UserState;
+&nbsp;import jakarta.annotation.PostConstruct;
+&nbsp;import jakarta.faces.application.FacesMessage;
+&nbsp;import jakarta.faces.context.FacesContext;
+&nbsp;import jakarta.faces.view.ViewScoped;
+&nbsp;import jakarta.inject.Inject;
+&nbsp;import jakarta.inject.Named;
+&nbsp;import org.apache.logging.log4j.LogManager;
+&nbsp;import org.apache.logging.log4j.Logger;
+&nbsp;
+&nbsp;import java.io.Serializable;
+&nbsp;import java.security.NoSuchAlgorithmException;
+&nbsp;import java.security.spec.InvalidKeySpecException;
+&nbsp;import java.util.*;
+&nbsp;
+&nbsp;/**
+&nbsp; * Backing bean for the profile page.
+&nbsp; *
+&nbsp; * @author Alaa Qasem
+&nbsp; */
+&nbsp;@ViewScoped
+&nbsp;@Named
+<b class="fc">&nbsp;public class ProfileBacking implements Serializable {</b>
+<b class="fc">&nbsp;    private final static Logger LOGGER = LogManager.getLogger(ProfileBacking.class);</b>
+&nbsp;    private User user;
+&nbsp;    @Inject
+&nbsp;    private UserDAO userDAO;
+&nbsp;    @Inject
+&nbsp;    private SessionInfo sessionInfo;
+&nbsp;    @Inject
+&nbsp;    private FacultyDAO facultyDAO;
+&nbsp;    private List&lt;UserState&gt; userStates;
+&nbsp;    private UserState currentUserState;
+&nbsp;    private String newEmail;
+&nbsp;    private Faculty currentFaculty;
+&nbsp;    private List&lt;Faculty&gt; faculties;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes the user dto object.
+&nbsp;     */
+&nbsp;    @PostConstruct
+&nbsp;    private void init() {
+<b class="fc">&nbsp;        user = new User();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Load the user&#39;s information.
+&nbsp;     */
+&nbsp;    public void load() {
+&nbsp;
+<b class="fc">&nbsp;        try (Transaction transaction = new Transaction()) {</b>
+<b class="fc">&nbsp;            userDAO.getUserById(user, transaction);</b>
+<b class="pc">&nbsp;            if (!(sessionInfo.isAdmin() || isOwnProfile() ||</b>
+<b class="nc">&nbsp;                    (sessionInfo.deaneryInCurrentFaculty() &amp;&amp; user.getUserState().containsKey(sessionInfo.getCurrentFaculty())))) {</b>
+&nbsp;
+&nbsp;                // User does not meet the conditions.
+<b class="nc">&nbsp;                throw new IllegalStateException();</b>
+&nbsp;            }
+<b class="fc">&nbsp;            transaction.commit();</b>
+<b class="fc">&nbsp;        } catch (DataNotFoundException e) {</b>
+<b class="nc">&nbsp;            LOGGER.info(&quot;Failed to load user information.&quot;);</b>
+<b class="nc">&nbsp;            throw new IllegalStateException(&quot;Failed to load user information.&quot;, e);</b>
+&nbsp;
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Remove authentication from a user on a certain faculty.
+&nbsp;     */
+&nbsp;    public void removeAuth() {
+&nbsp;
+<b class="nc">&nbsp;        if ((sessionInfo.isAdmin() || sessionInfo.deaneryInCurrentFaculty()) &amp;&amp; !isOwnProfile()) {</b>
+<b class="nc">&nbsp;            try (Transaction transaction = new Transaction()) {</b>
+<b class="nc">&nbsp;                if (sessionInfo.deaneryInCurrentFaculty()) {</b>
+<b class="nc">&nbsp;                    currentFaculty = sessionInfo.getCurrentFaculty();</b>
+&nbsp;                }
+&nbsp;
+&nbsp;                //only the admin can see this user state
+<b class="nc">&nbsp;                if (currentUserState == UserState.ADMIN) {</b>
+<b class="nc">&nbsp;                    currentFaculty = new Faculty();</b>
+&nbsp;
+&nbsp;                }
+&nbsp;
+&nbsp;                //check if the selected faculty to remove from admin, is actually the user belong to.
+<b class="nc">&nbsp;                if (!user.getUserState().containsKey(currentFaculty)) {</b>
+<b class="nc">&nbsp;                    throw new InvalidInputException();</b>
+&nbsp;                }
+&nbsp;
+<b class="nc">&nbsp;                User userToDelete = new User();</b>
+<b class="nc">&nbsp;                userToDelete.setId(user.getId());</b>
+<b class="nc">&nbsp;                userToDelete.getUserState().put(currentFaculty, null);</b>
+&nbsp;
+<b class="nc">&nbsp;                userDAO.removeAuth(userToDelete, transaction);</b>
+<b class="nc">&nbsp;                user.getUserState().remove(currentFaculty);</b>
+&nbsp;
+<b class="nc">&nbsp;                userDAO.update(user, transaction);</b>
+<b class="nc">&nbsp;                transaction.commit();</b>
+<b class="nc">&nbsp;                LOGGER.info(&quot;Authentication&quot; + currentFaculty.getName() + &quot; &quot; + currentUserState + &quot;was removed from&quot; + user.getEmail());</b>
+<b class="nc">&nbsp;                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,</b>
+&nbsp;                        &quot;Authentifizierung wurde entfernt!&quot;, null);
+<b class="nc">&nbsp;                FacesContext.getCurrentInstance().addMessage(null, message);</b>
+&nbsp;
+<b class="nc">&nbsp;            } catch (DataNotFoundException | DataNotCompleteException e) {</b>
+<b class="nc">&nbsp;                LOGGER.error(&quot;Failed to save the updated information from userID: &quot; + user.getEmail());</b>
+<b class="nc">&nbsp;                throw new IllegalStateException(&quot;Failed to save the updated information&quot;, e);</b>
+&nbsp;
+<b class="nc">&nbsp;            } catch (InvalidInputException | KeyExistsException e) {</b>
+<b class="nc">&nbsp;                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR,</b>
+&nbsp;                        &quot;Der Benutzer ist nicht Teil der ausgewählten Fakultät.&quot;, null);
+<b class="nc">&nbsp;                FacesContext.getCurrentInstance().addMessage(null, message);</b>
+&nbsp;
+<b class="nc">&nbsp;            }</b>
+&nbsp;
+&nbsp;        }
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Allows administrators and deanery members to set the {@link UserState} for users in the system.
+&nbsp;     * The admin can set the {@link Faculty} and the {@link UserState} while the deanery can only set the user state of the faculty
+&nbsp;     * that he is deanery member in.
+&nbsp;     */
+&nbsp;    public void addOrUpdateAuth() {
+<b class="pc">&nbsp;        if (sessionInfo.isAdmin() &amp;&amp; !isOwnProfile()) {</b>
+<b class="pc">&nbsp;            if (currentUserState == UserState.ADMIN) {</b>
+<b class="nc">&nbsp;                currentFaculty = new Faculty();</b>
+&nbsp;            }
+<b class="fc">&nbsp;            user.getUserState().put(currentFaculty, currentUserState);</b>
+<b class="nc">&nbsp;        } else if (sessionInfo.deaneryInCurrentFaculty() &amp;&amp; !isOwnProfile()) {</b>
+<b class="nc">&nbsp;            user.getUserState().put(sessionInfo.getCurrentFaculty(), currentUserState);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        try (Transaction transaction = new Transaction()) {</b>
+&nbsp;            try {
+<b class="fc">&nbsp;                userDAO.update(user, transaction);</b>
+<b class="fc">&nbsp;                transaction.commit();</b>
+<b class="fc">&nbsp;                LOGGER.info(&quot;Changes saved &quot; + user.getEmail());</b>
+<b class="fc">&nbsp;                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,</b>
+&nbsp;                        &quot;Authentifizierung wurde aktualisiert.&quot;, null);
+<b class="fc">&nbsp;                FacesContext.getCurrentInstance().addMessage(null, message);</b>
+&nbsp;
+<b class="nc">&nbsp;            } catch (DataNotFoundException e) {</b>
+<b class="nc">&nbsp;                LOGGER.error(&quot;Failed to save the updated userstate information from  &quot; + user.getEmail());</b>
+<b class="nc">&nbsp;                transaction.abort();</b>
+<b class="nc">&nbsp;                throw new IllegalStateException(&quot;Failed to save the updated information&quot;, e);</b>
+<b class="nc">&nbsp;            } catch (InvalidInputException | KeyExistsException e) {</b>
+<b class="nc">&nbsp;                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR,</b>
+&nbsp;                        &quot;Fehler bei der Authentifizierung.&quot;, null);
+<b class="nc">&nbsp;                FacesContext.getCurrentInstance().addMessage(null, message);</b>
+&nbsp;
+<b class="fc">&nbsp;            }</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Saves the new updated data from the user.
+&nbsp;     */
+&nbsp;    public void save() {
+&nbsp;
+&nbsp;        //check if a new password was given,then new password salt will be generated and will be hashed with the given password.
+<b class="pc">&nbsp;        if (!user.getPassword().isEmpty()) {</b>
+&nbsp;            try {
+<b class="fc">&nbsp;                user.setPasswordSalt(Hashing.generateSalt());</b>
+<b class="fc">&nbsp;                user.setPasswordHashed(Hashing.hashPassword(user.getPassword(), user.getPasswordSalt()));</b>
+<b class="fc">&nbsp;                LOGGER.info(&quot;Password has been changed from &quot; + user.getEmail());</b>
+&nbsp;
+<b class="nc">&nbsp;            } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {</b>
+<b class="nc">&nbsp;                LOGGER.error(&quot;Failed to change password &quot; + user.getEmail());</b>
+<b class="nc">&nbsp;                throw new IllegalStateException(&quot;Failed to change password&quot;, e);</b>
+<b class="fc">&nbsp;            }</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (!newEmail.isEmpty()) {</b>
+<b class="fc">&nbsp;            LOGGER.info(&quot;Email has been changed from &quot; + user.getEmail() + &quot; to &quot; + newEmail);</b>
+<b class="fc">&nbsp;            user.setEmail(newEmail);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        try (Transaction transaction = new Transaction()) {</b>
+&nbsp;            try {
+<b class="fc">&nbsp;                userDAO.update(user, transaction);</b>
+<b class="fc">&nbsp;                transaction.commit();</b>
+<b class="fc">&nbsp;                LOGGER.info(&quot;Changes saved &quot; + user.getEmail());</b>
+<b class="fc">&nbsp;                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,</b>
+&nbsp;                        &quot;Neue Änderungen wurden erfolgreich aktualisiert.&quot;, null);
+<b class="fc">&nbsp;                FacesContext.getCurrentInstance().addMessage(null, message);</b>
+&nbsp;
+<b class="nc">&nbsp;            } catch (DataNotFoundException e) {</b>
+<b class="nc">&nbsp;                LOGGER.error(&quot;Failed to save the updated information from userID: &quot; + user.getEmail());</b>
+<b class="nc">&nbsp;                transaction.abort();</b>
+<b class="nc">&nbsp;                throw new IllegalStateException(&quot;Failed to save the updated information&quot;, e);</b>
+<b class="nc">&nbsp;            } catch (InvalidInputException | KeyExistsException e) {</b>
+<b class="nc">&nbsp;                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR,</b>
+&nbsp;                        &quot;Fehler beim Speichern.&quot;, null);
+<b class="nc">&nbsp;                FacesContext.getCurrentInstance().addMessage(null, message);</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;            }</b>
+&nbsp;
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Check if the logged-in user viewing his own profile.
+&nbsp;     *
+&nbsp;     * @return {@code true} if the current user viewing his own profile and {@code false} otherwise.
+&nbsp;     */
+&nbsp;    public boolean isOwnProfile() {
+<b class="fc">&nbsp;        return sessionInfo.getUser().getId() == user.getId();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean isSameLevel() {
+<b class="pc">&nbsp;        return !isOwnProfile() &amp;&amp; sessionInfo.getCurrentUserState() == user.getUserState().get(sessionInfo.getCurrentFaculty());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Deletes the user from the system.
+&nbsp;     * Only the logged-in user, admin, and deanery members have the permission to delete the profile.
+&nbsp;     *
+&nbsp;     * @return redirect to the login page if the user delete his profile or redirect to userlist page if an admin or deanery
+&nbsp;     * deleted the profile.
+&nbsp;     */
+&nbsp;    public String deleteProfile() {
+<b class="nc">&nbsp;        if (isOwnProfile() || sessionInfo.isAdmin() || sessionInfo.deaneryInCurrentFaculty()) {</b>
+<b class="nc">&nbsp;            try (Transaction transaction = new Transaction()) {</b>
+<b class="nc">&nbsp;                userDAO.remove(user, transaction);</b>
+<b class="nc">&nbsp;                transaction.commit();</b>
+<b class="nc">&nbsp;                LOGGER.debug(&quot;Profile with email &quot; + user.getEmail() + &quot; has been removed&quot;);</b>
+<b class="nc">&nbsp;                if (isOwnProfile()) {</b>
+<b class="nc">&nbsp;                    return &quot;/views/anonymous/login.xhtml?faces-redirect=true&quot;;</b>
+&nbsp;                }
+<b class="nc">&nbsp;                return &quot;/views/deanery/userList.xhtml?faces-redirect=true&quot;;</b>
+&nbsp;
+<b class="nc">&nbsp;            } catch (DataNotFoundException e) {</b>
+<b class="nc">&nbsp;                LOGGER.error(&quot;Failed to remove profile  &quot; + user.getEmail());</b>
+<b class="nc">&nbsp;                throw new IllegalStateException(&quot;Failed to remove profile.&quot;, e);</b>
+&nbsp;            }
+&nbsp;        } else {
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public List&lt;Faculty&gt; getFaculties() {
+<b class="fc">&nbsp;        try (Transaction transaction = new Transaction()) {</b>
+<b class="fc">&nbsp;            faculties = facultyDAO.getFaculties(transaction);</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return faculties;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setFaculties(List&lt;Faculty&gt; faculties) {
+<b class="nc">&nbsp;        this.faculties = faculties;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public User getUser() {
+<b class="fc">&nbsp;        return user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setUser(User user) {
+<b class="nc">&nbsp;        this.user = user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public SessionInfo getSessionInfo() {
+<b class="nc">&nbsp;        return sessionInfo;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public UserState getCurrentUserState() {
+<b class="fc">&nbsp;        return currentUserState;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setCurrentUserState(UserState currentUserState) {
+<b class="fc">&nbsp;        this.currentUserState = currentUserState;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public Faculty getCurrentFaculty() {
+&nbsp;
+<b class="fc">&nbsp;        return currentFaculty;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setCurrentFaculty(Faculty currentFaculty) {
+<b class="fc">&nbsp;        this.currentFaculty = currentFaculty;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;UserState&gt; getUserStates() {
+<b class="fc">&nbsp;        userStates = new ArrayList&lt;&gt;(Arrays.asList(UserState.values()));</b>
+&nbsp;
+&nbsp;        //remove the admin-state option for the deanery.
+<b class="pc">&nbsp;        if (sessionInfo.isDeanery()) {</b>
+<b class="nc">&nbsp;            userStates.remove(UserState.ADMIN);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return userStates;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getNewEmail() {
+<b class="fc">&nbsp;        return newEmail;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setNewEmail(String newEmail) {
+<b class="fc">&nbsp;        this.newEmail = newEmail;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-11 11:47</div>
+</div>
+</body>
+</html>

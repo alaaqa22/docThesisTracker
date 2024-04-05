@@ -1,0 +1,276 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > LoginBacking</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dtt.business.backing</a>
+</div>
+
+<h1>Coverage Summary for Class: LoginBacking (dtt.business.backing)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LoginBacking</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    53.3%
+  </span>
+  <span class="absValue">
+    (8/15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (6/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    70.2%
+  </span>
+  <span class="absValue">
+    (33/47)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dtt.business.backing;
+&nbsp;
+&nbsp;import dtt.business.utilities.Hashing;
+&nbsp;import dtt.business.utilities.SessionInfo;
+&nbsp;import dtt.dataAccess.repository.interfaces.UserDAO;
+&nbsp;import dtt.dataAccess.utilities.Transaction;
+&nbsp;import dtt.global.tansport.Faculty;
+&nbsp;import dtt.global.tansport.User;
+&nbsp;import dtt.global.tansport.UserState;
+&nbsp;import jakarta.annotation.PostConstruct;
+&nbsp;import jakarta.enterprise.context.RequestScoped;
+&nbsp;import jakarta.faces.application.FacesMessage;
+&nbsp;import jakarta.faces.context.ExternalContext;
+&nbsp;import jakarta.faces.context.FacesContext;
+&nbsp;import jakarta.inject.Inject;
+&nbsp;import jakarta.inject.Named;
+&nbsp;
+&nbsp;import java.io.Serializable;
+&nbsp;import java.security.NoSuchAlgorithmException;
+&nbsp;import java.security.spec.InvalidKeySpecException;
+&nbsp;import java.util.Map;
+&nbsp;
+&nbsp;
+&nbsp;import org.apache.logging.log4j.LogManager;
+&nbsp;import org.apache.logging.log4j.Logger;
+&nbsp;
+&nbsp;/**
+&nbsp; * Backing bean for the login page.
+&nbsp; *
+&nbsp; * @author Alaa Qasem
+&nbsp; */
+&nbsp;@RequestScoped
+&nbsp;@Named
+<b class="fc">&nbsp;public class LoginBacking implements Serializable {</b>
+<b class="fc">&nbsp;    private static final Logger LOGGER = LogManager.getLogger(LoginBacking.class);</b>
+&nbsp;    @Inject
+&nbsp;    private SessionInfo sessionInfo;
+&nbsp;    @Inject
+&nbsp;    private UserDAO userDAO;
+&nbsp;    private User user;
+&nbsp;    private String token;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initializes the login backing bean.
+&nbsp;     */
+&nbsp;    @PostConstruct
+&nbsp;    public void init() {
+<b class="fc">&nbsp;        user = new User();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Check the entered email and password and either show an error message or go
+&nbsp;     * to circulationList page.
+&nbsp;     *
+&nbsp;     * @return Go to circulation-list page on success or stay
+&nbsp;     * in the same page on Invalid credentials.
+&nbsp;     */
+&nbsp;    public String login() {
+<b class="fc">&nbsp;        try (Transaction transaction = new Transaction()) {</b>
+<b class="fc">&nbsp;            User userDB = new User();</b>
+<b class="fc">&nbsp;            userDB.setEmail(user.getEmail());</b>
+<b class="fc">&nbsp;            boolean found = userDAO.findUserByEmail(userDB, transaction);</b>
+<b class="pc">&nbsp;            if (found) {</b>
+&nbsp;                boolean verified;
+&nbsp;                try {
+<b class="fc">&nbsp;                    verified = Hashing.verifyPassword(user.getPassword(), userDB.getPasswordSalt(), userDB.getPasswordHashed());</b>
+<b class="pc">&nbsp;                    if (verified) {</b>
+<b class="fc">&nbsp;                        sessionInfo.setLoggedIn(true);</b>
+<b class="fc">&nbsp;                        user = userDB;</b>
+<b class="fc">&nbsp;                        sessionInfo.setUser(user);</b>
+<b class="fc">&nbsp;                        sessionInfo.setCurrentFaculty (getDefaultUserFaculty ());</b>
+<b class="fc">&nbsp;                        sessionInfo.setCurrentUserState (getUserStareOfCurrentFaculty (getDefaultUserFaculty ()));</b>
+<b class="fc">&nbsp;                        transaction.commit();</b>
+&nbsp;
+&nbsp;                        // Password matches, login successful
+<b class="fc">&nbsp;                        return &quot;/views/authenticated/circulationslist?faces-redirect=true&quot;;</b>
+&nbsp;                    }
+&nbsp;
+<b class="nc">&nbsp;                } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {</b>
+<b class="nc">&nbsp;                    LOGGER.error(&quot;Login attempt unsuccessful from user &quot; + user.getId());</b>
+<b class="nc">&nbsp;                    throw new IllegalStateException(e);</b>
+<b class="nc">&nbsp;                }</b>
+&nbsp;
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        // Password does not match or user not found, show error message
+&nbsp;
+<b class="nc">&nbsp;        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, &quot;Invalid credentials!&quot;, null);</b>
+<b class="nc">&nbsp;        FacesContext.getCurrentInstance().addMessage(null, message);</b>
+<b class="nc">&nbsp;        return null;</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Go to register-page.
+&nbsp;     *
+&nbsp;     * @return Go to register-page.
+&nbsp;     */
+&nbsp;    public String register() {
+<b class="fc">&nbsp;        return &quot;/views/anonymous/registration?faces-redirect=true&quot;;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Go to forget-password page.
+&nbsp;     *
+&nbsp;     * @return Go to forget-password page.
+&nbsp;     */
+&nbsp;    public String forgetPass() {
+<b class="nc">&nbsp;        return &quot;/views/anonymous/forgetPassword?faces-redirect=true&quot;;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public User getUser() {
+<b class="fc">&nbsp;        return user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setUser(User user) {
+<b class="nc">&nbsp;        this.user = user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setSessionInfo(SessionInfo sessionInfo) {
+<b class="nc">&nbsp;        this.sessionInfo = sessionInfo;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setUserDAO(UserDAO userDAO) {
+<b class="nc">&nbsp;        this.userDAO = userDAO;</b>
+&nbsp;    }
+&nbsp;    private Faculty getDefaultUserFaculty() {
+<b class="fc">&nbsp;        int maxPriority = -1;</b>
+<b class="fc">&nbsp;        Faculty defaultFaculty = null;</b>
+&nbsp;
+<b class="fc">&nbsp;        for (Map.Entry&lt;Faculty, UserState&gt; entry : sessionInfo.getUser ().getUserState ().entrySet()) {</b>
+<b class="fc">&nbsp;            UserState userState = entry.getValue();</b>
+<b class="fc">&nbsp;            if (userState.getPriority() &gt; maxPriority) {</b>
+<b class="fc">&nbsp;                maxPriority = userState.getPriority();</b>
+<b class="fc">&nbsp;                defaultFaculty = entry.getKey();</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        sessionInfo.setCurrentFaculty (defaultFaculty);</b>
+&nbsp;
+<b class="fc">&nbsp;        return defaultFaculty;</b>
+&nbsp;    }
+&nbsp;    private UserState getUserStareOfCurrentFaculty(Faculty faculty){
+<b class="fc">&nbsp;        Map&lt;Faculty, UserState&gt; userStateMap = user.getUserState();</b>
+<b class="fc">&nbsp;        UserState userState = userStateMap.get(faculty);</b>
+&nbsp;
+<b class="fc">&nbsp;        return userState;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setToken (String token) {
+<b class="nc">&nbsp;        this.token = token;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getToken () {
+<b class="nc">&nbsp;        return token;</b>
+&nbsp;    }
+&nbsp;    public String updateToken() {
+<b class="nc">&nbsp;        return &quot;setNew?faces-redirect=true&amp;token=&quot; +token;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-11 11:47</div>
+</div>
+</body>
+</html>

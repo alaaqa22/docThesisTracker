@@ -1,0 +1,139 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > UncheckedExceptionHandlerFactory</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dtt.business.utilities</a>
+</div>
+
+<h1>Coverage Summary for Class: UncheckedExceptionHandlerFactory (dtt.business.utilities)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UncheckedExceptionHandlerFactory</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dtt.business.utilities;
+&nbsp;
+&nbsp;import jakarta.faces.context.ExceptionHandler;
+&nbsp;import jakarta.faces.context.ExceptionHandlerFactory;
+&nbsp;
+&nbsp;
+&nbsp;/**
+&nbsp; * UncheckedExceptionHandlerFactory is a custom implementation for handling unchecked exceptions.
+&nbsp; * The UncheckedExceptionHandlerFactory creates an instance of UncheckedExceptionHandler,
+&nbsp; * which is responsible for handling unchecked exceptions that occur during JSF lifecycle.
+&nbsp; *
+&nbsp; * This custom implementation allows for specific handling of unchecked exceptions,
+&nbsp; * providing additional logging and error response customization as needed.
+&nbsp; * @author Johannes Silvennoinen
+&nbsp; */
+&nbsp;public class UncheckedExceptionHandlerFactory extends ExceptionHandlerFactory {
+&nbsp;    private final ExceptionHandlerFactory parent;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Constructor
+&nbsp;     * @param parent The parent that gets saved in the factory.
+&nbsp;     */
+<b class="fc">&nbsp;    public UncheckedExceptionHandlerFactory(ExceptionHandlerFactory parent) {</b>
+<b class="fc">&nbsp;        this.parent = parent;</b>
+&nbsp;    }
+&nbsp;    /**
+&nbsp;     * Creates a new instance of UncheckedExceptionHandler that will be used for
+&nbsp;     * handling unchecked exceptions in the JSF application.
+&nbsp;     *
+&nbsp;     * @return An instance of UncheckedExceptionHandler.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public ExceptionHandler getExceptionHandler() {
+<b class="fc">&nbsp;        return new UncheckedExceptionHandler(parent.getExceptionHandler());</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-11 11:47</div>
+</div>
+</body>
+</html>

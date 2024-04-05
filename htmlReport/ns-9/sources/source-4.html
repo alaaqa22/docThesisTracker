@@ -1,0 +1,222 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > CirculationDAO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dtt.dataAccess.repository.interfaces</a>
+</div>
+
+<h1>Coverage Summary for Class: CirculationDAO (dtt.dataAccess.repository.interfaces)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">CirculationDAO</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dtt.dataAccess.repository.interfaces;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;import dtt.dataAccess.exceptions.DataNotCompleteException;
+&nbsp;import dtt.dataAccess.exceptions.DataNotFoundException;
+&nbsp;import dtt.dataAccess.exceptions.InvalidInputException;
+&nbsp;import dtt.dataAccess.exceptions.KeyExistsException;
+&nbsp;import dtt.dataAccess.utilities.Transaction;
+&nbsp;import dtt.global.tansport.Circulation;
+&nbsp;
+&nbsp;/**
+&nbsp; * This interface describes methods to handle database access related to circulations.
+&nbsp; * 
+&nbsp; * @author Stefan Witka
+&nbsp; *
+&nbsp; */
+&nbsp;public interface CirculationDAO {
+&nbsp;	
+&nbsp;	/**
+&nbsp;	 * Add a new circulation record to the database.
+&nbsp;	 * 
+&nbsp;	 * &lt;p&gt; All properties of {@code circulation} have to be set except for {@code circulation.id} because the ID is automatically assigned. 
+&nbsp;	 * The generated ID is set in the given {@code circulation} object. 
+&nbsp;	 * The title must be unique (i.e., not present in the database already).
+&nbsp;     * 
+&nbsp;     * &lt;p&gt;If the user cannot be added to the database (due to invalid input or other error), an exception is thrown.
+&nbsp;	 * 
+&nbsp;	 * @param circulation The circulation record to be added to the database.
+&nbsp;	 * @param transaction The transaction associated with this operation.
+&nbsp;	 * @throws DataNotCompleteException if necessary values of the {@code circulation} are not set
+&nbsp;	 * @throws InvalidInputException if input data is faulty
+&nbsp;	 * @throws KeyExistsException if the circulation title is not unique
+&nbsp;	 */
+&nbsp;    void add(Circulation circulation, Transaction transaction) throws DataNotCompleteException, InvalidInputException, KeyExistsException;
+&nbsp;	
+&nbsp;	/**
+&nbsp;	 * Remove a circulation record from the database.
+&nbsp;	 * 
+&nbsp;	 * &lt;p&gt; Only the {@code circulation.id} property of {@code circulation} needs to be set, 
+&nbsp;	 * all other values will be ignored.
+&nbsp;	 * 
+&nbsp;	 * &lt;p&gt; If the unique Identifier was not found in the Database, an exception is thrown.
+&nbsp;	 * 
+&nbsp;	 * @param circulation The circulation record to be removed from the database.
+&nbsp;	 * @param transaction The transaction associated with this operation.
+&nbsp;	 * @throws DataNotFoundException if the {@code circulation} record is not found in the database
+&nbsp;	 */
+&nbsp;    void remove(Circulation circulation, Transaction transaction) throws DataNotFoundException;
+&nbsp;	
+&nbsp;	/**
+&nbsp;	 * Update a circulation record in the database.
+&nbsp;	 * 
+&nbsp;	 * &lt;p&gt;The {@code circulation.id} needs to be set correctly.
+&nbsp;	 * All other Circulation Properties will be overwritten unless set to {@code null}.
+&nbsp;	 * The title must be unique (i.e., not present in the database already).
+&nbsp;
+&nbsp;	 * @param circulation The circulation record to be updated in the database.
+&nbsp;	 * @param transaction The transaction associated with this operation.
+&nbsp;	 * @throws DataNotFoundException if the {@code circulation} record is not found in the database
+&nbsp;	 * @throws InvalidInputException if input data is faulty
+&nbsp;	 * @throws KeyExistsException if the email address of the {@code user} is already present in the Database
+&nbsp;	 */
+&nbsp;    void update(Circulation circulation, Transaction transaction) throws DataNotFoundException, InvalidInputException, KeyExistsException;
+&nbsp;	
+&nbsp;	/**
+&nbsp;	 * Retrieve a circulation record from the database.
+&nbsp;	 * 
+&nbsp;	 * &lt;p&gt; Only the {@code circulation.id} property of {@code circulation} needs to be set, 
+&nbsp;	 * all other values will be overwritten when retrieving the Circulation from the Database.
+&nbsp;	 * If the unique Identifier was not found in the Database, an exception is thrown.
+&nbsp;	 * 
+&nbsp;	 * @param circulation The circulation record to be retrieved from the database.
+&nbsp;	 * @param transaction The transaction associated with this operation.
+&nbsp;	 * @throws DataNotFoundException if the {@code circulation} record is not found in the database
+&nbsp;	 */
+&nbsp;    void getCirculationById(Circulation circulation, Transaction transaction) throws DataNotFoundException;
+&nbsp;	
+&nbsp;	/**
+&nbsp;	 * Check if a circulation with a given title exists and retrieve it from the Database.
+&nbsp;	 * 
+&nbsp;	 * &lt;p&gt; Only the {@code circulation.title} property of {@code circulation} needs to be set, 
+&nbsp;	 * all other values will be overwritten when retrieving the circulation from the Database.
+&nbsp;	 * If the unique title was not found in the Database, {@code false} is returned. 
+&nbsp;	 * 
+&nbsp;	 * @param circulation The circulation DTO with set title value to be retrieved from the Database
+&nbsp;	 * @param transaction The transaction associated with this operation.
+&nbsp;	 * @return {@code true} if circulation with that same title was found in the Database; {@code false} if no circulation with that title was found 
+&nbsp;	 */
+&nbsp;    boolean findCirculationByTitle(Circulation circulation, Transaction transaction);
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Retrieve a list of circulation records from the database with pagination support.
+&nbsp;	 * 
+&nbsp;	 * &lt;p&gt; Values set in Circulation, except for {@code circulation.id} and {@code circulation.attachmentslist} are used to filter results if set.
+&nbsp;	 * {@code circulation.id} and {@code circulation.attachmentslist} are ignored in the filter object.
+&nbsp;	 * 
+&nbsp;	 * @param circulation The circulation record used as a filter for retrieving records.
+&nbsp;	 * @param transaction The transaction associated with this operation.
+&nbsp;	 * @param offset The starting index of the circulation records to retrieve.
+&nbsp;	 * @param count The maximum number of circulation records to retrieve.
+&nbsp;	 * @return A list of Users matching the filter criteria, or an empty list if no matches were found.
+&nbsp;	 */
+&nbsp;    List&lt;Circulation&gt; getCirculations(Circulation circulation, Transaction transaction, int offset, int count);
+&nbsp;	
+&nbsp;	/**
+&nbsp;	 * Get the Total Number of Circulations matching a given filter.
+&nbsp;	 * 
+&nbsp;	 * @param circulation The circulation record used as a filter for retrieving records.
+&nbsp;	 * @param transaction The transaction associated with this operation.
+&nbsp;	 * @return the total number of Users found matching the filter.
+&nbsp;	 */
+&nbsp;    int getTotalCirculationNumber(Circulation circulation, Transaction transaction);
+&nbsp;	/**
+&nbsp;	 * Retrieves a list of completed circulations based on the provided filter criteria.
+&nbsp;	 *
+&nbsp;	 * @param circulation  The circulation object containing the filter criteria.
+&nbsp;	 * @param transaction  The database transaction.
+&nbsp;	 * @param offset       The offset value for pagination.
+&nbsp;	 * @param count        The maximum number of circulations to retrieve.
+&nbsp;	 * @return             A list of completed circulations matching the filter criteria.
+&nbsp;	 */
+&nbsp;	public List&lt;Circulation&gt; getAllCompletedCirculations(Circulation circulation, Transaction transaction, int offset, int count);
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Retrieves a list of current circulations based on the provided filter criteria.
+&nbsp;	 *
+&nbsp;	 * @param circulation  The circulation object containing the filter criteria.
+&nbsp;	 * @param transaction  The database transaction.
+&nbsp;	 * @param offset       The offset value for pagination.
+&nbsp;	 * @param count        The maximum number of circulations to retrieve.
+&nbsp;	 * @return             A list of current circulations matching the filter criteria.
+&nbsp;	 */
+&nbsp;	public List&lt;Circulation&gt; getAllCurrentCirculations (Circulation circulation, Transaction transaction,
+&nbsp;														int offset, int count) ;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Retrieves the total number of completed circulations.
+&nbsp;	 * @param circulation  The circulation object containing the filter criteria.
+&nbsp;	 * @param transaction  The database transaction.
+&nbsp;	 * @return             The total number of completed circulations.
+&nbsp;	 */
+&nbsp;	public int getTotalCompletedCirculationNumber(Circulation circulation,Transaction transaction);
+&nbsp;
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Retrieves the total number of aktulle (ongoing) circulations.
+&nbsp;	 * @param circulation  The circulation object containing the filter criteria.
+&nbsp;	 * @param transaction  The database transaction.
+&nbsp;	 * @return             The total number of aktulle circulations.
+&nbsp;	 */
+&nbsp;	public int getTotalCurrentCirculationNumber(Circulation circulation,Transaction transaction);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-11 11:47</div>
+</div>
+</body>
+</html>

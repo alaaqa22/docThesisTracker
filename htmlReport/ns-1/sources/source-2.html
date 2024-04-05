@@ -1,0 +1,522 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > CirculationDetailsBacking</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dtt.business.backing</a>
+</div>
+
+<h1>Coverage Summary for Class: CirculationDetailsBacking (dtt.business.backing)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CirculationDetailsBacking</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    86.2%
+  </span>
+  <span class="absValue">
+    (25/29)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    61.1%
+  </span>
+  <span class="absValue">
+    (11/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    80.6%
+  </span>
+  <span class="absValue">
+    (141/175)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dtt.business.backing;
+&nbsp;
+&nbsp;import dtt.business.utilities.SessionInfo;
+&nbsp;import dtt.dataAccess.exceptions.*;
+&nbsp;import dtt.dataAccess.repository.interfaces.CirculationDAO;
+&nbsp;import dtt.dataAccess.repository.interfaces.FacultyDAO;
+&nbsp;import dtt.dataAccess.repository.interfaces.UserDAO;
+&nbsp;import dtt.dataAccess.repository.interfaces.VoteDAO;
+&nbsp;import dtt.dataAccess.utilities.Transaction;
+&nbsp;import dtt.global.tansport.*;
+&nbsp;import jakarta.annotation.PostConstruct;
+&nbsp;import jakarta.faces.application.FacesMessage;
+&nbsp;import jakarta.faces.context.FacesContext;
+&nbsp;import jakarta.faces.view.ViewScoped;
+&nbsp;import jakarta.inject.Inject;
+&nbsp;import jakarta.inject.Named;
+&nbsp;import org.apache.logging.log4j.LogManager;
+&nbsp;import org.apache.logging.log4j.Logger;
+&nbsp;import org.primefaces.model.charts.ChartData;
+&nbsp;import org.primefaces.model.charts.axes.cartesian.CartesianScales;
+&nbsp;import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearAxes;
+&nbsp;import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearTicks;
+&nbsp;import org.primefaces.model.charts.bar.BarChartDataSet;
+&nbsp;import org.primefaces.model.charts.bar.BarChartModel;
+&nbsp;import org.primefaces.model.charts.bar.BarChartOptions;
+&nbsp;import org.primefaces.model.charts.optionconfig.legend.Legend;
+&nbsp;import org.primefaces.model.charts.optionconfig.legend.LegendLabel;
+&nbsp;
+&nbsp;
+&nbsp;import java.io.Serializable;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.Arrays;
+&nbsp;import java.util.List;
+&nbsp;import java.util.stream.Collectors;
+&nbsp;
+&nbsp;/**
+&nbsp; * Backing bean for the circulation details.
+&nbsp; *
+&nbsp; * @author Alaa Qasem
+&nbsp; */
+&nbsp;@ViewScoped
+&nbsp;@Named(&quot;circulationDetailsBacking&quot;)
+<b class="fc">&nbsp;public class CirculationDetailsBacking implements Serializable {</b>
+<b class="fc">&nbsp;    private static final Logger LOGGER = LogManager.getLogger(CirculationDetailsBacking.class);</b>
+&nbsp;    private Options choice;
+&nbsp;    @Inject
+&nbsp;    private UserDAO userDAO;
+&nbsp;    @Inject
+&nbsp;    private SessionInfo sessionInfo;
+&nbsp;    @Inject
+&nbsp;    private CirculationDAO circulationDAO;
+&nbsp;    @Inject
+&nbsp;    private VoteDAO voteDAO;
+&nbsp;    @Inject
+&nbsp;    private FacultyDAO facultyDAO;
+&nbsp;    private Circulation circulation;
+&nbsp;    private Vote vote;
+&nbsp;    private Options[] options;
+&nbsp;    private List&lt;Vote&gt; totalVotes;
+&nbsp;    private LocalDate startDate;
+&nbsp;    private LocalDate endDate;
+&nbsp;    private String reason;
+&nbsp;    private String createdBy;
+&nbsp;    private String facultyName;
+&nbsp;    private int numberOfAcceptVotes;
+&nbsp;    private int numberOfDeclineVotes;
+&nbsp;    private int numberOfAbstainVotes;
+&nbsp;    private BarChartModel barModel;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initialize circulation und vote dto objects.
+&nbsp;     */
+&nbsp;    @PostConstruct
+&nbsp;    public void init() {
+<b class="fc">&nbsp;        circulation = new Circulation();</b>
+<b class="fc">&nbsp;        vote = new Vote();</b>
+<b class="fc">&nbsp;        barModel = new BarChartModel();</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get the correct circulation id from the view param (will be called in a view action) and check if the
+&nbsp;     * user allowed to view the circulation, then load all data that should be displayed from the datasource.
+&nbsp;     *
+&nbsp;     * @throws DataIntegrityException If the user has no permission to see the circulation.
+&nbsp;     */
+&nbsp;
+&nbsp;    public void loadCirculation() {
+<b class="fc">&nbsp;        try (Transaction transaction = new Transaction()) {</b>
+<b class="fc">&nbsp;            circulationDAO.getCirculationById(circulation, transaction);</b>
+&nbsp;
+<b class="pc">&nbsp;            if (!sessionInfo.isAdmin() &amp;&amp; circulation.getFacultyId() != sessionInfo.getCurrentFaculty().getId()) {</b>
+&nbsp;
+&nbsp;                // Circulation does not meet the conditions.
+<b class="nc">&nbsp;                throw new IllegalStateException();</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            transaction.commit();</b>
+&nbsp;
+<b class="fc">&nbsp;        } catch (DataNotFoundException e) {</b>
+<b class="nc">&nbsp;            LOGGER.error(&quot;Failed to load the circulation &quot; + circulation.getId());</b>
+<b class="nc">&nbsp;            throw new IllegalStateException(e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Removes a circulation from the system.
+&nbsp;     */
+&nbsp;    public String remove() {
+<b class="fc">&nbsp;        try (Transaction transaction = new Transaction()) {</b>
+<b class="fc">&nbsp;            circulationDAO.remove(circulation, transaction);</b>
+<b class="fc">&nbsp;            transaction.commit();</b>
+<b class="fc">&nbsp;            LOGGER.info(&quot;Circulation with id = &quot; + circulation.getId() + &quot; was removed&quot;);</b>
+<b class="fc">&nbsp;            return &quot;/views/authenticated/circulationslist.xhtml?faces-redirect=true&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        } catch (DataNotFoundException e) {</b>
+<b class="nc">&nbsp;            LOGGER.error(&quot;Circulation&quot; + circulation.getId() + &quot; could not be removed&quot;);</b>
+<b class="nc">&nbsp;            throw new IllegalStateException(e);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Modify the circulation details.
+&nbsp;     */
+&nbsp;    public void modify() {
+<b class="pc">&nbsp;        if (endDate.isBefore(startDate)) {</b>
+<b class="nc">&nbsp;            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR,</b>
+&nbsp;                    &quot;Umlauf konnte nicht geändert werden&quot;, null);
+<b class="nc">&nbsp;            FacesContext.getCurrentInstance().addMessage(&quot;form:vote-btn&quot;, message);</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;        try (Transaction transaction = new Transaction()) {</b>
+<b class="fc">&nbsp;            circulationDAO.update(circulation, transaction);</b>
+<b class="fc">&nbsp;            transaction.commit();</b>
+<b class="fc">&nbsp;            LOGGER.info(&quot;circulation with id: &quot; + circulation.getId() + &quot; was modified&quot;);</b>
+<b class="fc">&nbsp;            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,</b>
+&nbsp;                    &quot;Umlauf wurde geändert.&quot;, null);
+<b class="fc">&nbsp;            FacesContext.getCurrentInstance().addMessage(null, message);</b>
+&nbsp;
+<b class="fc">&nbsp;        } catch (DataNotFoundException e) {</b>
+<b class="nc">&nbsp;            LOGGER.error(&quot;circulation&quot; + circulation.getId() + &quot; could not be modified&quot;);</b>
+<b class="nc">&nbsp;            throw new IllegalStateException(e);</b>
+<b class="nc">&nbsp;        } catch (InvalidInputException | KeyExistsException e) {</b>
+<b class="nc">&nbsp;            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR,</b>
+&nbsp;                    &quot;Umlauf konnte nicht geändert werden&quot;, null);
+<b class="nc">&nbsp;            FacesContext.getCurrentInstance().addMessage(null, message);</b>
+&nbsp;
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Casts or change a vote for a specific choice.
+&nbsp;     */
+&nbsp;    public void submitVote() {
+&nbsp;
+<b class="fc">&nbsp;        try (Transaction transaction = new Transaction()) {</b>
+<b class="pc">&nbsp;            if (!voteDAO.findVote(vote, transaction)) {</b>
+<b class="nc">&nbsp;                vote.setSelection(choice);</b>
+<b class="nc">&nbsp;                vote.setDescription(reason);</b>
+<b class="nc">&nbsp;                voteDAO.add(vote, transaction);</b>
+<b class="nc">&nbsp;                LOGGER.info(&quot;New vote was added to circulation id&quot; + circulation.getId() + &quot; by &quot; + getSessionInfo().getUser().getId());</b>
+<b class="nc">&nbsp;                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,</b>
+<b class="nc">&nbsp;                        &quot;Stimme &quot; + &quot;(&quot; + vote.getSelection().getLabel() + &quot;)&quot; + &quot; wurde erfolgreich gespeichert.&quot;, null);</b>
+<b class="nc">&nbsp;                FacesContext.getCurrentInstance().addMessage(null, message);</b>
+<b class="nc">&nbsp;            } else {</b>
+<b class="fc">&nbsp;                vote.setSelection(choice);</b>
+<b class="fc">&nbsp;                vote.setDescription(reason);</b>
+<b class="fc">&nbsp;                voteDAO.update(vote, transaction);</b>
+<b class="fc">&nbsp;                LOGGER.info(&quot;Updated vote to circulation id &quot; + circulation.getId() + &quot; by user id: &quot; + getSessionInfo().getUser().getId());</b>
+<b class="fc">&nbsp;                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,</b>
+<b class="fc">&nbsp;                        &quot;Neue Stimme &quot; + &quot;(&quot; + vote.getSelection().getLabel() + &quot;)&quot; + &quot; wurde erfolgreich aktualisiert.&quot;, null);</b>
+<b class="fc">&nbsp;                FacesContext.getCurrentInstance().addMessage(null, message);</b>
+&nbsp;
+&nbsp;            }
+<b class="fc">&nbsp;            transaction.commit();</b>
+<b class="fc">&nbsp;        } catch (DataNotCompleteException e) {</b>
+<b class="nc">&nbsp;            LOGGER.error(&quot;Failed to cast the vote.&quot;);</b>
+<b class="nc">&nbsp;            throw new IllegalStateException(e);</b>
+<b class="nc">&nbsp;        } catch (InvalidInputException | DataNotFoundException e) {</b>
+<b class="nc">&nbsp;            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,</b>
+&nbsp;                    &quot;Stimme konnte nicht gespeichert.&quot;, null);
+<b class="nc">&nbsp;            FacesContext.getCurrentInstance().addMessage(null, message);</b>
+&nbsp;
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Load all the votes of the circulation.
+&nbsp;     */
+&nbsp;    public void loadVotes() {
+<b class="fc">&nbsp;        try (Transaction transaction = new Transaction()) {</b>
+<b class="fc">&nbsp;            vote.setCirculation(circulation.getId());</b>
+<b class="fc">&nbsp;            vote.setUser(sessionInfo.getUser().getId());</b>
+<b class="fc">&nbsp;            voteDAO.findVote(vote, transaction);</b>
+<b class="fc">&nbsp;            getTotalVotes();</b>
+<b class="fc">&nbsp;            createBarChart();</b>
+<b class="fc">&nbsp;            transaction.commit();</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Get all the votes for a circulation and count the number of each vote to represent them on bar chart.
+&nbsp;     *
+&nbsp;     * @return List of votes.
+&nbsp;     */
+&nbsp;    public List&lt;Vote&gt; getTotalVotes() {
+<b class="fc">&nbsp;        try (Transaction transaction = new Transaction()) {</b>
+<b class="fc">&nbsp;            totalVotes = voteDAO.getVotes(vote, transaction);</b>
+<b class="fc">&nbsp;            for (Vote voteFromList : totalVotes) {</b>
+<b class="fc">&nbsp;                User user = new User();</b>
+<b class="fc">&nbsp;                if (voteFromList.getSelection() == Options.STIMME_ZU) {</b>
+<b class="fc">&nbsp;                    numberOfAcceptVotes++;</b>
+<b class="pc">&nbsp;                } else if (voteFromList.getSelection() == Options.LEHNE_AB) {</b>
+<b class="fc">&nbsp;                    numberOfDeclineVotes++;</b>
+<b class="nc">&nbsp;                } else if (voteFromList.getSelection() == Options.ENTHALTE_MICH) {</b>
+<b class="nc">&nbsp;                    numberOfAbstainVotes++;</b>
+&nbsp;                }
+<b class="pc">&nbsp;                if (voteFromList.getUserId() != 0) {</b>
+<b class="fc">&nbsp;                    user.setId(voteFromList.getUserId());</b>
+<b class="fc">&nbsp;                    userDAO.getUserById(user, transaction);</b>
+<b class="fc">&nbsp;                    voteFromList.setVotedByName(user.getFirstName().concat(&quot; &quot; + user.getLastName()));</b>
+&nbsp;                } else{
+<b class="nc">&nbsp;                    voteFromList.setVotedByName(&quot;Gelöschter Benutzer&quot;);</b>
+&nbsp;                }
+<b class="fc">&nbsp;                transaction.commit();</b>
+<b class="fc">&nbsp;            }</b>
+<b class="fc">&nbsp;        } catch (DataNotFoundException e) {</b>
+<b class="nc">&nbsp;            throw new IllegalStateException(e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        return totalVotes;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setTotalVotes(List&lt;Vote&gt; totalVotes) {
+<b class="nc">&nbsp;        this.totalVotes = totalVotes;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void createBarChart() {
+<b class="fc">&nbsp;        ChartData data = new ChartData();</b>
+&nbsp;
+<b class="fc">&nbsp;        BarChartDataSet barDataSet = new BarChartDataSet();</b>
+<b class="fc">&nbsp;        barDataSet.setLabel(&quot;Ergebnis&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        List&lt;Number&gt; values = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        values.add(numberOfAcceptVotes);</b>
+<b class="fc">&nbsp;        values.add(numberOfDeclineVotes);</b>
+<b class="fc">&nbsp;        values.add(numberOfAbstainVotes);</b>
+<b class="fc">&nbsp;        barDataSet.setData(values);</b>
+&nbsp;
+<b class="fc">&nbsp;        List&lt;Options&gt; labels = new ArrayList&lt;&gt;(Arrays.asList(Options.values()));</b>
+<b class="fc">&nbsp;        List&lt;String&gt; stringList = labels.stream()</b>
+<b class="fc">&nbsp;                .map(Options::getLabel)</b>
+<b class="fc">&nbsp;                .collect(Collectors.toList());</b>
+&nbsp;
+<b class="fc">&nbsp;        data.setLabels(stringList);</b>
+&nbsp;        //Data
+<b class="fc">&nbsp;        barModel.setData(data);</b>
+&nbsp;
+&nbsp;        //Options
+<b class="fc">&nbsp;        BarChartOptions options = new BarChartOptions();</b>
+<b class="fc">&nbsp;        CartesianScales cScales = new CartesianScales();</b>
+<b class="fc">&nbsp;        CartesianLinearAxes linearAxes = new CartesianLinearAxes();</b>
+<b class="fc">&nbsp;        CartesianLinearTicks ticks = new CartesianLinearTicks();</b>
+<b class="fc">&nbsp;        ticks.setMirror(true);</b>
+<b class="fc">&nbsp;        cScales.addYAxesData(linearAxes);</b>
+<b class="fc">&nbsp;        options.setScales(cScales);</b>
+&nbsp;
+<b class="fc">&nbsp;        Legend legend = new Legend();</b>
+<b class="fc">&nbsp;        legend.setDisplay(true);</b>
+<b class="fc">&nbsp;        legend.setPosition(&quot;top&quot;);</b>
+<b class="fc">&nbsp;        LegendLabel legendLabels = new LegendLabel();</b>
+<b class="fc">&nbsp;        legendLabels.setFontStyle(&quot;bold&quot;);</b>
+<b class="fc">&nbsp;        legendLabels.setFontColor(&quot;#2980B9&quot;);</b>
+<b class="fc">&nbsp;        legendLabels.setFontSize(28);</b>
+<b class="fc">&nbsp;        legend.setLabels(legendLabels);</b>
+<b class="fc">&nbsp;        options.setLegend(legend);</b>
+<b class="fc">&nbsp;        barModel.setOptions(options);</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;        List&lt;String&gt; bgColor = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        bgColor.add(&quot;rgba(0, 128, 0, 0.2)&quot;); //Red</b>
+<b class="fc">&nbsp;        bgColor.add(&quot;rgba(255, 0, 0, 0.2)&quot;); //Green</b>
+<b class="fc">&nbsp;        bgColor.add(&quot;rgba(255, 205, 86, 0.2)&quot;); //Yellow</b>
+&nbsp;
+<b class="fc">&nbsp;        barDataSet.setBackgroundColor(bgColor);</b>
+<b class="fc">&nbsp;        List&lt;String&gt; borderColor = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        borderColor.add(&quot;rgb(0, 128, 0)&quot;);</b>
+<b class="fc">&nbsp;        borderColor.add(&quot;rgb(255, 0, 0)&quot;);</b>
+<b class="fc">&nbsp;        borderColor.add(&quot;rgb(255, 205, 86)&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        barDataSet.setBorderColor(borderColor);</b>
+<b class="fc">&nbsp;        barDataSet.setBorderWidth(1);</b>
+<b class="fc">&nbsp;        data.addChartDataSet(barDataSet);</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    public Circulation getCirculation() {
+<b class="fc">&nbsp;        return circulation;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setCirculation(Circulation circulation) {
+<b class="nc">&nbsp;        this.circulation = circulation;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public SessionInfo getSessionInfo() {
+<b class="fc">&nbsp;        return sessionInfo;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setSessionInfo(SessionInfo sessionInfo) {
+<b class="nc">&nbsp;        this.sessionInfo = sessionInfo;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getReason() {
+<b class="fc">&nbsp;        reason = vote.getDescription();</b>
+<b class="fc">&nbsp;        return reason;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setReason(String reason) {
+<b class="fc">&nbsp;        this.reason = reason;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Vote getVote() {
+<b class="fc">&nbsp;        return vote;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setVote(Vote vote) {
+<b class="nc">&nbsp;        this.vote = vote;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Options getChoice() {
+<b class="fc">&nbsp;        choice = vote.getSelection();</b>
+<b class="fc">&nbsp;        return choice;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setChoice(Options choice) {
+<b class="fc">&nbsp;        this.choice = choice;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Options[] getOptions() {
+<b class="fc">&nbsp;        return Options.values();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public LocalDate getEndDate() {
+<b class="fc">&nbsp;        java.sql.Timestamp timestamp = circulation.getEndDate();</b>
+<b class="fc">&nbsp;        endDate = timestamp.toLocalDateTime().toLocalDate();</b>
+<b class="fc">&nbsp;        return endDate;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setEndDate(LocalDate endDate1) {
+<b class="fc">&nbsp;        circulation.setEndDate(java.sql.Timestamp.valueOf(endDate1.atStartOfDay()));</b>
+<b class="fc">&nbsp;        endDate = endDate1;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public LocalDate getStartDate() {
+<b class="fc">&nbsp;        java.sql.Timestamp timestamp = circulation.getStartDate();</b>
+<b class="fc">&nbsp;        startDate = timestamp.toLocalDateTime().toLocalDate();</b>
+<b class="fc">&nbsp;        return startDate;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setStartDate(LocalDate startDate1) {
+<b class="fc">&nbsp;        circulation.setStartDate(java.sql.Timestamp.valueOf(startDate1.atStartOfDay()));</b>
+<b class="fc">&nbsp;        startDate = startDate1;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the creator&#39;s name of the circulation.The name will be retrieved from the database using the userID.
+&nbsp;     *
+&nbsp;     * @return The creator&#39;s name of the circulation
+&nbsp;     */
+&nbsp;    public String getCreatedBy() {
+<b class="fc">&nbsp;        User user = new User();</b>
+<b class="fc">&nbsp;        user.setId(circulation.getCreatedBy());</b>
+<b class="fc">&nbsp;        try (Transaction transaction = new Transaction()) {</b>
+<b class="fc">&nbsp;            userDAO.getUserById(user, transaction);</b>
+<b class="fc">&nbsp;            createdBy = user.getFirstName().concat(&quot; &quot; + user.getLastName());</b>
+<b class="fc">&nbsp;            transaction.commit();</b>
+<b class="fc">&nbsp;        } catch (DataNotFoundException e) {</b>
+<b class="nc">&nbsp;            throw new IllegalStateException(e);</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return createdBy;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getFacultyName() {
+<b class="fc">&nbsp;        try (Transaction transaction = new Transaction()) {</b>
+<b class="fc">&nbsp;            Faculty faculty = facultyDAO.getFacultyById(circulation.getFacultyId(), transaction);</b>
+<b class="fc">&nbsp;            facultyName = faculty.getName();</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return facultyName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public BarChartModel getBarModel() {
+<b class="fc">&nbsp;        return barModel;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-11 11:47</div>
+</div>
+</body>
+</html>

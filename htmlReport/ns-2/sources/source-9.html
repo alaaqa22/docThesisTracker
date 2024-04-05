@@ -1,0 +1,314 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > TokenManager</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dtt.business.utilities</a>
+</div>
+
+<h1>Coverage Summary for Class: TokenManager (dtt.business.utilities)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TokenManager</td>
+<td class="coverageStat">
+  <span class="percent">
+    18.2%
+  </span>
+  <span class="absValue">
+    (2/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    11.1%
+  </span>
+  <span class="absValue">
+    (4/36)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">TokenManager$Proxy$_$$_WeldClientProxy</td>
+  </tr>
+  <tr>
+    <td class="name">TokenManager$TokenData</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    14.3%
+  </span>
+  <span class="absValue">
+    (2/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    9.8%
+  </span>
+  <span class="absValue">
+    (4/41)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dtt.business.utilities;
+&nbsp;
+&nbsp;import dtt.global.tansport.User;
+&nbsp;import jakarta.enterprise.context.ApplicationScoped;
+&nbsp;import org.apache.logging.log4j.LogManager;
+&nbsp;import org.apache.logging.log4j.Logger;
+&nbsp;
+&nbsp;import java.security.SecureRandom;
+&nbsp;import java.time.Duration;
+&nbsp;import java.time.Instant;
+&nbsp;import java.util.Base64;
+&nbsp;import java.util.Map;
+&nbsp;import java.util.concurrent.ConcurrentHashMap;
+&nbsp;
+&nbsp;/**
+&nbsp; * The TokenManager class manages tokens for resetting passwords.
+&nbsp; * It provides methods for generating tokens, looking up tokens,
+&nbsp; * and clearing expired tokens.
+&nbsp; * @author Johannes Silvennoinen
+&nbsp; */
+&nbsp;@ApplicationScoped
+<b class="fc">&nbsp;public class TokenManager {</b>
+<b class="fc">&nbsp;    private static final Logger LOGGER = LogManager.getLogger(TokenManager.class);</b>
+&nbsp;    private static final int TOKEN_LENGTH = 32;
+<b class="fc">&nbsp;    private final Map&lt;String, TokenData&gt; tokenStore = new ConcurrentHashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;    private Duration tokenExpirationDuration = Duration.ofHours(1);</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Generates a token for the specified user.
+&nbsp;     * If a token already exists for the user, it is deleted and replaced with a new one.
+&nbsp;     *
+&nbsp;     * @param user the user for whom the token is generated
+&nbsp;     * @return the generated token string
+&nbsp;     */
+&nbsp;    public String generateToken(User user) {
+&nbsp;        // Remove any existing tokens associated with the user.
+<b class="nc">&nbsp;        if (user.getEmail() != null) {</b>
+<b class="nc">&nbsp;            deleteTokenForUser(user);</b>
+&nbsp;        }
+&nbsp;        // Generate a new unique token.
+<b class="nc">&nbsp;        String token = generateUniqueToken();</b>
+<b class="nc">&nbsp;        LOGGER.debug(&quot;TOKEN: &quot; + token);</b>
+&nbsp;        // Set the expiration time.
+<b class="nc">&nbsp;        Instant expirationTime = Instant.now().plus(tokenExpirationDuration);</b>
+&nbsp;        // Put the token and the tokendata in to the token store.
+<b class="nc">&nbsp;        tokenStore.put(token, new TokenData(user, expirationTime));</b>
+<b class="nc">&nbsp;        return token;</b>
+&nbsp;    }
+&nbsp;    /**
+&nbsp;     * Checks if the given token exists and is not expired.
+&nbsp;     *
+&nbsp;     * @param token the token to lookup
+&nbsp;     * @return true if the token exists and is not expired, false otherwise
+&nbsp;     */
+&nbsp;    public boolean lookupToken(String token) {
+<b class="nc">&nbsp;        LOGGER.debug(&quot;lookupToken called for: &quot; + token);</b>
+<b class="nc">&nbsp;        return tokenStore.containsKey(token) &amp;&amp; !isTokenExpired(token);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a User for a token.
+&nbsp;     * @param token
+&nbsp;     * @return
+&nbsp;     */
+&nbsp;    public User getUserForToken(String token) {
+<b class="nc">&nbsp;        return tokenStore.get(token).user;</b>
+&nbsp;    }
+&nbsp;    /**
+&nbsp;     * Looks up if a token exists for the user. Only checks if the email matches.
+&nbsp;     *
+&nbsp;     * @param token The token to be checked
+&nbsp;     * @param user The user that checks the token.
+&nbsp;     * @return True when the given token is mapped to the user in the tokenStore.
+&nbsp;     */
+&nbsp;    public boolean lookupTokenForUser(String token, User user) {
+<b class="nc">&nbsp;        if (lookupToken(token)) {</b>
+<b class="nc">&nbsp;            return user.getEmail().equals(tokenStore.get(token).getUser().getEmail());</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return false;</b>
+&nbsp;    }
+&nbsp;    /**
+&nbsp;     * Clears expired tokens from the token store.
+&nbsp;     */
+&nbsp;    public void clearExpiredTokens() {
+<b class="nc">&nbsp;        LOGGER.debug(&quot;clearExpiredTokens() called.&quot;);</b>
+<b class="nc">&nbsp;        tokenStore.entrySet().removeIf(entry -&gt; isTokenExpired(entry.getKey()));</b>
+&nbsp;    }
+&nbsp;    /**
+&nbsp;     * Generates a unique token string with SecureRandom.
+&nbsp;     *
+&nbsp;     * @return the generated token string.
+&nbsp;     */
+&nbsp;    private String generateUniqueToken() {
+<b class="nc">&nbsp;        LOGGER.debug(&quot;generateUniqueToken() called.&quot;);</b>
+<b class="nc">&nbsp;        SecureRandom random = new SecureRandom();</b>
+<b class="nc">&nbsp;        byte[] tokenBytes = new byte[TOKEN_LENGTH];</b>
+<b class="nc">&nbsp;        random.nextBytes(tokenBytes);</b>
+<b class="nc">&nbsp;        return Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes);</b>
+&nbsp;    }
+&nbsp;    /**
+&nbsp;     * Checks if the given token is expired.
+&nbsp;     *
+&nbsp;     * @param token the token to check.
+&nbsp;     * @return true if the token is expired, false otherwise.
+&nbsp;     */
+&nbsp;    private boolean isTokenExpired(String token) {
+<b class="nc">&nbsp;        LOGGER.debug(&quot;isTokenExpired() called for token: &quot; + token);</b>
+<b class="nc">&nbsp;        TokenData tokenData = tokenStore.get(token);</b>
+<b class="nc">&nbsp;        Instant expirationTime = tokenData.getExpirationTime();</b>
+&nbsp;
+<b class="nc">&nbsp;        return expirationTime.isBefore(Instant.now());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the duration in minutes, how long the token lives.
+&nbsp;     * @param ofMinutes Minutes the token is valid.
+&nbsp;     */
+&nbsp;    public void setTokenExpirationDuration(Duration ofMinutes) {
+&nbsp;        // This class is mostly needed to test token expiry.
+<b class="nc">&nbsp;        tokenExpirationDuration = ofMinutes;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Deletes the token out of the tokenstore if the user has a token.
+&nbsp;     * @param user the user whose token should be deleted.
+&nbsp;     */
+&nbsp;    public void deleteTokenForUser(User user) {
+<b class="nc">&nbsp;        for (Map.Entry&lt;String, TokenData&gt; entry: tokenStore.entrySet()) {</b>
+<b class="nc">&nbsp;            String token = entry.getKey();</b>
+<b class="nc">&nbsp;            TokenData value = entry.getValue();</b>
+<b class="nc">&nbsp;            if (value.user.getEmail().equals(user.getEmail())) {</b>
+<b class="nc">&nbsp;                LOGGER.debug(&quot;Deleting token for user: &quot; + user.getEmail());</b>
+<b class="nc">&nbsp;                tokenStore.remove(token);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;    /**
+&nbsp;     * Represents the token data associated with a user.
+&nbsp;     */
+&nbsp;    private static class TokenData {
+&nbsp;        private final User user;
+&nbsp;        private final Instant expirationTime;
+&nbsp;        /**
+&nbsp;         * Constructs a new TokenData object.
+&nbsp;         *
+&nbsp;         * @param user            the user associated with the token.
+&nbsp;         * @param expirationTime  the expiration time of the token.
+&nbsp;         */
+<b class="nc">&nbsp;        TokenData(User user, Instant expirationTime) {</b>
+<b class="nc">&nbsp;            this.user = user;</b>
+<b class="nc">&nbsp;            this.expirationTime = expirationTime;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        public User getUser() {
+<b class="nc">&nbsp;            return user;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        public Instant getExpirationTime() {
+<b class="nc">&nbsp;            return expirationTime;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-11 11:47</div>
+</div>
+</body>
+</html>
